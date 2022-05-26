@@ -128,12 +128,10 @@ extern "C" {
     ) -> FcResult;
 
     pub fn FcFontSetCreate() -> *mut FcFontSet;
-    pub fn FcFontSetReference(font_set: *mut FcFontSet);
     pub fn FcFontSetDestroy(font_set: *mut FcFontSet);
     pub fn FcFontSetPrint(font_set: *mut FcFontSet);
 
     pub fn FcObjectSetCreate() -> *mut FcObjectSet;
-    pub fn FcObjectSetReference(object_set: *mut FcObjectSet);
     pub fn FcObjectSetDestroy(object_set: *mut FcObjectSet);
     pub fn FcObjectSetPrint(object_set: *mut FcObjectSet);
     pub fn FcObjectSetAdd(object_set: *mut FcObjectSet, object: *const c_char) -> FcBool;

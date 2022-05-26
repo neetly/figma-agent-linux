@@ -181,11 +181,6 @@ impl FontSet {
         FontSet { raw }
     }
 
-    pub unsafe fn from_raw_with_ref(raw: *mut FcFontSet) -> FontSet {
-        FcFontSetReference(raw);
-        FontSet { raw }
-    }
-
     pub fn print(&self) {
         unsafe { FcFontSetPrint(self.raw) };
     }
@@ -217,11 +212,6 @@ impl ObjectSet {
     }
 
     pub unsafe fn from_raw(raw: *mut FcObjectSet) -> ObjectSet {
-        ObjectSet { raw }
-    }
-
-    pub unsafe fn from_raw_with_ref(raw: *mut FcObjectSet) -> ObjectSet {
-        FcObjectSetReference(raw);
         ObjectSet { raw }
     }
 
