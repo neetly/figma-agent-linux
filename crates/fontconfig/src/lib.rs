@@ -1,6 +1,6 @@
 #![allow(clippy::missing_safety_doc, clippy::new_without_default)]
 
-use std::{ffi::CStr, os::raw::c_char, ptr, slice};
+use std::{ffi::CStr, marker::PhantomData, os::raw::c_char, ptr, slice};
 
 pub use fontconfig_sys::*;
 
@@ -38,6 +38,11 @@ impl Config {
         } else {
             None
         }
+    }
+
+    pub fn font_dirs(&self) -> StrList {
+        let raw_str_list = unsafe { FcConfigGetFontDirs(self.raw) };
+        unsafe { StrList::from_raw(raw_str_list) }
     }
 
     pub fn list_fonts(&self, pattern: &Pattern, object_set: Option<&ObjectSet>) -> FontSet {
@@ -253,5 +258,63 @@ impl ObjectSet {
 impl Drop for ObjectSet {
     fn drop(&mut self) {
         unsafe { FcObjectSetDestroy(self.raw) };
+    }
+}
+
+pub struct StrSet {
+    raw: *mut FcStrSet,
+}
+
+impl StrSet {
+    pub fn new() -> Option<StrSet> {
+        let raw = unsafe { FcStrSetCreate() };
+        if raw.is_null() {
+            None
+        } else {
+            Some(StrSet { raw })
+        }
+    }
+
+    pub unsafe fn from_raw(raw: *mut FcStrSet) -> StrSet {
+        StrSet { raw }
+    }
+}
+
+impl Drop for StrSet {
+    fn drop(&mut self) {
+        unsafe { FcStrSetDestroy(self.raw) };
+    }
+}
+
+pub struct StrList<'a> {
+    raw: *mut FcStrList,
+    _marker: PhantomData<&'a StrSet>,
+}
+
+impl<'a> StrList<'a> {
+    pub unsafe fn from_raw(raw: *mut FcStrList) -> StrList<'a> {
+        StrList {
+            raw,
+            _marker: PhantomData,
+        }
+    }
+}
+
+impl<'a> Iterator for StrList<'a> {
+    type Item = Option<&'a str>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let str = unsafe { FcStrListNext(self.raw) };
+        if str.is_null() {
+            None
+        } else {
+            Some(unsafe { CStr::from_ptr(str as *const c_char).to_str().ok() })
+        }
+    }
+}
+
+impl Drop for StrList<'_> {
+    fn drop(&mut self) {
+        unsafe { FcStrListDone(self.raw) };
     }
 }

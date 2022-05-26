@@ -2,6 +2,7 @@
 
 use std::{
     ffi::CStr,
+    marker::PhantomData,
     os::raw::{c_char, c_double, c_int, c_uchar, c_uint, c_ushort},
 };
 
@@ -21,7 +22,7 @@ macro_rules! opaque {
             $(#[$meta])*
             $vis struct $name {
                 _data: [u8; 0],
-                _marker: core::marker::PhantomData<(*mut u8, core::marker::PhantomPinned)>,
+                _marker: PhantomData<(*mut u8, core::marker::PhantomPinned)>,
             }
         )*
     };
@@ -83,6 +84,14 @@ pub struct FcObjectSet {
     pub objects: *mut *const c_char,
 }
 
+opaque! {
+    #[repr(C)]
+    pub struct FcStrSet;
+
+    #[repr(C)]
+    pub struct FcStrList;
+}
+
 #[repr(C)]
 pub enum FcResult {
     FcResultMatch,
@@ -105,6 +114,7 @@ extern "C" {
     pub fn FcConfigCreate() -> *mut FcConfig;
     pub fn FcConfigReference(config: *mut FcConfig) -> *mut FcConfig;
     pub fn FcConfigDestroy(config: *mut FcConfig);
+    pub fn FcConfigGetFontDirs(config: *mut FcConfig) -> *mut FcStrList;
 
     pub fn FcPatternCreate() -> *mut FcPattern;
     pub fn FcPatternDuplicate(pattern: *const FcPattern) -> *mut FcPattern;
@@ -139,6 +149,14 @@ extern "C" {
     pub fn FcObjectSetDestroy(object_set: *mut FcObjectSet);
     pub fn FcObjectSetPrint(object_set: *mut FcObjectSet);
     pub fn FcObjectSetAdd(object_set: *mut FcObjectSet, object: *const c_char) -> FcBool;
+
+    pub fn FcStrSetCreate() -> *mut FcStrSet;
+    pub fn FcStrSetDestroy(str_set: *mut FcStrSet);
+
+    pub fn FcStrListCreate(str_set: *mut FcStrSet) -> *mut FcStrList;
+    pub fn FcStrListFirst(str_list: *mut FcStrList);
+    pub fn FcStrListNext(str_list: *mut FcStrList) -> *mut FcChar8;
+    pub fn FcStrListDone(str_list: *mut FcStrList);
 
     pub fn FcFontList(
         config: *mut FcConfig,

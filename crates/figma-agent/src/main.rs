@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fs::File};
+use std::{collections::HashMap, fs::File, path::Path};
 
 use fontconfig::{Config, Pattern, FC_SLANT_ROMAN};
 use itertools::Itertools;
@@ -60,14 +60,24 @@ fn main() {
                 let query = uri.query().map(|query| query.as_bytes()).unwrap_or(&[]);
                 let params: HashMap<_, _> = form_urlencoded::parse(query).collect();
 
-                if let Some(path) = params.get("file") {
-                    if let Ok(file) = File::open(path.as_ref()) {
-                        let response = Response::from_file(file)
-                            .with_header(header!("Content-Type": "application/octet-stream"))
-                            .with_header(
-                                header!("Access-Control-Allow-Origin": "https://www.figma.com"),
-                            );
-                        let _ = request.respond(response);
+                if let Some(file_param) = params.get("file") {
+                    let path = Path::new(file_param.as_ref());
+                    let is_path_valid = config
+                        .font_dirs()
+                        .flatten()
+                        .any(|dir| path.starts_with(dir));
+
+                    if is_path_valid {
+                        if let Ok(file) = File::open(path) {
+                            let response = Response::from_file(file)
+                                .with_header(header!("Content-Type": "application/octet-stream"))
+                                .with_header(
+                                    header!("Access-Control-Allow-Origin": "https://www.figma.com"),
+                                );
+                            let _ = request.respond(response);
+                        } else {
+                            let _ = request.respond(Response::empty(404));
+                        }
                     } else {
                         let _ = request.respond(Response::empty(404));
                     }
