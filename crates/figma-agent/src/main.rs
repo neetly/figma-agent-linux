@@ -1,5 +1,3 @@
-#![feature(let_chains)]
-
 use std::{collections::HashMap, fs::File};
 
 use fontconfig::{Config, Pattern, FC_SLANT_ROMAN};
