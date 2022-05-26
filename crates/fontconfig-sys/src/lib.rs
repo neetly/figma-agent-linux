@@ -102,6 +102,10 @@ extern "C" {
     pub fn FcInitLoadConfig() -> *mut FcConfig;
     pub fn FcInitLoadConfigAndFonts() -> *mut FcConfig;
 
+    pub fn FcConfigCreate() -> *mut FcConfig;
+    pub fn FcConfigReference(config: *mut FcConfig) -> *mut FcConfig;
+    pub fn FcConfigDestroy(config: *mut FcConfig);
+
     pub fn FcPatternCreate() -> *mut FcPattern;
     pub fn FcPatternDuplicate(pattern: *const FcPattern) -> *mut FcPattern;
     pub fn FcPatternReference(pattern: *mut FcPattern);

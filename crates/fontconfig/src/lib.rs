@@ -13,14 +13,31 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new() -> Config {
-        let raw = unsafe { FcInitLoadConfigAndFonts() };
-        assert!(!raw.is_null());
-        Config { raw }
+    pub fn new() -> Option<Config> {
+        let raw = unsafe { FcConfigCreate() };
+        if raw.is_null() {
+            None
+        } else {
+            Some(Config { raw })
+        }
     }
 
     pub unsafe fn from_raw(raw: *mut FcConfig) -> Config {
         Config { raw }
+    }
+
+    pub unsafe fn from_raw_with_ref(raw: *mut FcConfig) -> Config {
+        let raw = FcConfigReference(raw);
+        Config { raw }
+    }
+
+    pub fn init() -> Option<Config> {
+        let result = unsafe { FcInit() };
+        if result == FcTrue {
+            Some(unsafe { Config::from_raw(ptr::null_mut()) })
+        } else {
+            None
+        }
     }
 
     pub fn list_fonts(&self, pattern: &Pattern, object_set: Option<&ObjectSet>) -> FontSet {
@@ -31,6 +48,14 @@ impl Config {
         let raw_font_set = unsafe { FcFontList(self.raw, raw_pattern, raw_object_set) };
         assert!(!raw_font_set.is_null());
         unsafe { FontSet::from_raw(raw_font_set) }
+    }
+}
+
+impl Drop for Config {
+    fn drop(&mut self) {
+        if !self.raw.is_null() {
+            unsafe { FcConfigDestroy(self.raw) };
+        }
     }
 }
 

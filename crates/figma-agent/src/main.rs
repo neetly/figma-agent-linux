@@ -14,7 +14,7 @@ macro_rules! header {
 
 fn main() {
     let server = Server::http("127.0.0.1:18412").unwrap();
-    let config = Config::new();
+    let config = Config::init().unwrap();
 
     for request in server.incoming_requests() {
         let uri = URIReference::try_from(request.url()).unwrap();
