@@ -18,32 +18,49 @@ fn main() {
     let fc = Config::init().unwrap();
     let _ft = Library::init().unwrap();
 
+    let get_variation_axes = |_: &Pattern| -> Option<Vec<VariationAxis>> { None };
+
+    let get_font_file = |pattern: &Pattern| -> Option<FontFile> {
+        if let Some(path) = pattern.file() {
+            Some(FontFile {
+                file: path.into(),
+                family: pattern.family().unwrap_or("").into(),
+                postscript: pattern.postscript_name().unwrap_or("").into(),
+                style: pattern.style().unwrap_or("").into(),
+                weight: pattern.opentype_weight().unwrap_or(400),
+                italic: pattern
+                    .slant()
+                    .map(|slant| slant != FC_SLANT_ROMAN)
+                    .unwrap_or(false),
+                width: pattern.opentype_width().unwrap_or(5),
+                variation_axes: match pattern.is_variable() {
+                    Some(true) => get_variation_axes(pattern),
+                    _ => None,
+                },
+            })
+        } else {
+            None
+        }
+    };
+
+    let open_font_file = |path: &str| -> Option<File> {
+        let path = Path::new(path);
+        if fc.font_dirs().flatten().any(|dir| path.starts_with(dir)) {
+            File::open(path).ok()
+        } else {
+            None
+        }
+    };
+
     for request in server.incoming_requests() {
         let uri = URIReference::try_from(request.url()).unwrap();
         match uri.path().to_string().as_str() {
             "/figma/font-files" => {
                 let font_set = fc.list_fonts(&Pattern::new(), None);
-
                 let font_files = font_set
                     .iter()
-                    .map(|pattern| {
-                        (
-                            pattern.file().unwrap_or("").to_string(),
-                            FontFile {
-                                family: pattern.family().unwrap_or("").to_string(),
-                                postscript: pattern.postscript_name().unwrap_or("").to_string(),
-                                style: pattern.style().unwrap_or("").to_string(),
-                                weight: pattern.opentype_weight().unwrap_or(400),
-                                italic: pattern
-                                    .slant()
-                                    .map(|slant| slant != FC_SLANT_ROMAN)
-                                    .unwrap_or(false),
-                                width: pattern.opentype_width().unwrap_or(5),
-                                variation_axes: None,
-                            },
-                        )
-                    })
-                    .into_group_map();
+                    .flat_map(|pattern| get_font_file(&pattern))
+                    .into_group_map_by(|font_file| font_file.file.to_owned());
 
                 let payload = FontFilesPayload {
                     version: 20,
@@ -67,20 +84,13 @@ fn main() {
                 let params: HashMap<_, _> = form_urlencoded::parse(query).collect();
 
                 if let Some(path) = params.get("file") {
-                    let path = Path::new(path.as_ref());
-                    let is_path_valid = fc.font_dirs().flatten().any(|dir| path.starts_with(dir));
-
-                    if is_path_valid {
-                        if let Ok(file) = File::open(path) {
-                            let response = Response::from_file(file)
-                                .with_header(header!("Content-Type": "application/octet-stream"))
-                                .with_header(
-                                    header!("Access-Control-Allow-Origin": "https://www.figma.com"),
-                                );
-                            let _ = request.respond(response);
-                        } else {
-                            let _ = request.respond(Response::empty(404));
-                        }
+                    if let Some(file) = open_font_file(path) {
+                        let response = Response::from_file(file)
+                            .with_header(header!("Content-Type": "application/octet-stream"))
+                            .with_header(
+                                header!("Access-Control-Allow-Origin": "https://www.figma.com"),
+                            );
+                        let _ = request.respond(response);
                     } else {
                         let _ = request.respond(Response::empty(404));
                     }
@@ -106,6 +116,8 @@ struct FontFilesPayload {
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct FontFile {
+    #[serde(skip)]
+    file: String,
     family: String,
     postscript: String,
     style: String,

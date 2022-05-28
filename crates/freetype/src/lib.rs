@@ -61,7 +61,7 @@ impl Library {
         Some(library)
     }
 
-    pub fn new_face(&self, path: &str, face_index: i64) -> Option<Face> {
+    pub fn open_face(&self, path: &str, face_index: i64) -> Option<Face> {
         Face::new(self, path, face_index)
     }
 }
@@ -155,7 +155,7 @@ pub struct MMVar<'a> {
 }
 
 impl MMVar<'_> {
-    pub fn num_axis(&self) -> usize {
+    pub fn num_axes(&self) -> usize {
         unsafe { (*self.raw).num_axis as usize }
     }
 
@@ -167,10 +167,10 @@ impl MMVar<'_> {
         unsafe { (*self.raw).num_namedstyles as usize }
     }
 
-    pub fn axis(&self) -> impl Iterator<Item = VarAxis> {
-        let raw_axis =
+    pub fn axes(&self) -> impl Iterator<Item = VarAxis> {
+        let raw_axes =
             unsafe { slice::from_raw_parts((*self.raw).axis, (*self.raw).num_axis as usize) };
-        raw_axis.iter().map(|axis| VarAxis {
+        raw_axes.iter().map(|axis| VarAxis {
             raw: axis,
             face: self.face,
         })
@@ -211,11 +211,11 @@ impl VarAxis<'_> {
         self.raw.def
     }
 
-    pub fn minimum(&self) -> i64 {
+    pub fn min(&self) -> i64 {
         self.raw.minimum
     }
 
-    pub fn maximum(&self) -> i64 {
+    pub fn max(&self) -> i64 {
         self.raw.maximum
     }
 }
@@ -227,7 +227,7 @@ pub struct VarNamedStyle<'a> {
 
 impl VarNamedStyle<'_> {
     pub fn coords(&self) -> impl Iterator<Item = &i64> {
-        let raw_coords = unsafe { slice::from_raw_parts(self.raw.coords, self.mm_var.num_axis()) };
+        let raw_coords = unsafe { slice::from_raw_parts(self.raw.coords, self.mm_var.num_axes()) };
         raw_coords.iter()
     }
 }
