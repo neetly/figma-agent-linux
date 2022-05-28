@@ -66,6 +66,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "freetype"
+version = "0.0.0"
+dependencies = [
+ "freetype-sys",
+]
+
+[[package]]
+name = "freetype-sys"
+version = "0.0.0"
+
+[[package]]
 name = "idna"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
