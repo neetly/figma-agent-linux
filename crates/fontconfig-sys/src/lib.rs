@@ -14,6 +14,7 @@ pub const FcDontCare: c_int = 2;
 
 cstr! {
     pub const FC_FILE = "file";
+    pub const FC_INDEX = "index";
     pub const FC_FULLNAME = "fullname";
     pub const FC_POSTSCRIPT_NAME = "postscriptname";
     pub const FC_FAMILY = "family";

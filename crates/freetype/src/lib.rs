@@ -1,6 +1,6 @@
 #![allow(non_upper_case_globals, clippy::missing_safety_doc)]
 
-use std::ptr;
+use std::{ffi::CString, ptr};
 
 use libc::{c_long, c_void, free, malloc, realloc};
 
@@ -31,10 +31,10 @@ pub struct Library {
 }
 
 impl Library {
-    pub fn new() -> Library {
+    pub fn new() -> Result<Library, FT_Error> {
         let mut raw: FT_Library = ptr::null_mut();
-        dispatch!(unsafe { FT_New_Library(&mut MEMORY, &mut raw) });
-        Library { raw }
+        try_dispatch!(unsafe { FT_New_Library(&mut MEMORY, &mut raw) })?;
+        Ok(Library { raw })
     }
 
     pub unsafe fn from_raw(raw: FT_Library) -> Library {
@@ -47,15 +47,47 @@ impl Library {
     }
 
     pub fn init() -> Result<Library, FT_Error> {
-        let library = Library::new();
+        let library = Library::new()?;
         try_dispatch!(unsafe { FT_Add_Default_Modules(library.raw) })?;
         Ok(library)
+    }
+
+    pub fn new_face(&self, path: &str, face_index: i64) -> Result<Face, FT_Error> {
+        Face::new(self, path, face_index)
     }
 }
 
 impl Drop for Library {
     fn drop(&mut self) {
         dispatch!(unsafe { FT_Done_Library(self.raw) });
+    }
+}
+
+pub struct Face {
+    raw: FT_Face,
+}
+
+impl Face {
+    pub fn new(library: &Library, path: &str, face_index: i64) -> Result<Face, FT_Error> {
+        let mut raw: FT_Face = ptr::null_mut();
+        let path = CString::new(path).unwrap();
+        try_dispatch!(unsafe { FT_New_Face(library.raw, path.as_ptr(), face_index, &mut raw) })?;
+        Ok(Face { raw })
+    }
+
+    pub unsafe fn from_raw(raw: FT_Face) -> Face {
+        Face { raw }
+    }
+
+    pub unsafe fn from_raw_with_ref(raw: FT_Face) -> Face {
+        dispatch!(FT_Reference_Face(raw));
+        Face { raw }
+    }
+}
+
+impl Drop for Face {
+    fn drop(&mut self) {
+        dispatch!(unsafe { FT_Done_Face(self.raw) });
     }
 }
 

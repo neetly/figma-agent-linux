@@ -1,6 +1,7 @@
 use std::{collections::HashMap, fs::File, path::Path};
 
 use fontconfig::{Config, Pattern, FC_SLANT_ROMAN};
+use freetype::Library;
 use itertools::Itertools;
 use serde_json::json;
 use tiny_http::{Header, Response, Server};
@@ -14,13 +15,14 @@ macro_rules! header {
 
 fn main() {
     let server = Server::http("127.0.0.1:18412").unwrap();
-    let config = Config::init().unwrap();
+    let fc = Config::init().unwrap();
+    let _ft = Library::init().unwrap();
 
     for request in server.incoming_requests() {
         let uri = URIReference::try_from(request.url()).unwrap();
         match uri.path().to_string().as_str() {
             "/figma/font-files" => {
-                let font_set = config.list_fonts(&Pattern::new(), None);
+                let font_set = fc.list_fonts(&Pattern::new(), None);
 
                 let font_files = font_set
                     .iter()
@@ -60,12 +62,9 @@ fn main() {
                 let query = uri.query().map(|query| query.as_bytes()).unwrap_or(&[]);
                 let params: HashMap<_, _> = form_urlencoded::parse(query).collect();
 
-                if let Some(file_param) = params.get("file") {
-                    let path = Path::new(file_param.as_ref());
-                    let is_path_valid = config
-                        .font_dirs()
-                        .flatten()
-                        .any(|dir| path.starts_with(dir));
+                if let Some(path) = params.get("file") {
+                    let path = Path::new(path.as_ref());
+                    let is_path_valid = fc.font_dirs().flatten().any(|dir| path.starts_with(dir));
 
                     if is_path_valid {
                         if let Ok(file) = File::open(path) {

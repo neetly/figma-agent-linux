@@ -143,6 +143,10 @@ impl Pattern {
         self.get_string(FC_FILE)
     }
 
+    pub fn index(&self) -> Option<i32> {
+        self.get_int(FC_INDEX)
+    }
+
     pub fn fullname(&self) -> Option<&str> {
         self.get_string(FC_FULLNAME)
     }

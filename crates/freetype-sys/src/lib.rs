@@ -1,7 +1,9 @@
 #![allow(non_camel_case_types, non_upper_case_globals)]
 
 use ffi_utils::opaque;
-use libc::{c_int, c_long, c_void};
+use libc::{c_char, c_int, c_long, c_void};
+
+pub type FT_Long = c_long;
 
 pub type FT_Library = *mut FT_LibraryRec;
 pub type FT_Face = *mut FT_FaceRec;
@@ -35,10 +37,18 @@ pub const FT_Err_Ok: FT_Error = 0x00;
 #[link(name = "freetype")]
 extern "C" {
     pub fn FT_Init_FreeType(library: *mut FT_Library) -> FT_Error;
+    pub fn FT_Add_Default_Modules(library: FT_Library) -> FT_Error;
 
     pub fn FT_New_Library(memory: FT_Memory, library: *mut FT_Library) -> FT_Error;
     pub fn FT_Reference_Library(library: FT_Library) -> FT_Error;
     pub fn FT_Done_Library(library: FT_Library) -> FT_Error;
 
-    pub fn FT_Add_Default_Modules(library: FT_Library) -> FT_Error;
+    pub fn FT_New_Face(
+        library: FT_Library,
+        pathname: *const c_char,
+        face_index: FT_Long,
+        face: *mut FT_Face,
+    ) -> FT_Error;
+    pub fn FT_Reference_Face(face: FT_Face) -> FT_Error;
+    pub fn FT_Done_Face(face: FT_Face) -> FT_Error;
 }
