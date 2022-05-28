@@ -79,6 +79,7 @@ name = "freetype"
 version = "0.0.0"
 dependencies = [
  "freetype-sys",
+ "libc",
 ]
 
 [[package]]
