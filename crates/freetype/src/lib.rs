@@ -1,4 +1,8 @@
-#![allow(non_upper_case_globals, clippy::missing_safety_doc)]
+#![allow(
+    non_upper_case_globals,
+    clippy::missing_safety_doc,
+    clippy::new_without_default
+)]
 
 use std::{
     ffi::{CStr, CString},
@@ -81,11 +85,11 @@ impl<'a> Face<'a> {
         Ok(Face { library, raw })
     }
 
-    pub unsafe fn from_raw(library: &'a Library, raw: FT_Face) -> Face<'a> {
+    pub unsafe fn from_raw(library: &Library, raw: FT_Face) -> Face {
         Face { library, raw }
     }
 
-    pub unsafe fn from_raw_with_ref(library: &'a Library, raw: FT_Face) -> Face<'a> {
+    pub unsafe fn from_raw_with_ref(library: &Library, raw: FT_Face) -> Face {
         dispatch!(FT_Reference_Face(raw));
         Face { library, raw }
     }
@@ -150,7 +154,7 @@ pub struct MMVar<'a> {
     face: &'a Face<'a>,
 }
 
-impl<'a> MMVar<'a> {
+impl MMVar<'_> {
     pub fn num_axis(&self) -> usize {
         unsafe { (*self.raw).num_axis as usize }
     }
@@ -194,7 +198,7 @@ pub struct VarAxis<'a> {
     face: &'a Face<'a>,
 }
 
-impl<'a> VarAxis<'a> {
+impl VarAxis<'_> {
     pub fn name(&self) -> &str {
         unsafe { CStr::from_ptr(self.raw.name).to_str().unwrap() }
     }
@@ -221,10 +225,10 @@ pub struct VarNamedStyle<'a> {
     mm_var: &'a MMVar<'a>,
 }
 
-impl<'a> VarNamedStyle<'a> {
-    pub fn coords(&self) -> impl Iterator<Item = i64> {
+impl VarNamedStyle<'_> {
+    pub fn coords(&self) -> impl Iterator<Item = &i64> {
         let raw_coords = unsafe { slice::from_raw_parts(self.raw.coords, self.mm_var.num_axis()) };
-        raw_coords.iter().map(|&coord| coord)
+        raw_coords.iter()
     }
 }
 

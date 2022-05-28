@@ -309,7 +309,7 @@ pub struct StrList<'a> {
 }
 
 impl<'a> StrList<'a> {
-    pub fn new(str_set: &'a StrSet) -> StrList<'a> {
+    pub fn new(str_set: &StrSet) -> StrList {
         let raw = unsafe { FcStrListCreate(str_set.raw) };
         assert!(!raw.is_null());
         StrList {
