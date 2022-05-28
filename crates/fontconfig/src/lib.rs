@@ -15,13 +15,10 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new() -> Option<Config> {
+    pub fn new() -> Config {
         let raw = unsafe { FcConfigCreate() };
-        if raw.is_null() {
-            None
-        } else {
-            Some(Config { raw })
-        }
+        assert!(!raw.is_null());
+        Config { raw }
     }
 
     pub unsafe fn from_raw(raw: *mut FcConfig) -> Config {
@@ -285,13 +282,10 @@ pub struct StrSet {
 }
 
 impl StrSet {
-    pub fn new() -> Option<StrSet> {
+    pub fn new() -> StrSet {
         let raw = unsafe { FcStrSetCreate() };
-        if raw.is_null() {
-            None
-        } else {
-            Some(StrSet { raw })
-        }
+        assert!(!raw.is_null());
+        StrSet { raw }
     }
 
     pub unsafe fn from_raw(raw: *mut FcStrSet) -> StrSet {
