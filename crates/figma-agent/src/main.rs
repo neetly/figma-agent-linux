@@ -3,7 +3,7 @@ use std::{collections::HashMap, fs::File, path::Path};
 use fontconfig::{Config, Pattern, FC_SLANT_ROMAN};
 use freetype::Library;
 use itertools::Itertools;
-use serde_json::json;
+use serde::Serialize;
 use tiny_http::{Header, Response, Server};
 use uriparse::URIReference;
 
@@ -28,25 +28,29 @@ fn main() {
                     .iter()
                     .map(|pattern| {
                         (
-                            pattern.file().unwrap_or("").to_owned(),
-                            json!({
-                                "family": pattern.family().unwrap_or(""),
-                                "postscript": pattern.postscript_name().unwrap_or(""),
-                                "style": pattern.style().unwrap_or(""),
-                                "weight": pattern.opentype_weight().unwrap_or(400),
-                                "italic": pattern.slant().map(|slant| slant != FC_SLANT_ROMAN).unwrap_or(false),
-                                "width": pattern.opentype_width().unwrap_or(5),
-                            }),
+                            pattern.file().unwrap_or("").to_string(),
+                            FontFile {
+                                family: pattern.family().unwrap_or("").to_string(),
+                                postscript: pattern.postscript_name().unwrap_or("").to_string(),
+                                style: pattern.style().unwrap_or("").to_string(),
+                                weight: pattern.opentype_weight().unwrap_or(400),
+                                italic: pattern
+                                    .slant()
+                                    .map(|slant| slant != FC_SLANT_ROMAN)
+                                    .unwrap_or(false),
+                                width: pattern.opentype_width().unwrap_or(5),
+                                variation_axes: None,
+                            },
                         )
                     })
                     .into_group_map();
 
-                let result = json!({
-                    "version": 20,
-                    "fontFiles": font_files,
-                });
+                let payload = FontFilesPayload {
+                    version: 20,
+                    font_files,
+                };
 
-                if let Ok(payload) = serde_json::to_string(&result) {
+                if let Ok(payload) = serde_json::to_string(&payload) {
                     let response = Response::from_string(payload)
                         .with_header(header!("Content-Type": "application/json"))
                         .with_header(
@@ -90,4 +94,35 @@ fn main() {
             }
         };
     }
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct FontFilesPayload {
+    version: i32,
+    font_files: HashMap<String, Vec<FontFile>>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct FontFile {
+    family: String,
+    postscript: String,
+    style: String,
+    weight: i32,
+    italic: bool,
+    width: i32,
+    variation_axes: Option<Vec<VariationAxis>>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct VariationAxis {
+    name: String,
+    tag: String,
+    value: i32,
+    default: i32,
+    min: i32,
+    max: i32,
+    hidden: bool,
 }
