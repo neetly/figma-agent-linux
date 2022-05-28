@@ -53,6 +53,7 @@ name = "fontconfig"
 version = "0.0.0"
 dependencies = [
  "fontconfig-sys",
+ "libc",
 ]
 
 [[package]]
@@ -60,6 +61,7 @@ name = "fontconfig-sys"
 version = "0.0.0"
 dependencies = [
  "ffi-utils",
+ "libc",
 ]
 
 [[package]]
@@ -84,6 +86,7 @@ name = "freetype-sys"
 version = "0.0.0"
 dependencies = [
  "ffi-utils",
+ "libc",
 ]
 
 [[package]]

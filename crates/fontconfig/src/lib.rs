@@ -1,11 +1,8 @@
 #![allow(clippy::missing_safety_doc, clippy::new_without_default)]
 
-use std::{
-    ffi::CStr,
-    marker::PhantomData,
-    os::raw::{c_char, c_double, c_int},
-    ptr, slice,
-};
+use std::{ffi::CStr, marker::PhantomData, ptr, slice};
+
+use libc::{c_char, c_double, c_int};
 
 pub use fontconfig_sys::*;
 

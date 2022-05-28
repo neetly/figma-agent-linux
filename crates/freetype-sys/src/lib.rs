@@ -1,8 +1,7 @@
 #![allow(non_camel_case_types, non_upper_case_globals)]
 
-use std::os::raw::c_int;
-
 use ffi_utils::opaque;
+use libc::c_int;
 
 opaque! {
     #[repr(C)]

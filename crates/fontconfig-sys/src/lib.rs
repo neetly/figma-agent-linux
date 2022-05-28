@@ -1,8 +1,7 @@
 #![allow(non_upper_case_globals)]
 
-use std::os::raw::{c_char, c_double, c_int, c_uchar, c_uint, c_ushort};
-
 use ffi_utils::{cstr, opaque};
+use libc::{c_char, c_double, c_int, c_uchar, c_uint, c_ushort};
 
 pub type FcChar8 = c_uchar;
 pub type FcChar16 = c_ushort;
