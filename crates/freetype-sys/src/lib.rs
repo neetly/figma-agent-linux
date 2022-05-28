@@ -1,13 +1,19 @@
 #![allow(non_camel_case_types, non_upper_case_globals)]
 
 use ffi_utils::opaque;
-use libc::{c_char, c_int, c_long, c_uint, c_ulong, c_void};
+use libc::{c_char, c_int, c_long, c_short, c_uchar, c_uint, c_ulong, c_ushort, c_void};
 
+pub type FT_Short = c_short;
+pub type FT_UShort = c_ushort;
 pub type FT_Int = c_int;
 pub type FT_UInt = c_uint;
 pub type FT_Long = c_long;
 pub type FT_ULong = c_ulong;
 pub type FT_Fixed = c_long;
+
+pub type FT_Byte = c_uchar;
+pub type FT_Bytes = *const c_uchar;
+pub type FT_Char = c_char;
 pub type FT_String = c_char;
 
 pub type FT_Library = *mut FT_LibraryRec;
@@ -19,6 +25,16 @@ opaque! {
 
     #[repr(C)]
     pub struct FT_FaceRec;
+}
+
+#[repr(C)]
+pub struct FT_SfntName {
+    pub platform_id: FT_UShort,
+    pub encoding_id: FT_UShort,
+    pub language_id: FT_UShort,
+    pub name_id: FT_UShort,
+    pub string: *mut FT_Byte,
+    pub string_len: FT_UInt,
 }
 
 #[repr(C)]
@@ -82,6 +98,10 @@ extern "C" {
     ) -> FT_Error;
     pub fn FT_Reference_Face(face: FT_Face) -> FT_Error;
     pub fn FT_Done_Face(face: FT_Face) -> FT_Error;
+
+    pub fn FT_Get_Sfnt_Name_Count(face: FT_Face) -> FT_UInt;
+    pub fn FT_Get_Sfnt_Name(face: FT_Face, index: FT_UInt, sfnt_name: *mut FT_SfntName)
+        -> FT_Error;
 
     pub fn FT_Get_MM_Var(face: FT_Face, mm_var: *mut *mut FT_MM_Var) -> FT_Error;
     pub fn FT_Done_MM_Var(library: FT_Library, mm_var: *mut FT_MM_Var) -> FT_Error;
