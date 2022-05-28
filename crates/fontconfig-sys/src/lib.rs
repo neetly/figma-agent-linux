@@ -46,6 +46,7 @@ cstr! {
     pub const FC_WEIGHT = "weight";
     pub const FC_SLANT = "slant";
     pub const FC_WIDTH = "width";
+    pub const FC_VARIABLE = "variable";
 }
 
 pub const FC_SLANT_ROMAN: c_int = 0;
@@ -122,6 +123,12 @@ extern "C" {
     pub fn FcPatternDestroy(pattern: *mut FcPattern);
     pub fn FcPatternPrint(pattern: *mut FcPattern);
 
+    pub fn FcPatternGetBool(
+        pattern: *mut FcPattern,
+        object: *const c_char,
+        nth: c_int,
+        value: *mut FcBool,
+    ) -> FcResult;
     pub fn FcPatternGetInteger(
         pattern: *mut FcPattern,
         object: *const c_char,

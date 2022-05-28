@@ -1,6 +1,11 @@
 #![allow(clippy::missing_safety_doc, clippy::new_without_default)]
 
-use std::{ffi::CStr, marker::PhantomData, os::raw::c_char, ptr, slice};
+use std::{
+    ffi::CStr,
+    marker::PhantomData,
+    os::raw::{c_char, c_double, c_int},
+    ptr, slice,
+};
 
 pub use fontconfig_sys::*;
 
@@ -88,12 +93,25 @@ impl Pattern {
         unsafe { FcPatternPrint(self.raw) };
     }
 
-    pub fn get_integer(&self, object: &CStr) -> Option<i32> {
-        self.get_integer_nth(object, 0)
+    pub fn get_bool(&self, object: &CStr) -> Option<bool> {
+        self.get_bool_nth(object, 0)
     }
 
-    pub fn get_integer_nth(&self, object: &CStr, nth: i32) -> Option<i32> {
-        let mut value = 0;
+    pub fn get_bool_nth(&self, object: &CStr, nth: i32) -> Option<bool> {
+        let mut value: FcBool = FcFalse;
+        let result = unsafe { FcPatternGetBool(self.raw, object.as_ptr(), nth, &mut value) };
+        match result {
+            FcResultMatch => Some(value == FcTrue),
+            _ => None,
+        }
+    }
+
+    pub fn get_int(&self, object: &CStr) -> Option<i32> {
+        self.get_int_nth(object, 0)
+    }
+
+    pub fn get_int_nth(&self, object: &CStr, nth: i32) -> Option<i32> {
+        let mut value: c_int = 0;
         let result = unsafe { FcPatternGetInteger(self.raw, object.as_ptr(), nth, &mut value) };
         match result {
             FcResultMatch => Some(value),
@@ -106,7 +124,7 @@ impl Pattern {
     }
 
     pub fn get_double_nth(&self, object: &CStr, nth: i32) -> Option<f64> {
-        let mut value = 0.0;
+        let mut value: c_double = 0.0;
         let result = unsafe { FcPatternGetDouble(self.raw, object.as_ptr(), nth, &mut value) };
         match result {
             FcResultMatch => Some(value),
@@ -148,7 +166,7 @@ impl Pattern {
     }
 
     pub fn weight(&self) -> Option<i32> {
-        self.get_integer(FC_WEIGHT)
+        self.get_int(FC_WEIGHT)
     }
 
     pub fn opentype_weight(&self) -> Option<i32> {
@@ -158,11 +176,11 @@ impl Pattern {
     }
 
     pub fn slant(&self) -> Option<i32> {
-        self.get_integer(FC_SLANT)
+        self.get_int(FC_SLANT)
     }
 
     pub fn width(&self) -> Option<i32> {
-        self.get_integer(FC_WIDTH)
+        self.get_int(FC_WIDTH)
     }
 
     pub fn opentype_width(&self) -> Option<i32> {
@@ -180,6 +198,10 @@ impl Pattern {
             _ => return None,
         };
         Some(opentype_width)
+    }
+
+    pub fn is_variable(&self) -> Option<bool> {
+        self.get_bool(FC_VARIABLE)
     }
 }
 
