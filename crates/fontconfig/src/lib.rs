@@ -6,8 +6,19 @@ use libc::{c_char, c_double, c_int};
 
 pub use fontconfig_sys::*;
 
-pub fn version() -> i32 {
-    unsafe { FcGetVersion() }
+macro_rules! ensure {
+    ($expr:expr) => {{
+        let pointer = $expr;
+        assert!(!pointer.is_null());
+        pointer
+    }};
+}
+
+macro_rules! ensure_success {
+    ($expr:expr) => {{
+        let result = $expr;
+        assert!(result == FcTrue);
+    }};
 }
 
 pub struct Config {
@@ -16,8 +27,7 @@ pub struct Config {
 
 impl Config {
     pub fn new() -> Config {
-        let raw = unsafe { FcConfigCreate() };
-        assert!(!raw.is_null());
+        let raw = ensure!(unsafe { FcConfigCreate() });
         Config { raw }
     }
 
@@ -49,8 +59,7 @@ impl Config {
         let raw_object_set = object_set
             .map(|object_set| object_set.raw)
             .unwrap_or(ptr::null_mut());
-        let raw_font_set = unsafe { FcFontList(self.raw, raw_pattern, raw_object_set) };
-        assert!(!raw_font_set.is_null());
+        let raw_font_set = ensure!(unsafe { FcFontList(self.raw, raw_pattern, raw_object_set) });
         unsafe { FontSet::from_raw(raw_font_set) }
     }
 }
@@ -69,8 +78,7 @@ pub struct Pattern {
 
 impl Pattern {
     pub fn new() -> Pattern {
-        let raw = unsafe { FcPatternCreate() };
-        assert!(!raw.is_null());
+        let raw = ensure!(unsafe { FcPatternCreate() });
         Pattern { raw }
     }
 
@@ -222,8 +230,7 @@ pub struct FontSet {
 
 impl FontSet {
     pub fn new() -> FontSet {
-        let raw = unsafe { FcFontSetCreate() };
-        assert!(!raw.is_null());
+        let raw = ensure!(unsafe { FcFontSetCreate() });
         FontSet { raw }
     }
 
@@ -256,8 +263,7 @@ pub struct ObjectSet {
 
 impl ObjectSet {
     pub fn new() -> ObjectSet {
-        let raw = unsafe { FcObjectSetCreate() };
-        assert!(!raw.is_null());
+        let raw = ensure!(unsafe { FcObjectSetCreate() });
         ObjectSet { raw }
     }
 
@@ -270,8 +276,7 @@ impl ObjectSet {
     }
 
     pub fn add(&mut self, object: &CStr) {
-        let result = unsafe { FcObjectSetAdd(self.raw, object.as_ptr()) };
-        assert!(result == FcTrue);
+        ensure_success!(unsafe { FcObjectSetAdd(self.raw, object.as_ptr()) });
     }
 }
 
@@ -287,8 +292,7 @@ pub struct StrSet {
 
 impl StrSet {
     pub fn new() -> StrSet {
-        let raw = unsafe { FcStrSetCreate() };
-        assert!(!raw.is_null());
+        let raw = ensure!(unsafe { FcStrSetCreate() });
         StrSet { raw }
     }
 
@@ -310,8 +314,7 @@ pub struct StrList<'a> {
 
 impl<'a> StrList<'a> {
     pub fn new(str_set: &StrSet) -> StrList {
-        let raw = unsafe { FcStrListCreate(str_set.raw) };
-        assert!(!raw.is_null());
+        let raw = ensure!(unsafe { FcStrListCreate(str_set.raw) });
         StrList {
             raw,
             _marker: PhantomData,

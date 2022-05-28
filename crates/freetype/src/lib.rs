@@ -28,9 +28,9 @@ macro_rules! try_dispatch {
     ($expr:expr) => {{
         let result = $expr;
         if result == FT_Err_Ok {
-            Ok(())
+            Some(())
         } else {
-            Err(result)
+            None
         }
     }};
 }
@@ -40,10 +40,10 @@ pub struct Library {
 }
 
 impl Library {
-    pub fn new() -> Result<Library, FT_Error> {
+    pub fn new() -> Option<Library> {
         let mut raw: FT_Library = ptr::null_mut();
         try_dispatch!(unsafe { FT_New_Library(&mut MEMORY, &mut raw) })?;
-        Ok(Library { raw })
+        Some(Library { raw })
     }
 
     pub unsafe fn from_raw(raw: FT_Library) -> Library {
@@ -55,13 +55,13 @@ impl Library {
         Library { raw }
     }
 
-    pub fn init() -> Result<Library, FT_Error> {
+    pub fn init() -> Option<Library> {
         let library = Library::new()?;
         try_dispatch!(unsafe { FT_Add_Default_Modules(library.raw) })?;
-        Ok(library)
+        Some(library)
     }
 
-    pub fn new_face(&self, path: &str, face_index: i64) -> Result<Face, FT_Error> {
+    pub fn new_face(&self, path: &str, face_index: i64) -> Option<Face> {
         Face::new(self, path, face_index)
     }
 }
@@ -78,11 +78,11 @@ pub struct Face<'a> {
 }
 
 impl<'a> Face<'a> {
-    pub fn new(library: &'a Library, path: &str, face_index: i64) -> Result<Face<'a>, FT_Error> {
+    pub fn new(library: &'a Library, path: &str, face_index: i64) -> Option<Face<'a>> {
         let mut raw: FT_Face = ptr::null_mut();
-        let path = CString::new(path).unwrap();
+        let path = CString::new(path).ok()?;
         try_dispatch!(unsafe { FT_New_Face(library.raw, path.as_ptr(), face_index, &mut raw) })?;
-        Ok(Face { library, raw })
+        Some(Face { library, raw })
     }
 
     pub unsafe fn from_raw(library: &Library, raw: FT_Face) -> Face {
@@ -98,16 +98,16 @@ impl<'a> Face<'a> {
         unsafe { FT_Get_Sfnt_Name_Count(self.raw) as usize }
     }
 
-    pub fn sfnt_name_at(&self, index: usize) -> Result<SfntName, FT_Error> {
+    pub fn sfnt_name_at(&self, index: usize) -> Option<SfntName> {
         let sfnt_name = SfntName::new();
         try_dispatch!(unsafe { FT_Get_Sfnt_Name(self.raw, index as FT_UInt, sfnt_name.raw) })?;
-        Ok(sfnt_name)
+        Some(sfnt_name)
     }
 
-    pub fn mm_var(&self) -> Result<MMVar, FT_Error> {
+    pub fn mm_var(&self) -> Option<MMVar> {
         let mut raw_mm_var: *mut FT_MM_Var = ptr::null_mut();
         try_dispatch!(unsafe { FT_Get_MM_Var(self.raw, &mut raw_mm_var) })?;
-        Ok(MMVar {
+        Some(MMVar {
             raw: raw_mm_var,
             library: self.library,
             face: self,
@@ -135,10 +135,10 @@ impl<'a> SfntName<'a> {
         }
     }
 
-    pub fn name(&self) -> &'a str {
+    pub fn name(&self) -> Option<&'a str> {
         let slice =
             unsafe { slice::from_raw_parts((*self.raw).string, (*self.raw).string_len as usize) };
-        str::from_utf8(slice).unwrap()
+        str::from_utf8(slice).ok()
     }
 }
 
@@ -199,12 +199,12 @@ pub struct VarAxis<'a> {
 }
 
 impl VarAxis<'_> {
-    pub fn name(&self) -> &str {
-        unsafe { CStr::from_ptr(self.raw.name).to_str().unwrap() }
+    pub fn name(&self) -> Option<&str> {
+        unsafe { CStr::from_ptr(self.raw.name).to_str().ok() }
     }
 
     pub fn sfnt_name(&self) -> Option<&str> {
-        Some(self.face.sfnt_name_at(self.raw.strid as usize).ok()?.name())
+        self.face.sfnt_name_at(self.raw.strid as usize)?.name()
     }
 
     pub fn default(&self) -> i64 {

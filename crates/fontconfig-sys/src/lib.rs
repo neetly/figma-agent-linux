@@ -82,8 +82,6 @@ pub use FcResult::*;
 
 #[link(name = "fontconfig")]
 extern "C" {
-    pub fn FcGetVersion() -> c_int;
-
     pub fn FcInit() -> FcBool;
     pub fn FcInitLoadConfig() -> *mut FcConfig;
     pub fn FcInitLoadConfigAndFonts() -> *mut FcConfig;
