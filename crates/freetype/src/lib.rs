@@ -8,15 +8,20 @@ pub use freetype_sys::*;
 
 #[macro_export]
 macro_rules! dispatch {
-    ($expr:expr) => {
-        dispatch!($expr, ())
-    };
-
-    ($expr:expr, $result:expr) => {{
+    ($expr:expr) => {{
         let result = $expr;
-        match result {
-            FT_Err_Ok => Ok($result),
-            _ => Err(result),
+        assert!(result == FT_Err_Ok);
+    }};
+}
+
+#[macro_export]
+macro_rules! try_dispatch {
+    ($expr:expr) => {{
+        let result = $expr;
+        if result == FT_Err_Ok {
+            Ok(())
+        } else {
+            Err(result)
         }
     }};
 }
@@ -26,28 +31,31 @@ pub struct Library {
 }
 
 impl Library {
-    pub fn new() -> Result<Library, FT_Error> {
+    pub fn new() -> Library {
         let mut raw: FT_Library = ptr::null_mut();
-        unsafe { dispatch!(FT_New_Library(&mut MEMORY, &mut raw), Library { raw }) }
+        dispatch!(unsafe { FT_New_Library(&mut MEMORY, &mut raw) });
+        Library { raw }
     }
 
-    pub unsafe fn from_raw(raw: FT_Library) -> Result<Library, FT_Error> {
-        Ok(Library { raw })
+    pub unsafe fn from_raw(raw: FT_Library) -> Library {
+        Library { raw }
     }
 
-    pub unsafe fn from_raw_with_ref(raw: FT_Library) -> Result<Library, FT_Error> {
-        dispatch!(FT_Reference_Library(raw), Library { raw })
+    pub unsafe fn from_raw_with_ref(raw: FT_Library) -> Library {
+        dispatch!(FT_Reference_Library(raw));
+        Library { raw }
     }
 
     pub fn init() -> Result<Library, FT_Error> {
-        let library = Library::new()?;
-        unsafe { dispatch!(FT_Add_Default_Modules(library.raw), library) }
+        let library = Library::new();
+        try_dispatch!(unsafe { FT_Add_Default_Modules(library.raw) })?;
+        Ok(library)
     }
 }
 
 impl Drop for Library {
     fn drop(&mut self) {
-        unsafe { FT_Done_Library(self.raw) };
+        dispatch!(unsafe { FT_Done_Library(self.raw) });
     }
 }
 
