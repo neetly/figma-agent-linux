@@ -155,15 +155,15 @@ pub struct MMVar<'a> {
 }
 
 impl MMVar<'_> {
-    pub fn num_axes(&self) -> usize {
+    pub fn axis_count(&self) -> usize {
         unsafe { (*self.raw).num_axis as usize }
     }
 
-    pub fn num_designs(&self) -> usize {
+    pub fn design_count(&self) -> usize {
         unsafe { (*self.raw).num_designs as usize }
     }
 
-    pub fn num_named_styles(&self) -> usize {
+    pub fn named_style_count(&self) -> usize {
         unsafe { (*self.raw).num_namedstyles as usize }
     }
 
@@ -227,7 +227,8 @@ pub struct VarNamedStyle<'a> {
 
 impl VarNamedStyle<'_> {
     pub fn coords(&self) -> impl Iterator<Item = &i64> {
-        let raw_coords = unsafe { slice::from_raw_parts(self.raw.coords, self.mm_var.num_axes()) };
+        let raw_coords =
+            unsafe { slice::from_raw_parts(self.raw.coords, self.mm_var.axis_count()) };
         raw_coords.iter()
     }
 }
