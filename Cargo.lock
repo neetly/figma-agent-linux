@@ -27,6 +27,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 
 [[package]]
+name = "ffi-utils"
+version = "0.0.0"
+
+[[package]]
 name = "figma-agent"
 version = "0.0.0"
 dependencies = [
@@ -54,6 +58,9 @@ dependencies = [
 [[package]]
 name = "fontconfig-sys"
 version = "0.0.0"
+dependencies = [
+ "ffi-utils",
+]
 
 [[package]]
 name = "form_urlencoded"
@@ -75,6 +82,9 @@ dependencies = [
 [[package]]
 name = "freetype-sys"
 version = "0.0.0"
+dependencies = [
+ "ffi-utils",
+]
 
 [[package]]
 name = "idna"
