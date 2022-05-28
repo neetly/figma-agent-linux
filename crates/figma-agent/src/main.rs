@@ -16,9 +16,27 @@ macro_rules! header {
 fn main() {
     let server = Server::http("127.0.0.1:18412").unwrap();
     let fc = Config::init().unwrap();
-    let _ft = Library::init().unwrap();
+    let ft = Library::init().unwrap();
 
-    let get_variation_axes = |_: &Pattern| -> Option<Vec<VariationAxis>> { None };
+    let get_variation_axes = |path: &str, index: i32| -> Option<Vec<VariationAxis>> {
+        let face = ft.open_face(path, index as i64)?;
+        let mm_var = face.mm_var()?;
+
+        Some(
+            mm_var
+                .axes()
+                .map(|axis| VariationAxis {
+                    name: axis.name().unwrap_or("").into(),
+                    tag: axis.sfnt_name().unwrap_or("").into(),
+                    value: axis.default() as f64 / 65536.0, // TODO
+                    default: axis.default() as f64 / 65536.0,
+                    min: axis.min() as f64 / 65536.0,
+                    max: axis.max() as f64 / 65536.0,
+                    hidden: false,
+                })
+                .collect(),
+        )
+    };
 
     let get_font_file = |pattern: &Pattern| -> Option<FontFile> {
         if let Some(path) = pattern.file() {
@@ -34,7 +52,7 @@ fn main() {
                     .unwrap_or(false),
                 width: pattern.opentype_width().unwrap_or(5),
                 variation_axes: match pattern.is_variable() {
-                    Some(true) => get_variation_axes(pattern),
+                    Some(true) => get_variation_axes(path, pattern.index().unwrap_or(0)),
                     _ => None,
                 },
             })
@@ -132,9 +150,9 @@ struct FontFile {
 struct VariationAxis {
     name: String,
     tag: String,
-    value: i32,
-    default: i32,
-    min: i32,
-    max: i32,
+    value: f64,
+    default: f64,
+    min: f64,
+    max: f64,
     hidden: bool,
 }
