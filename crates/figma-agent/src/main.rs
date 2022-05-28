@@ -39,26 +39,22 @@ fn main() {
     };
 
     let get_font_file = |pattern: &Pattern| -> Option<FontFile> {
-        if let Some(path) = pattern.file() {
-            Some(FontFile {
-                file: path.into(),
-                family: pattern.family().unwrap_or("").into(),
-                postscript: pattern.postscript_name().unwrap_or("").into(),
-                style: pattern.style().unwrap_or("").into(),
-                weight: pattern.opentype_weight().unwrap_or(400),
-                italic: pattern
-                    .slant()
-                    .map(|slant| slant != FC_SLANT_ROMAN)
-                    .unwrap_or(false),
-                width: pattern.opentype_width().unwrap_or(5),
-                variation_axes: match pattern.is_variable() {
-                    Some(true) => get_variation_axes(path, pattern.index().unwrap_or(0)),
-                    _ => None,
-                },
-            })
-        } else {
-            None
-        }
+        pattern.file().map(|path| FontFile {
+            file: path.into(),
+            family: pattern.family().unwrap_or("").into(),
+            postscript: pattern.postscript_name().unwrap_or("").into(),
+            style: pattern.style().unwrap_or("").into(),
+            weight: pattern.opentype_weight().unwrap_or(400),
+            italic: pattern
+                .slant()
+                .map(|slant| slant != FC_SLANT_ROMAN)
+                .unwrap_or(false),
+            width: pattern.opentype_width().unwrap_or(5),
+            variation_axes: match pattern.is_variable() {
+                Some(true) => get_variation_axes(path, pattern.index().unwrap_or(0)),
+                _ => None,
+            },
+        })
     };
 
     let open_font_file = |path: &str| -> Option<File> {
