@@ -51,7 +51,7 @@ fn main() {
                 .unwrap_or(false),
             width: pattern.opentype_width().unwrap_or(5),
             variation_axes: match pattern.is_variable() {
-                Some(true) => get_variation_axes(path, pattern.index().unwrap_or(0)),
+                Some(true) if cfg!(vf) => get_variation_axes(path, pattern.index().unwrap_or(0)),
                 _ => None,
             },
         })
@@ -138,6 +138,7 @@ struct FontFile {
     weight: i32,
     italic: bool,
     width: i32,
+    #[serde(skip_serializing_if = "Option::is_none")]
     variation_axes: Option<Vec<VariationAxis>>,
 }
 
