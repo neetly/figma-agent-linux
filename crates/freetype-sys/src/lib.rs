@@ -69,8 +69,8 @@ pub type FT_Memory = *mut FT_MemoryRec;
 pub struct FT_MemoryRec {
     pub user: *mut c_void,
     pub alloc: FT_Alloc_Func,
-    pub realloc: FT_Realloc_Func,
     pub free: FT_Free_Func,
+    pub realloc: FT_Realloc_Func,
 }
 
 pub type FT_Alloc_Func = extern "C" fn(FT_Memory, c_long) -> *mut c_void;

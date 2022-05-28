@@ -235,12 +235,16 @@ impl VarNamedStyle<'_> {
 static mut MEMORY: FT_MemoryRec = FT_MemoryRec {
     user: ptr::null_mut(),
     alloc: memory_alloc,
-    realloc: memory_realloc,
     free: memory_free,
+    realloc: memory_realloc,
 };
 
 extern "C" fn memory_alloc(_: FT_Memory, size: c_long) -> *mut c_void {
     unsafe { malloc(size as usize) }
+}
+
+extern "C" fn memory_free(_: FT_Memory, pointer: *mut c_void) {
+    unsafe { free(pointer) }
 }
 
 extern "C" fn memory_realloc(
@@ -250,8 +254,4 @@ extern "C" fn memory_realloc(
     pointer: *mut c_void,
 ) -> *mut c_void {
     unsafe { realloc(pointer, size as usize) }
-}
-
-extern "C" fn memory_free(_: FT_Memory, pointer: *mut c_void) {
-    unsafe { free(pointer) }
 }
