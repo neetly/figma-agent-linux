@@ -309,6 +309,15 @@ pub struct StrList<'a> {
 }
 
 impl<'a> StrList<'a> {
+    pub fn new(str_set: &'a StrSet) -> StrList<'a> {
+        let raw = unsafe { FcStrListCreate(str_set.raw) };
+        assert!(!raw.is_null());
+        StrList {
+            raw,
+            _marker: PhantomData,
+        }
+    }
+
     pub unsafe fn from_raw(raw: *mut FcStrList) -> StrList<'a> {
         StrList {
             raw,
