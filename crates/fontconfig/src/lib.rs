@@ -95,52 +95,60 @@ impl Pattern {
         unsafe { FcPatternPrint(self.raw) };
     }
 
-    pub fn get_bool(&self, object: &CStr) -> Option<bool> {
+    pub fn get_bool(&self, object: &[u8]) -> Option<bool> {
         self.get_bool_nth(object, 0)
     }
 
-    pub fn get_bool_nth(&self, object: &CStr, nth: i32) -> Option<bool> {
+    pub fn get_bool_nth(&self, object: &[u8], nth: i32) -> Option<bool> {
         let mut value: FcBool = FcFalse;
-        let result = unsafe { FcPatternGetBool(self.raw, object.as_ptr(), nth, &mut value) };
+        let result = unsafe {
+            FcPatternGetBool(self.raw, object.as_ptr() as *const c_char, nth, &mut value)
+        };
         match result {
             FcResultMatch => Some(value == FcTrue),
             _ => None,
         }
     }
 
-    pub fn get_int(&self, object: &CStr) -> Option<i32> {
+    pub fn get_int(&self, object: &[u8]) -> Option<i32> {
         self.get_int_nth(object, 0)
     }
 
-    pub fn get_int_nth(&self, object: &CStr, nth: i32) -> Option<i32> {
+    pub fn get_int_nth(&self, object: &[u8], nth: i32) -> Option<i32> {
         let mut value: c_int = 0;
-        let result = unsafe { FcPatternGetInteger(self.raw, object.as_ptr(), nth, &mut value) };
+        let result = unsafe {
+            FcPatternGetInteger(self.raw, object.as_ptr() as *const c_char, nth, &mut value)
+        };
         match result {
             FcResultMatch => Some(value),
             _ => None,
         }
     }
 
-    pub fn get_double(&self, object: &CStr) -> Option<f64> {
+    pub fn get_double(&self, object: &[u8]) -> Option<f64> {
         self.get_double_nth(object, 0)
     }
 
-    pub fn get_double_nth(&self, object: &CStr, nth: i32) -> Option<f64> {
+    pub fn get_double_nth(&self, object: &[u8], nth: i32) -> Option<f64> {
         let mut value: c_double = 0.0;
-        let result = unsafe { FcPatternGetDouble(self.raw, object.as_ptr(), nth, &mut value) };
+        let result = unsafe {
+            FcPatternGetDouble(self.raw, object.as_ptr() as *const c_char, nth, &mut value)
+        };
         match result {
             FcResultMatch => Some(value),
             _ => None,
         }
     }
 
-    pub fn get_string(&self, object: &CStr) -> Option<&str> {
+    pub fn get_string(&self, object: &[u8]) -> Option<&str> {
         self.get_string_nth(object, 0)
     }
 
-    pub fn get_string_nth(&self, object: &CStr, nth: i32) -> Option<&str> {
+    pub fn get_string_nth(&self, object: &[u8], nth: i32) -> Option<&str> {
         let mut value: *mut FcChar8 = ptr::null_mut();
-        let result = unsafe { FcPatternGetString(self.raw, object.as_ptr(), nth, &mut value) };
+        let result = unsafe {
+            FcPatternGetString(self.raw, object.as_ptr() as *const c_char, nth, &mut value)
+        };
         match result {
             FcResultMatch => unsafe { CStr::from_ptr(value as *const c_char).to_str().ok() },
             _ => None,
@@ -269,10 +277,6 @@ impl ObjectSet {
 
     pub unsafe fn from_raw(raw: *mut FcObjectSet) -> ObjectSet {
         ObjectSet { raw }
-    }
-
-    pub fn print(&self) {
-        unsafe { FcObjectSetPrint(self.raw) };
     }
 
     pub fn add(&mut self, object: &CStr) {
