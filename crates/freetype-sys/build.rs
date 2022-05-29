@@ -18,6 +18,7 @@ fn main() {
         .parse_callbacks(Box::new(CargoCallbacks))
         .clang_args(clang_args)
         .ctypes_prefix("::libc")
+        .allowlist_file(r".+[/\\]freetype[/\\].+")
         .default_macro_constant_type(MacroTypeVariation::Signed)
         .generate()
         .unwrap();

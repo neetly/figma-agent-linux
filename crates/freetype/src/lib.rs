@@ -57,7 +57,7 @@ impl Library {
 
     pub fn init() -> Option<Library> {
         let library = Library::new()?;
-        try_dispatch!(unsafe { FT_Add_Default_Modules(library.raw) })?;
+        unsafe { FT_Add_Default_Modules(library.raw) };
         Some(library)
     }
 
@@ -233,11 +233,11 @@ impl VarNamedStyle<'_> {
     }
 }
 
-static mut MEMORY: FT_MemoryRec = FT_MemoryRec {
+static mut MEMORY: FT_MemoryRec_ = FT_MemoryRec_ {
     user: ptr::null_mut(),
-    alloc: memory_alloc,
-    free: memory_free,
-    realloc: memory_realloc,
+    alloc: Some(memory_alloc),
+    free: Some(memory_free),
+    realloc: Some(memory_realloc),
 };
 
 extern "C" fn memory_alloc(_: FT_Memory, size: c_long) -> *mut c_void {
