@@ -1,3 +1,7 @@
+# Visual Studio Code
+
+/.vscode/c_cpp_properties.json
+
 # Artifacts
 
 /target/
