@@ -1,6 +1,6 @@
 use std::{env, path::PathBuf};
 
-use bindgen::{builder, CargoCallbacks, MacroTypeVariation};
+use bindgen::{builder, CargoCallbacks, EnumVariation, MacroTypeVariation};
 use pkg_config::probe_library;
 
 fn main() {
@@ -19,6 +19,7 @@ fn main() {
         .clang_args(clang_args)
         .ctypes_prefix("::libc")
         .allowlist_file(r".+[/\\]fontconfig[/\\].+")
+        .default_enum_style(EnumVariation::ModuleConsts)
         .default_macro_constant_type(MacroTypeVariation::Signed)
         .generate()
         .unwrap();

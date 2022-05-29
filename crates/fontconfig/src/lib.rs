@@ -104,9 +104,10 @@ impl Pattern {
         let result = unsafe {
             FcPatternGetBool(self.raw, object.as_ptr() as *const c_char, nth, &mut value)
         };
-        match result {
-            FcResultMatch => Some(value == FcTrue),
-            _ => None,
+        if result == FcResultMatch {
+            Some(value == FcTrue)
+        } else {
+            None
         }
     }
 
@@ -119,9 +120,10 @@ impl Pattern {
         let result = unsafe {
             FcPatternGetInteger(self.raw, object.as_ptr() as *const c_char, nth, &mut value)
         };
-        match result {
-            FcResultMatch => Some(value),
-            _ => None,
+        if result == FcResultMatch {
+            Some(value)
+        } else {
+            None
         }
     }
 
@@ -134,9 +136,10 @@ impl Pattern {
         let result = unsafe {
             FcPatternGetDouble(self.raw, object.as_ptr() as *const c_char, nth, &mut value)
         };
-        match result {
-            FcResultMatch => Some(value),
-            _ => None,
+        if result == FcResultMatch {
+            Some(value)
+        } else {
+            None
         }
     }
 
@@ -149,9 +152,10 @@ impl Pattern {
         let result = unsafe {
             FcPatternGetString(self.raw, object.as_ptr() as *const c_char, nth, &mut value)
         };
-        match result {
-            FcResultMatch => unsafe { CStr::from_ptr(value as *const c_char).to_str().ok() },
-            _ => None,
+        if result == FcResultMatch {
+            unsafe { CStr::from_ptr(value as *const c_char).to_str().ok() }
+        } else {
+            None
         }
     }
 
