@@ -8,5 +8,5 @@ ffi-utils = { path = "../ffi-utils" }
 libc = "0.2.126"
 
 [build-dependencies]
-bindgen = "0.59.2"
+bindgen = { git = "https://github.com/rust-lang/rust-bindgen.git", rev = "5a01c551993e56d20240ef64d0ec78cd4195855d" }
 pkg-config = "0.3.25"

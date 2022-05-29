@@ -15,8 +15,9 @@ fn main() {
 
     let bindings = builder()
         .header("./include/fontconfig.h")
-        .clang_args(clang_args)
         .parse_callbacks(Box::new(CargoCallbacks))
+        .clang_args(clang_args)
+        .ctypes_prefix("::libc")
         .default_macro_constant_type(MacroTypeVariation::Signed)
         .generate()
         .unwrap();
