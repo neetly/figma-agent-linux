@@ -1,7 +1,6 @@
 use std::{collections::HashMap, fs::File, path::Path};
 
-use fontconfig::{Config, Pattern, FC_SLANT_ROMAN};
-use freetype::Library;
+use fontconfig::{Pattern, FC_SLANT_ROMAN};
 use itertools::Itertools;
 use serde::Serialize;
 use tiny_http::{Header, Response, Server};
@@ -15,45 +14,21 @@ macro_rules! header {
 
 fn main() {
     let server = Server::http("127.0.0.1:18412").unwrap();
-    let fc = Config::init().unwrap();
-    let ft = Library::init().unwrap();
-
-    let get_variation_axes = |path: &str, index: i32| -> Option<Vec<VariationAxis>> {
-        let face = ft.open_face(path, index as i64)?;
-        let mm_var = face.mm_var()?;
-
-        Some(
-            mm_var
-                .axes()
-                .map(|axis| VariationAxis {
-                    name: axis.name().unwrap_or("").into(),
-                    tag: axis.sfnt_name().unwrap_or("").into(),
-                    value: axis.default() as f64 / 65536.0, // TODO
-                    default: axis.default() as f64 / 65536.0,
-                    min: axis.min() as f64 / 65536.0,
-                    max: axis.max() as f64 / 65536.0,
-                    hidden: false,
-                })
-                .collect(),
-        )
-    };
+    let fc = fontconfig::init().unwrap();
 
     let get_font_file = |pattern: &Pattern| -> Option<FontFile> {
         pattern.file().map(|path| FontFile {
             file: path.into(),
             family: pattern.family().unwrap_or("").into(),
-            postscript: pattern.postscript_name().unwrap_or("").into(),
             style: pattern.style().unwrap_or("").into(),
-            weight: pattern.opentype_weight().unwrap_or(400),
+            postscript: pattern.postscript_name().unwrap_or("").into(),
+            weight: pattern.weight_opentype().unwrap_or(400),
             italic: pattern
                 .slant()
                 .map(|slant| slant != FC_SLANT_ROMAN)
                 .unwrap_or(false),
-            width: pattern.opentype_width().unwrap_or(5),
-            variation_axes: match pattern.is_variable() {
-                Some(true) if cfg!(vf) => get_variation_axes(path, pattern.index().unwrap_or(0)),
-                _ => None,
-            },
+            width: pattern.width_opentype().unwrap_or(5),
+            variation_axes: None,
         })
     };
 
@@ -70,7 +45,7 @@ fn main() {
         let uri = URIReference::try_from(request.url()).unwrap();
         match uri.path().to_string().as_str() {
             "/figma/font-files" => {
-                let font_set = fc.list_fonts(&Pattern::new(), None);
+                let font_set = fc.fonts(&Pattern::new(), None);
                 let font_files = font_set
                     .iter()
                     .flat_map(|pattern| get_font_file(&pattern))
