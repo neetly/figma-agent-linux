@@ -4,7 +4,6 @@ version = "0.0.0"
 edition = "2021"
 
 [dependencies]
-ffi-utils = { path = "../ffi-utils" }
 libc = "0.2.126"
 
 [build-dependencies]

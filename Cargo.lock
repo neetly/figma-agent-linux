@@ -138,10 +138,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ffi-utils"
-version = "0.0.0"
-
-[[package]]
 name = "figma-agent"
 version = "0.0.0"
 dependencies = [
@@ -174,7 +170,6 @@ name = "fontconfig-sys"
 version = "0.0.0"
 dependencies = [
  "bindgen",
- "ffi-utils",
  "libc",
  "pkg-config",
 ]
@@ -202,7 +197,6 @@ name = "freetype-sys"
 version = "0.0.0"
 dependencies = [
  "bindgen",
- "ffi-utils",
  "libc",
  "pkg-config",
 ]
