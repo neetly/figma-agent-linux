@@ -5,4 +5,5 @@ edition = "2021"
 
 [dependencies]
 fontconfig-sys = { path = "../fontconfig-sys" }
+freetype = { path = "../freetype" }
 libc = "0.2.126"

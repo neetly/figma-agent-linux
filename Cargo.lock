@@ -143,7 +143,6 @@ version = "0.0.0"
 dependencies = [
  "fontconfig",
  "form_urlencoded",
- "freetype",
  "itertools",
  "serde",
  "serde_json",
@@ -162,6 +161,7 @@ name = "fontconfig"
 version = "0.0.0"
 dependencies = [
  "fontconfig-sys",
+ "freetype",
  "libc",
 ]
 
