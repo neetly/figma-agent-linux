@@ -8,11 +8,12 @@ use std::{
 
 use fontconfig_sys::{
     FcChar8, FcFalse, FcPattern, FcPatternCreate, FcPatternDestroy, FcPatternDuplicate,
-    FcPatternEqual, FcPatternGetBool, FcPatternGetDouble, FcPatternGetInteger, FcPatternGetString,
-    FcPatternHash, FcResultMatch, FcWeightToOpenType, FC_FAMILY, FC_FILE, FC_FULLNAME,
-    FC_POSTSCRIPT_NAME, FC_SLANT, FC_STYLE, FC_VARIABLE, FC_WEIGHT, FC_WIDTH, FC_WIDTH_CONDENSED,
-    FC_WIDTH_EXPANDED, FC_WIDTH_EXTRACONDENSED, FC_WIDTH_EXTRAEXPANDED, FC_WIDTH_NORMAL,
-    FC_WIDTH_SEMICONDENSED, FC_WIDTH_SEMIEXPANDED, FC_WIDTH_ULTRACONDENSED, FC_WIDTH_ULTRAEXPANDED,
+    FcPatternEqual, FcPatternGetBool, FcPatternGetDouble, FcPatternGetFTFace, FcPatternGetInteger,
+    FcPatternGetString, FcPatternHash, FcResultMatch, FcWeightToOpenType, FC_FAMILY, FC_FILE,
+    FC_FULLNAME, FC_POSTSCRIPT_NAME, FC_SLANT, FC_STYLE, FC_VARIABLE, FC_WEIGHT, FC_WIDTH,
+    FC_WIDTH_CONDENSED, FC_WIDTH_EXPANDED, FC_WIDTH_EXTRACONDENSED, FC_WIDTH_EXTRAEXPANDED,
+    FC_WIDTH_NORMAL, FC_WIDTH_SEMICONDENSED, FC_WIDTH_SEMIEXPANDED, FC_WIDTH_ULTRACONDENSED,
+    FC_WIDTH_ULTRAEXPANDED,
 };
 use libc::{c_double, c_int};
 
@@ -92,6 +93,17 @@ impl Pattern {
             unsafe { FcPatternGetString(self.raw, object.as_ptr() as _, n as _, &mut value) };
         if result == FcResultMatch {
             unsafe { CStr::from_ptr(value as _) }.to_str().ok()
+        } else {
+            None
+        }
+    }
+
+    pub fn get_freetype_face_at(&self, object: &[u8], n: usize) -> Option<freetype::Face> {
+        let mut value: freetype::FT_Face = ptr::null_mut();
+        let result =
+            unsafe { FcPatternGetFTFace(self.raw, object.as_ptr() as _, n as _, &mut value) };
+        if result == FcResultMatch {
+            Some(unsafe { freetype::Face::from_raw(value) })
         } else {
             None
         }

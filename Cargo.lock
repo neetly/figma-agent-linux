@@ -170,6 +170,7 @@ name = "fontconfig-sys"
 version = "0.0.0"
 dependencies = [
  "bindgen",
+ "freetype-sys",
  "libc",
  "pkg-config",
 ]

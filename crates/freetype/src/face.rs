@@ -1,3 +1,5 @@
+#![allow(clippy::missing_safety_doc)]
+
 use freetype_sys::{FT_Done_Face, FT_Err_Ok, FT_Face};
 
 pub struct Face {
