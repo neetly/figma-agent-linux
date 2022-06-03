@@ -112,7 +112,39 @@ impl Pattern {
             None
         }
     }
+}
 
+impl Hash for Pattern {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        let hash = unsafe { FcPatternHash(self.raw) };
+        state.write_u32(hash);
+    }
+}
+
+impl PartialEq for Pattern {
+    fn eq(&self, other: &Self) -> bool {
+        let result = unsafe { FcPatternEqual(self.raw, other.raw) };
+        result != FcFalse
+    }
+}
+
+impl Eq for Pattern {}
+
+impl Clone for Pattern {
+    fn clone(&self) -> Self {
+        let raw = unsafe { FcPatternDuplicate(self.raw) };
+        assert!(!raw.is_null());
+        Pattern { raw }
+    }
+}
+
+impl Drop for Pattern {
+    fn drop(&mut self) {
+        unsafe { FcPatternDestroy(self.raw) };
+    }
+}
+
+impl Pattern {
     pub fn file(&self) -> Option<&str> {
         self.get_str(FC_FILE)
     }
@@ -172,35 +204,5 @@ impl Pattern {
 
     pub fn freetype_face(&self) -> Option<freetype::Face> {
         self.get_freetype_face(FC_FT_FACE)
-    }
-}
-
-impl Hash for Pattern {
-    fn hash<H: Hasher>(&self, state: &mut H) {
-        let hash = unsafe { FcPatternHash(self.raw) };
-        state.write_u32(hash);
-    }
-}
-
-impl PartialEq for Pattern {
-    fn eq(&self, other: &Self) -> bool {
-        let result = unsafe { FcPatternEqual(self.raw, other.raw) };
-        result != FcFalse
-    }
-}
-
-impl Eq for Pattern {}
-
-impl Clone for Pattern {
-    fn clone(&self) -> Self {
-        let raw = unsafe { FcPatternDuplicate(self.raw) };
-        assert!(!raw.is_null());
-        Pattern { raw }
-    }
-}
-
-impl Drop for Pattern {
-    fn drop(&mut self) {
-        unsafe { FcPatternDestroy(self.raw) };
     }
 }
