@@ -4,7 +4,7 @@ use std::ptr;
 
 use fontconfig_sys::{FcConfig, FcConfigCreate, FcConfigDestroy, FcConfigGetFontDirs, FcFontList};
 
-use crate::{FontSet, ObjectSet, Pattern, StrSetIterator};
+use crate::{FontSet, ObjectSet, Pattern, StrList};
 
 pub struct Config {
     pub(crate) raw: *mut FcConfig,
@@ -30,7 +30,7 @@ impl Config {
     pub fn font_dirs(&self) -> impl Iterator<Item = Option<&str>> {
         let raw_str_list = unsafe { FcConfigGetFontDirs(self.raw) };
         assert!(!raw_str_list.is_null());
-        unsafe { StrSetIterator::from_raw(raw_str_list) }
+        unsafe { StrList::from_raw(raw_str_list) }
     }
 
     pub fn fonts(&self, pattern: &Pattern, object_set: Option<&ObjectSet>) -> FontSet {

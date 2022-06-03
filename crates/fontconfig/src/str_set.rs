@@ -1,14 +1,13 @@
 #![allow(clippy::missing_safety_doc)]
 
-use std::{
-    ffi::{CStr, CString},
-    marker::PhantomData,
-};
+use std::ffi::CString;
 
 use fontconfig_sys::{
-    FcFalse, FcStrList, FcStrListCreate, FcStrListDone, FcStrListNext, FcStrSet, FcStrSetAdd,
-    FcStrSetCreate, FcStrSetDel, FcStrSetDestroy, FcStrSetEqual, FcStrSetMember,
+    FcFalse, FcStrListCreate, FcStrSet, FcStrSetAdd, FcStrSetCreate, FcStrSetDel, FcStrSetDestroy,
+    FcStrSetEqual, FcStrSetMember,
 };
+
+use crate::StrList;
 
 pub struct StrSet {
     pub(crate) raw: *mut FcStrSet,
@@ -31,10 +30,10 @@ impl StrSet {
         StrSet { raw }
     }
 
-    pub fn iter(&self) -> StrSetIterator {
+    pub fn iter(&self) -> StrList {
         let raw_str_list = unsafe { FcStrListCreate(self.raw) };
         assert!(!raw_str_list.is_null());
-        unsafe { StrSetIterator::from_raw(raw_str_list) }
+        unsafe { StrList::from_raw(raw_str_list) }
     }
 
     pub fn contains<V>(&self, value: V) -> bool
@@ -77,38 +76,5 @@ impl Eq for StrSet {}
 impl Drop for StrSet {
     fn drop(&mut self) {
         unsafe { FcStrSetDestroy(self.raw) };
-    }
-}
-
-pub struct StrSetIterator<'a> {
-    pub(crate) raw: *mut FcStrList,
-    _marker: PhantomData<&'a StrSet>,
-}
-
-impl<'a> StrSetIterator<'a> {
-    pub unsafe fn from_raw(raw: *mut FcStrList) -> StrSetIterator<'a> {
-        StrSetIterator {
-            raw,
-            _marker: PhantomData,
-        }
-    }
-}
-
-impl<'a> Iterator for StrSetIterator<'a> {
-    type Item = Option<&'a str>;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        let raw_str = unsafe { FcStrListNext(self.raw) };
-        if !raw_str.is_null() {
-            Some(unsafe { CStr::from_ptr(raw_str as _) }.to_str().ok())
-        } else {
-            None
-        }
-    }
-}
-
-impl Drop for StrSetIterator<'_> {
-    fn drop(&mut self) {
-        unsafe { FcStrListDone(self.raw) };
     }
 }
