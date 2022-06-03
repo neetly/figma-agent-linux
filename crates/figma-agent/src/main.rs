@@ -123,8 +123,8 @@ struct VariationAxis {
     name: String,
     tag: String,
     value: f64,
-    default: f64,
     min: f64,
     max: f64,
+    default: f64,
     hidden: bool,
 }
