@@ -1,8 +1,8 @@
 #include <ft2build.h>
 
 #define FT_INCLUDE_ERR_PROTOS
-#define FT_ERRORDEF(e, v, s) const int e = v;
-#define FT_MODERRDEF(e, v, s) const int FT_Mod_Err_##e = v;
+#define FT_ERRORDEF(e, v, s) const FT_Error e = v;
+#define FT_MODERRDEF(e, v, s) const FT_Error FT_Mod_Err_##e = v;
 
 #include FT_FREETYPE_H
 #include FT_MODULE_H

@@ -10,8 +10,8 @@ use fontconfig_sys::{
     FcChar8, FcFalse, FcPattern, FcPatternCreate, FcPatternDestroy, FcPatternDuplicate,
     FcPatternEqual, FcPatternGetBool, FcPatternGetDouble, FcPatternGetFTFace, FcPatternGetInteger,
     FcPatternGetString, FcPatternHash, FcResultMatch, FcWeightToOpenType, FC_FAMILY, FC_FILE,
-    FC_FT_FACE, FC_FULLNAME, FC_POSTSCRIPT_NAME, FC_SLANT, FC_STYLE, FC_VARIABLE, FC_WEIGHT,
-    FC_WIDTH, FC_WIDTH_CONDENSED, FC_WIDTH_EXPANDED, FC_WIDTH_EXTRACONDENSED,
+    FC_FT_FACE, FC_FULLNAME, FC_INDEX, FC_POSTSCRIPT_NAME, FC_SLANT, FC_STYLE, FC_VARIABLE,
+    FC_WEIGHT, FC_WIDTH, FC_WIDTH_CONDENSED, FC_WIDTH_EXPANDED, FC_WIDTH_EXTRACONDENSED,
     FC_WIDTH_EXTRAEXPANDED, FC_WIDTH_NORMAL, FC_WIDTH_SEMICONDENSED, FC_WIDTH_SEMIEXPANDED,
     FC_WIDTH_ULTRACONDENSED, FC_WIDTH_ULTRAEXPANDED,
 };
@@ -42,10 +42,10 @@ impl Pattern {
         self.get_bool_at(object, 0)
     }
 
-    pub fn get_bool_at(&self, object: &[u8], n: usize) -> Option<bool> {
+    pub fn get_bool_at(&self, object: &[u8], index: usize) -> Option<bool> {
         let mut value: c_int = Default::default();
         let result =
-            unsafe { FcPatternGetBool(self.raw, object.as_ptr() as _, n as _, &mut value) };
+            unsafe { FcPatternGetBool(self.raw, object.as_ptr() as _, index as _, &mut value) };
         if result == FcResultMatch {
             Some(value != FcFalse)
         } else {
@@ -57,10 +57,10 @@ impl Pattern {
         self.get_i32_at(object, 0)
     }
 
-    pub fn get_i32_at(&self, object: &[u8], n: usize) -> Option<i32> {
+    pub fn get_i32_at(&self, object: &[u8], index: usize) -> Option<i32> {
         let mut value: c_int = Default::default();
         let result =
-            unsafe { FcPatternGetInteger(self.raw, object.as_ptr() as _, n as _, &mut value) };
+            unsafe { FcPatternGetInteger(self.raw, object.as_ptr() as _, index as _, &mut value) };
         if result == FcResultMatch {
             Some(value as _)
         } else {
@@ -72,10 +72,10 @@ impl Pattern {
         self.get_f64_at(object, 0)
     }
 
-    pub fn get_f64_at(&self, object: &[u8], n: usize) -> Option<f64> {
+    pub fn get_f64_at(&self, object: &[u8], index: usize) -> Option<f64> {
         let mut value: c_double = Default::default();
         let result =
-            unsafe { FcPatternGetDouble(self.raw, object.as_ptr() as _, n as _, &mut value) };
+            unsafe { FcPatternGetDouble(self.raw, object.as_ptr() as _, index as _, &mut value) };
         if result == FcResultMatch {
             Some(value as _)
         } else {
@@ -87,10 +87,10 @@ impl Pattern {
         self.get_str_at(object, 0)
     }
 
-    pub fn get_str_at(&self, object: &[u8], n: usize) -> Option<&str> {
+    pub fn get_str_at(&self, object: &[u8], index: usize) -> Option<&str> {
         let mut value: *mut FcChar8 = ptr::null_mut();
         let result =
-            unsafe { FcPatternGetString(self.raw, object.as_ptr() as _, n as _, &mut value) };
+            unsafe { FcPatternGetString(self.raw, object.as_ptr() as _, index as _, &mut value) };
         if result == FcResultMatch {
             unsafe { CStr::from_ptr(value as _) }.to_str().ok()
         } else {
@@ -102,10 +102,10 @@ impl Pattern {
         self.get_freetype_face_at(object, 0)
     }
 
-    pub fn get_freetype_face_at(&self, object: &[u8], n: usize) -> Option<freetype::Face> {
+    pub fn get_freetype_face_at(&self, object: &[u8], index: usize) -> Option<freetype::Face> {
         let mut value: freetype::FT_Face = ptr::null_mut();
         let result =
-            unsafe { FcPatternGetFTFace(self.raw, object.as_ptr() as _, n as _, &mut value) };
+            unsafe { FcPatternGetFTFace(self.raw, object.as_ptr() as _, index as _, &mut value) };
         if result == FcResultMatch {
             Some(unsafe { freetype::Face::from_raw(value) })
         } else {
@@ -149,8 +149,20 @@ impl Pattern {
         self.get_str(FC_FILE)
     }
 
+    pub fn index(&self) -> Option<i32> {
+        self.get_i32(FC_INDEX)
+    }
+
     pub fn fullname(&self) -> Option<&str> {
         self.get_str(FC_FULLNAME)
+    }
+
+    pub fn postscript_name(&self) -> Option<&str> {
+        self.get_str(FC_POSTSCRIPT_NAME)
+    }
+
+    pub fn is_variable(&self) -> Option<bool> {
+        self.get_bool(FC_VARIABLE)
     }
 
     pub fn family(&self) -> Option<&str> {
@@ -159,10 +171,6 @@ impl Pattern {
 
     pub fn style(&self) -> Option<&str> {
         self.get_str(FC_STYLE)
-    }
-
-    pub fn postscript_name(&self) -> Option<&str> {
-        self.get_str(FC_POSTSCRIPT_NAME)
     }
 
     pub fn weight(&self) -> Option<i32> {
@@ -196,10 +204,6 @@ impl Pattern {
             FC_WIDTH_ULTRAEXPANDED => 9,
             _ => return None,
         })
-    }
-
-    pub fn is_variable(&self) -> Option<bool> {
-        self.get_bool(FC_VARIABLE)
     }
 
     pub fn freetype_face(&self) -> Option<freetype::Face> {
