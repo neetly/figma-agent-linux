@@ -38,7 +38,7 @@ impl Face {
         Face { raw }
     }
 
-    pub fn sfnt_name<P>(&self, mut predicate: P) -> Option<SfntName>
+    pub fn find_sfnt_name<P>(&self, mut predicate: P) -> Option<SfntName>
     where
         P: FnMut(&SfntName) -> bool,
     {

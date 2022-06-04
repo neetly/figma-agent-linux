@@ -49,7 +49,7 @@ fn main() {
         let uri = URIReference::try_from(request.url()).unwrap();
         match uri.path().to_string().as_str() {
             "/figma/font-files" => {
-                let font_set = fc.fonts(&Pattern::new(), None);
+                let font_set = fc.list_fonts(&Pattern::new(), None);
                 let font_files = font_set
                     .iter()
                     .flat_map(|pattern| get_font_file(&pattern))

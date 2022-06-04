@@ -42,7 +42,7 @@ impl Config {
         unsafe { StrList::from_raw(raw_str_list) }
     }
 
-    pub fn fonts(&self, pattern: &Pattern, object_set: Option<&ObjectSet>) -> FontSet {
+    pub fn list_fonts(&self, pattern: &Pattern, object_set: Option<&ObjectSet>) -> FontSet {
         let raw_font_set = unsafe {
             FcFontList(
                 self.raw,
