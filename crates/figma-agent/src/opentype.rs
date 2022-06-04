@@ -25,7 +25,7 @@ impl OpenTypeHelpers for Pattern {
     }
 }
 
-const WIDTHS: Vec<(i32, i32)> = vec![
+static WIDTHS: [(i32, i32); 9] = [
     (1, FC_WIDTH_ULTRACONDENSED),
     (2, FC_WIDTH_EXTRACONDENSED),
     (3, FC_WIDTH_CONDENSED),

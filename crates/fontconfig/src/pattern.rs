@@ -9,11 +9,8 @@ use std::{
 use fontconfig_sys::{
     FcChar8, FcFalse, FcPattern, FcPatternCreate, FcPatternDestroy, FcPatternDuplicate,
     FcPatternEqual, FcPatternGetBool, FcPatternGetDouble, FcPatternGetFTFace, FcPatternGetInteger,
-    FcPatternGetString, FcPatternHash, FcResultMatch, FcWeightToOpenType, FC_FAMILY, FC_FILE,
-    FC_FT_FACE, FC_FULLNAME, FC_INDEX, FC_POSTSCRIPT_NAME, FC_SLANT, FC_STYLE, FC_VARIABLE,
-    FC_WEIGHT, FC_WIDTH, FC_WIDTH_CONDENSED, FC_WIDTH_EXPANDED, FC_WIDTH_EXTRACONDENSED,
-    FC_WIDTH_EXTRAEXPANDED, FC_WIDTH_NORMAL, FC_WIDTH_SEMICONDENSED, FC_WIDTH_SEMIEXPANDED,
-    FC_WIDTH_ULTRACONDENSED, FC_WIDTH_ULTRAEXPANDED,
+    FcPatternGetString, FcPatternHash, FcResultMatch, FC_FAMILY, FC_FILE, FC_FT_FACE, FC_FULLNAME,
+    FC_INDEX, FC_POSTSCRIPT_NAME, FC_SLANT, FC_STYLE, FC_VARIABLE, FC_WEIGHT, FC_WIDTH,
 };
 use libc::{c_double, c_int};
 
