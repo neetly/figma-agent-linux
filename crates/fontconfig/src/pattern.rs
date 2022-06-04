@@ -177,33 +177,12 @@ impl Pattern {
         self.get_i32(FC_WEIGHT)
     }
 
-    pub fn weight_opentype(&self) -> Option<i32> {
-        let weight = self.weight()?;
-        Some(unsafe { FcWeightToOpenType(weight) })
-    }
-
     pub fn slant(&self) -> Option<i32> {
         self.get_i32(FC_SLANT)
     }
 
     pub fn width(&self) -> Option<i32> {
         self.get_i32(FC_WIDTH)
-    }
-
-    pub fn width_opentype(&self) -> Option<i32> {
-        let width = self.width()?;
-        Some(match width {
-            FC_WIDTH_ULTRACONDENSED => 1,
-            FC_WIDTH_EXTRACONDENSED => 2,
-            FC_WIDTH_CONDENSED => 3,
-            FC_WIDTH_SEMICONDENSED => 4,
-            FC_WIDTH_NORMAL => 5,
-            FC_WIDTH_SEMIEXPANDED => 6,
-            FC_WIDTH_EXPANDED => 7,
-            FC_WIDTH_EXTRAEXPANDED => 8,
-            FC_WIDTH_ULTRAEXPANDED => 9,
-            _ => return None,
-        })
     }
 
     pub fn freetype_face(&self) -> Option<freetype::Face> {

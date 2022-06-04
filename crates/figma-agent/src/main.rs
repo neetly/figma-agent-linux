@@ -6,6 +6,10 @@ use serde::Serialize;
 use tiny_http::{Header, Response, Server};
 use uriparse::URIReference;
 
+mod opentype;
+
+use crate::opentype::OpenTypeHelpers;
+
 macro_rules! header {
     ($name:literal: $value:literal) => {
         concat!($name, ": ", $value).parse::<Header>().unwrap()
@@ -22,12 +26,12 @@ fn main() {
             family: pattern.family().unwrap_or("").into(),
             style: pattern.style().unwrap_or("").into(),
             postscript: pattern.postscript_name().unwrap_or("").into(),
-            weight: pattern.weight_opentype().unwrap_or(400),
+            weight: pattern.os_weight_class().unwrap_or(400),
             italic: pattern
                 .slant()
                 .map(|slant| slant != FC_SLANT_ROMAN)
                 .unwrap_or(false),
-            width: pattern.width_opentype().unwrap_or(5),
+            width: pattern.os_width_class().unwrap_or(5),
             variation_axes: None,
         })
     };

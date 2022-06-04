@@ -4,11 +4,11 @@ use libc::{c_long, c_void, free, malloc, realloc, size_t};
 
 pub use freetype_sys::*;
 
-pub use face::*;
-pub use library::*;
-
 pub mod face;
 pub mod library;
+
+pub use crate::face::*;
+pub use crate::library::*;
 
 pub fn init() -> Option<Library> {
     let library = Library::new();
