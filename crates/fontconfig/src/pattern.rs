@@ -7,8 +7,8 @@ use std::{
 };
 
 use fontconfig_sys::{
-    FcChar8, FcFalse, FcPattern, FcPatternCreate, FcPatternDestroy, FcPatternDuplicate,
-    FcPatternEqual, FcPatternGetBool, FcPatternGetDouble, FcPatternGetFTFace, FcPatternGetInteger,
+    FcFalse, FcPattern, FcPatternCreate, FcPatternDestroy, FcPatternDuplicate, FcPatternEqual,
+    FcPatternGetBool, FcPatternGetDouble, FcPatternGetFTFace, FcPatternGetInteger,
     FcPatternGetString, FcPatternHash, FcResultMatch, FC_FAMILY, FC_FILE, FC_FT_FACE, FC_FULLNAME,
     FC_INDEX, FC_POSTSCRIPT_NAME, FC_SLANT, FC_STYLE, FC_VARIABLE, FC_WEIGHT, FC_WIDTH,
 };
