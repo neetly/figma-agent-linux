@@ -2,13 +2,14 @@ use std::{collections::HashMap, fs::File, path::Path};
 
 use fontconfig::{Pattern, FC_SLANT_ROMAN};
 use itertools::Itertools;
-use serde::Serialize;
 use tiny_http::{Header, Response, Server};
 use uriparse::URIReference;
 
 mod opentype;
+mod payload;
 
-use crate::opentype::OpenTypeHelpers;
+use crate::opentype::*;
+use crate::payload::*;
 
 macro_rules! header {
     ($name:literal: $value:literal) => {
@@ -23,6 +24,7 @@ fn main() {
     let get_font_file = |pattern: &Pattern| -> Option<FontFile> {
         pattern.file().map(|path| FontFile {
             file: path.into(),
+            index: pattern.index().unwrap_or(0),
             family: pattern.family().unwrap_or("").into(),
             style: pattern.style().unwrap_or("").into(),
             postscript: pattern.postscript_name().unwrap_or("").into(),
@@ -32,6 +34,7 @@ fn main() {
                 .map(|slant| slant != FC_SLANT_ROMAN)
                 .unwrap_or(false),
             width: pattern.os_width_class().unwrap_or(5),
+            is_variable: pattern.is_variable().unwrap_or(false),
             variation_axes: None,
         })
     };
@@ -97,38 +100,4 @@ fn main() {
             }
         };
     }
-}
-
-#[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
-struct FontFilesPayload {
-    version: i32,
-    font_files: HashMap<String, Vec<FontFile>>,
-}
-
-#[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
-struct FontFile {
-    #[serde(skip)]
-    file: String,
-    family: String,
-    postscript: String,
-    style: String,
-    weight: i32,
-    italic: bool,
-    width: i32,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    variation_axes: Option<Vec<VariationAxis>>,
-}
-
-#[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
-struct VariationAxis {
-    name: String,
-    tag: String,
-    value: f64,
-    min: f64,
-    max: f64,
-    default: f64,
-    hidden: bool,
 }
