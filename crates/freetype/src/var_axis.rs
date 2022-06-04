@@ -17,6 +17,10 @@ impl<'a> VarAxis<'a> {
         self.raw.tag as _
     }
 
+    pub fn tag_string(&self) -> Option<String> {
+        String::from_utf8(self.tag().to_be_bytes().into()).ok()
+    }
+
     pub fn name_id(&self) -> u16 {
         self.raw.strid as _
     }
