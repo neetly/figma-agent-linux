@@ -3,8 +3,8 @@
 use std::ffi::CString;
 
 use fontconfig_sys::{
-    FcFalse, FcStrListCreate, FcStrSet, FcStrSetAdd, FcStrSetCreate, FcStrSetDel, FcStrSetDestroy,
-    FcStrSetEqual, FcStrSetMember,
+    FcFalse, FcStrSet, FcStrSetAdd, FcStrSetCreate, FcStrSetDel, FcStrSetDestroy, FcStrSetEqual,
+    FcStrSetMember,
 };
 
 use crate::StrList;
@@ -37,9 +37,7 @@ impl StrSet {
     }
 
     pub fn iter(&self) -> StrList {
-        let raw_str_list = unsafe { FcStrListCreate(self.raw) };
-        assert!(!raw_str_list.is_null());
-        unsafe { StrList::from_raw(raw_str_list) }
+        StrList::new(self)
     }
 
     pub fn contains<V>(&self, value: V) -> bool

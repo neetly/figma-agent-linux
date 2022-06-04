@@ -2,7 +2,7 @@
 
 use std::{ffi::CStr, marker::PhantomData};
 
-use fontconfig_sys::{FcStrList, FcStrListDone, FcStrListNext};
+use fontconfig_sys::{FcStrList, FcStrListCreate, FcStrListDone, FcStrListNext};
 
 use crate::StrSet;
 
@@ -18,6 +18,15 @@ impl StrList<'_> {
 }
 
 impl<'a> StrList<'a> {
+    pub fn new(str_set: &StrSet) -> StrList {
+        let raw = unsafe { FcStrListCreate(str_set.raw()) };
+        assert!(!raw.is_null());
+        StrList {
+            raw,
+            _marker: PhantomData,
+        }
+    }
+
     pub unsafe fn from_raw(raw: *mut FcStrList) -> StrList<'a> {
         StrList {
             raw,
