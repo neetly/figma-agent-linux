@@ -3,8 +3,7 @@
 use std::ffi::CString;
 
 use fontconfig_sys::{
-    FcFalse, FcStrSet, FcStrSetAdd, FcStrSetCreate, FcStrSetDel, FcStrSetDestroy, FcStrSetEqual,
-    FcStrSetMember,
+    FcFalse, FcStrSet, FcStrSetAdd, FcStrSetCreate, FcStrSetDel, FcStrSetDestroy, FcStrSetMember,
 };
 
 use crate::StrList;

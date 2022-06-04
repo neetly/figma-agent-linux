@@ -1,16 +1,12 @@
 #![allow(clippy::missing_safety_doc)]
 
-use std::{
-    ffi::CStr,
-    hash::{Hash, Hasher},
-    ptr,
-};
+use std::{ffi::CStr, ptr};
 
 use fontconfig_sys::{
-    FcFalse, FcPattern, FcPatternCreate, FcPatternDestroy, FcPatternDuplicate, FcPatternEqual,
-    FcPatternGetBool, FcPatternGetDouble, FcPatternGetFTFace, FcPatternGetInteger,
-    FcPatternGetString, FcPatternHash, FcResultMatch, FC_FAMILY, FC_FILE, FC_FT_FACE, FC_FULLNAME,
-    FC_INDEX, FC_POSTSCRIPT_NAME, FC_SLANT, FC_STYLE, FC_VARIABLE, FC_WEIGHT, FC_WIDTH,
+    FcFalse, FcPattern, FcPatternCreate, FcPatternDestroy, FcPatternGetBool, FcPatternGetDouble,
+    FcPatternGetFTFace, FcPatternGetInteger, FcPatternGetString, FcResultMatch, FC_FAMILY, FC_FILE,
+    FC_FT_FACE, FC_FULLNAME, FC_INDEX, FC_POSTSCRIPT_NAME, FC_SLANT, FC_STYLE, FC_VARIABLE,
+    FC_WEIGHT, FC_WIDTH,
 };
 use libc::{c_double, c_int};
 
