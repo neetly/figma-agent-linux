@@ -22,7 +22,3 @@ pub fn init() -> Option<Config> {
         None
     }
 }
-
-pub fn finalize() {
-    unsafe { FcFini() };
-}
