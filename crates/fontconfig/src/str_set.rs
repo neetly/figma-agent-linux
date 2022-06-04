@@ -46,27 +46,36 @@ impl StrSet {
     where
         V: AsRef<str>,
     {
-        let value = CString::new(value.as_ref()).unwrap();
-        let result = unsafe { FcStrSetMember(self.raw, value.as_ptr() as _) };
-        result != FcFalse
+        if let Ok(value) = CString::new(value.as_ref()) {
+            let result = unsafe { FcStrSetMember(self.raw, value.as_ptr() as _) };
+            result != FcFalse
+        } else {
+            false
+        }
     }
 
     pub fn insert<V>(&mut self, value: V) -> bool
     where
         V: AsRef<str>,
     {
-        let value = CString::new(value.as_ref()).unwrap();
-        let result = unsafe { FcStrSetAdd(self.raw, value.as_ptr() as _) };
-        result != FcFalse
+        if let Ok(value) = CString::new(value.as_ref()) {
+            let result = unsafe { FcStrSetAdd(self.raw, value.as_ptr() as _) };
+            result != FcFalse
+        } else {
+            false
+        }
     }
 
     pub fn remove<V>(&mut self, value: V) -> bool
     where
         V: AsRef<str>,
     {
-        let value = CString::new(value.as_ref()).unwrap();
-        let result = unsafe { FcStrSetDel(self.raw, value.as_ptr() as _) };
-        result != FcFalse
+        if let Ok(value) = CString::new(value.as_ref()) {
+            let result = unsafe { FcStrSetDel(self.raw, value.as_ptr() as _) };
+            result != FcFalse
+        } else {
+            false
+        }
     }
 }
 
