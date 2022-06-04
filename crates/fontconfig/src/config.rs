@@ -50,7 +50,9 @@ impl Config {
 
 impl Drop for Config {
     fn drop(&mut self) {
-        unsafe { FcConfigDestroy(self.raw) };
+        if !self.raw.is_null() {
+            unsafe { FcConfigDestroy(self.raw) };
+        }
     }
 }
 
