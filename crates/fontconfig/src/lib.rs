@@ -2,12 +2,12 @@ use std::ptr;
 
 pub use fontconfig_sys::*;
 
-pub mod config;
-pub mod font_set;
-pub mod object_set;
-pub mod pattern;
-pub mod str_list;
-pub mod str_set;
+mod config;
+mod font_set;
+mod object_set;
+mod pattern;
+mod str_list;
+mod str_set;
 
 pub use crate::config::*;
 pub use crate::font_set::*;

@@ -4,8 +4,8 @@ use libc::{c_long, c_void, free, malloc, realloc, size_t};
 
 pub use freetype_sys::*;
 
-pub mod face;
-pub mod library;
+mod face;
+mod library;
 
 pub use crate::face::*;
 pub use crate::library::*;
