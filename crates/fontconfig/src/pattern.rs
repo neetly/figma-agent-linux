@@ -15,7 +15,7 @@ pub struct Pattern {
 }
 
 impl Pattern {
-    pub fn raw(&self) -> *mut FcPattern {
+    pub unsafe fn raw(&self) -> *mut FcPattern {
         self.raw
     }
 }

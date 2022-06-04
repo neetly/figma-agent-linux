@@ -11,7 +11,7 @@ pub struct FontSet {
 }
 
 impl FontSet {
-    pub fn raw(&self) -> *mut FcFontSet {
+    pub unsafe fn raw(&self) -> *mut FcFontSet {
         self.raw
     }
 }

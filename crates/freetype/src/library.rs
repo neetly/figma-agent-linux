@@ -14,7 +14,7 @@ unsafe impl Send for Library {}
 unsafe impl Sync for Library {}
 
 impl Library {
-    pub fn raw(&self) -> FT_Library {
+    pub unsafe fn raw(&self) -> FT_Library {
         self.raw
     }
 }

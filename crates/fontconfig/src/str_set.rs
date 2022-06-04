@@ -13,7 +13,7 @@ pub struct StrSet {
 }
 
 impl StrSet {
-    pub fn raw(&self) -> *mut FcStrSet {
+    pub unsafe fn raw(&self) -> *mut FcStrSet {
         self.raw
     }
 }

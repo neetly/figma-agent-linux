@@ -7,7 +7,7 @@ pub struct ObjectSet {
 }
 
 impl ObjectSet {
-    pub fn raw(&self) -> *mut FcObjectSet {
+    pub unsafe fn raw(&self) -> *mut FcObjectSet {
         self.raw
     }
 }

@@ -12,7 +12,7 @@ pub struct StrList<'a> {
 }
 
 impl StrList<'_> {
-    pub fn raw(&self) -> *mut FcStrList {
+    pub unsafe fn raw(&self) -> *mut FcStrList {
         self.raw
     }
 }

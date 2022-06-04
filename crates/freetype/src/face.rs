@@ -13,7 +13,7 @@ pub struct Face {
 }
 
 impl Face {
-    pub fn raw(&self) -> FT_Face {
+    pub unsafe fn raw(&self) -> FT_Face {
         self.raw
     }
 }
@@ -42,7 +42,7 @@ impl Face {
     where
         P: FnMut(&SfntName) -> bool,
     {
-        let mut sfnt_name: SfntName = Default::default();
+        let mut sfnt_name = unsafe { SfntName::new() };
         let count = unsafe { FT_Get_Sfnt_Name_Count(self.raw) };
         for index in 0..count {
             let result = unsafe { FT_Get_Sfnt_Name(self.raw, index, sfnt_name.as_mut()) };

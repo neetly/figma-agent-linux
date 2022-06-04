@@ -14,7 +14,7 @@ unsafe impl Send for Config {}
 unsafe impl Sync for Config {}
 
 impl Config {
-    pub fn raw(&self) -> *mut FcConfig {
+    pub unsafe fn raw(&self) -> *mut FcConfig {
         self.raw
     }
 }
