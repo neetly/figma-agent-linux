@@ -1,6 +1,6 @@
 use std::ptr;
 
-use libc::{c_long, c_void, free, malloc, realloc, size_t};
+use libc::{c_long, c_void, free, malloc, realloc};
 
 pub use freetype_sys::*;
 
@@ -28,7 +28,7 @@ pub static mut MEMORY: Memory = Memory {
 };
 
 unsafe extern "C" fn memory_alloc(_: FT_Memory, size: c_long) -> *mut c_void {
-    malloc(size as size_t)
+    malloc(size as _)
 }
 
 unsafe extern "C" fn memory_free(_: FT_Memory, block: *mut c_void) {
@@ -41,5 +41,5 @@ unsafe extern "C" fn memory_realloc(
     new_size: c_long,
     block: *mut c_void,
 ) -> *mut c_void {
-    realloc(block, new_size as size_t)
+    realloc(block, new_size as _)
 }

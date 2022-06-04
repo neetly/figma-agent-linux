@@ -20,6 +20,7 @@ fn main() {
         .ctypes_prefix("::libc")
         .allowlist_file(r".+[/\\]fontconfig[/\\].+")
         .blocklist_file(r".+[/\\]freetype[/\\].+")
+        .derive_default(true)
         .default_enum_style(EnumVariation::ModuleConsts)
         .default_macro_constant_type(MacroTypeVariation::Signed)
         .generate()

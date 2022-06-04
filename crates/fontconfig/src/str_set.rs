@@ -77,15 +77,6 @@ impl StrSet {
     }
 }
 
-impl PartialEq for StrSet {
-    fn eq(&self, other: &Self) -> bool {
-        let result = unsafe { FcStrSetEqual(self.raw, other.raw) };
-        result != FcFalse
-    }
-}
-
-impl Eq for StrSet {}
-
 impl Drop for StrSet {
     fn drop(&mut self) {
         unsafe { FcStrSetDestroy(self.raw) };

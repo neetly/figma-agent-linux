@@ -19,6 +19,7 @@ fn main() {
         .clang_args(clang_args)
         .ctypes_prefix("::libc")
         .allowlist_file(r".+[/\\]freetype[/\\].+")
+        .derive_default(true)
         .generate()
         .unwrap();
 
