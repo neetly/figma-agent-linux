@@ -143,6 +143,7 @@ version = "0.0.0"
 dependencies = [
  "fontconfig",
  "form_urlencoded",
+ "freetype",
  "itertools",
  "serde",
  "serde_json",
