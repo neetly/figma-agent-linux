@@ -5,7 +5,7 @@ use itertools::Itertools;
 use tiny_http::{Header, Response, Server};
 use uriparse::URIReference;
 
-use figma_agent::{FontFile, FontFilesPayload, OpenTypeHelpers};
+use figma_agent::{FontFile, FontFilesPayload, PatternHelpers};
 
 macro_rules! header {
     ($name:literal: $value:literal) => {

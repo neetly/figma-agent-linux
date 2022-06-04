@@ -4,13 +4,13 @@ use fontconfig::{
     FC_WIDTH_ULTRACONDENSED, FC_WIDTH_ULTRAEXPANDED,
 };
 
-pub trait OpenTypeHelpers {
+pub trait PatternHelpers {
     fn os_weight_class(&self) -> Option<i32>;
 
     fn os_width_class(&self) -> Option<i32>;
 }
 
-impl OpenTypeHelpers for Pattern {
+impl PatternHelpers for Pattern {
     fn os_weight_class(&self) -> Option<i32> {
         let weight = self.weight()?;
         Some(unsafe { FcWeightToOpenType(weight) })
