@@ -6,9 +6,11 @@ pub use freetype_sys::*;
 
 mod face;
 mod library;
+mod memory;
 
 pub use crate::face::*;
 pub use crate::library::*;
+pub use crate::memory::*;
 
 pub fn init() -> Option<Library> {
     let library = Library::new();
@@ -16,7 +18,7 @@ pub fn init() -> Option<Library> {
     Some(library)
 }
 
-pub static mut MEMORY: FT_MemoryRec_ = FT_MemoryRec_ {
+pub static mut MEMORY: Memory = Memory {
     user: ptr::null_mut(),
     alloc: Some(memory_alloc),
     free: Some(memory_free),
