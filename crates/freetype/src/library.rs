@@ -4,7 +4,7 @@ use std::ptr;
 
 use freetype_sys::{FT_Done_Library, FT_Err_Ok, FT_Library, FT_New_Library};
 
-use crate::MEMORY;
+use crate::{Face, MEMORY};
 
 pub struct Library {
     raw: FT_Library,
@@ -35,6 +35,13 @@ impl Library {
 
     pub unsafe fn from_raw(raw: FT_Library) -> Library {
         Library { raw }
+    }
+
+    pub fn face_from_file<P>(&self, path: P, face_index: i32) -> Option<Face>
+    where
+        P: AsRef<str>,
+    {
+        Face::from_file(self, path, face_index)
     }
 }
 

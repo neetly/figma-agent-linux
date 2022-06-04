@@ -105,16 +105,25 @@ impl Pattern {
         }
     }
 
-    pub fn get_freetype_face(&self, object: &[u8]) -> Option<freetype::Face> {
-        self.get_freetype_face_at(object, 0)
+    pub fn get_freetype_face<'a>(
+        &self,
+        object: &[u8],
+        library: &'a freetype::Library,
+    ) -> Option<freetype::Face<'a>> {
+        self.get_freetype_face_at(object, 0, library)
     }
 
-    pub fn get_freetype_face_at(&self, object: &[u8], index: usize) -> Option<freetype::Face> {
+    pub fn get_freetype_face_at<'a>(
+        &self,
+        object: &[u8],
+        index: usize,
+        library: &'a freetype::Library,
+    ) -> Option<freetype::Face<'a>> {
         let mut value = ptr::null_mut();
         let result =
             unsafe { FcPatternGetFTFace(self.raw, object.as_ptr() as _, index as _, &mut value) };
         if result == FcResultMatch {
-            Some(unsafe { freetype::Face::from_raw(value) })
+            Some(unsafe { freetype::Face::from_raw(value, library) })
         } else {
             None
         }
@@ -162,7 +171,7 @@ impl Pattern {
         self.get_i32(FC_WIDTH)
     }
 
-    pub fn freetype_face(&self) -> Option<freetype::Face> {
-        self.get_freetype_face(FC_FT_FACE)
+    pub fn freetype_face<'a>(&self, library: &'a freetype::Library) -> Option<freetype::Face<'a>> {
+        self.get_freetype_face(FC_FT_FACE, library)
     }
 }

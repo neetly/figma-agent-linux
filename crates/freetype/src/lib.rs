@@ -7,12 +7,18 @@ pub use freetype_sys::*;
 mod face;
 mod library;
 mod memory;
+mod mm_var;
 mod sfnt_name;
+mod var_axis;
+mod var_named_style;
 
 pub use crate::face::*;
 pub use crate::library::*;
 pub use crate::memory::*;
+pub use crate::mm_var::*;
 pub use crate::sfnt_name::*;
+pub use crate::var_axis::*;
+pub use crate::var_named_style::*;
 
 pub fn init() -> Option<Library> {
     let library = Library::new();

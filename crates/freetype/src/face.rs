@@ -6,19 +6,20 @@ use freetype_sys::{
     FT_Done_Face, FT_Err_Ok, FT_Face, FT_Get_Sfnt_Name, FT_Get_Sfnt_Name_Count, FT_New_Face,
 };
 
-use crate::{Library, SfntName};
+use crate::{Library, MMVar, SfntName};
 
-pub struct Face {
+pub struct Face<'a> {
     raw: FT_Face,
+    library: &'a Library,
 }
 
-impl Face {
+impl Face<'_> {
     pub unsafe fn raw(&self) -> FT_Face {
         self.raw
     }
 }
 
-impl Face {
+impl Face<'_> {
     pub fn from_file<P>(library: &Library, path: P, face_index: i32) -> Option<Face>
     where
         P: AsRef<str>,
@@ -28,14 +29,14 @@ impl Face {
         let result =
             unsafe { FT_New_Face(library.raw(), path.as_ptr(), face_index as _, &mut raw) };
         if result == FT_Err_Ok {
-            Some(Face { raw })
+            Some(Face { raw, library })
         } else {
             None
         }
     }
 
-    pub unsafe fn from_raw(raw: FT_Face) -> Face {
-        Face { raw }
+    pub unsafe fn from_raw(raw: FT_Face, library: &Library) -> Face {
+        Face { raw, library }
     }
 
     pub fn find_sfnt_name<P>(&self, mut predicate: P) -> Option<SfntName>
@@ -46,16 +47,19 @@ impl Face {
         let count = unsafe { FT_Get_Sfnt_Name_Count(self.raw) };
         for index in 0..count {
             let result = unsafe { FT_Get_Sfnt_Name(self.raw, index, sfnt_name.as_mut()) };
-            assert!(result == FT_Err_Ok);
-            if predicate(&sfnt_name) {
+            if result == FT_Err_Ok && predicate(&sfnt_name) {
                 return Some(sfnt_name);
             }
         }
         None
     }
+
+    pub fn mm_var(&self) -> Option<MMVar> {
+        MMVar::from_face(self, self.library)
+    }
 }
 
-impl Drop for Face {
+impl Drop for Face<'_> {
     fn drop(&mut self) {
         let result = unsafe { FT_Done_Face(self.raw) };
         assert!(result == FT_Err_Ok);
