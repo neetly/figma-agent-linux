@@ -10,6 +10,9 @@ pub struct Config {
     raw: *mut FcConfig,
 }
 
+unsafe impl Send for Config {}
+unsafe impl Sync for Config {}
+
 impl Config {
     pub fn raw(&self) -> *mut FcConfig {
         self.raw
@@ -61,6 +64,3 @@ impl Drop for Config {
         }
     }
 }
-
-unsafe impl Send for Config {}
-unsafe impl Sync for Config {}

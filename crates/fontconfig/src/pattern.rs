@@ -40,7 +40,39 @@ impl Pattern {
     pub unsafe fn from_raw(raw: *mut FcPattern) -> Pattern {
         Pattern { raw }
     }
+}
 
+impl Hash for Pattern {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        let hash = unsafe { FcPatternHash(self.raw) };
+        state.write_u32(hash);
+    }
+}
+
+impl PartialEq for Pattern {
+    fn eq(&self, other: &Self) -> bool {
+        let result = unsafe { FcPatternEqual(self.raw, other.raw) };
+        result != FcFalse
+    }
+}
+
+impl Eq for Pattern {}
+
+impl Clone for Pattern {
+    fn clone(&self) -> Self {
+        let raw = unsafe { FcPatternDuplicate(self.raw) };
+        assert!(!raw.is_null());
+        Pattern { raw }
+    }
+}
+
+impl Drop for Pattern {
+    fn drop(&mut self) {
+        unsafe { FcPatternDestroy(self.raw) };
+    }
+}
+
+impl Pattern {
     pub fn get_bool(&self, object: &[u8]) -> Option<bool> {
         self.get_bool_at(object, 0)
     }
@@ -114,36 +146,6 @@ impl Pattern {
         } else {
             None
         }
-    }
-}
-
-impl Hash for Pattern {
-    fn hash<H: Hasher>(&self, state: &mut H) {
-        let hash = unsafe { FcPatternHash(self.raw) };
-        state.write_u32(hash);
-    }
-}
-
-impl PartialEq for Pattern {
-    fn eq(&self, other: &Self) -> bool {
-        let result = unsafe { FcPatternEqual(self.raw, other.raw) };
-        result != FcFalse
-    }
-}
-
-impl Eq for Pattern {}
-
-impl Clone for Pattern {
-    fn clone(&self) -> Self {
-        let raw = unsafe { FcPatternDuplicate(self.raw) };
-        assert!(!raw.is_null());
-        Pattern { raw }
-    }
-}
-
-impl Drop for Pattern {
-    fn drop(&mut self) {
-        unsafe { FcPatternDestroy(self.raw) };
     }
 }
 
