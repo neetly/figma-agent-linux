@@ -3,7 +3,13 @@
 use fontconfig_sys::{FcFalse, FcObjectSet, FcObjectSetAdd, FcObjectSetCreate, FcObjectSetDestroy};
 
 pub struct ObjectSet {
-    pub(crate) raw: *mut FcObjectSet,
+    raw: *mut FcObjectSet,
+}
+
+impl ObjectSet {
+    pub fn raw(&self) -> *mut FcObjectSet {
+        self.raw
+    }
 }
 
 impl Default for ObjectSet {

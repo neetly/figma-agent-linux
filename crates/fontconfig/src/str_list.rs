@@ -7,8 +7,14 @@ use fontconfig_sys::{FcStrList, FcStrListDone, FcStrListNext};
 use crate::StrSet;
 
 pub struct StrList<'a> {
-    pub(crate) raw: *mut FcStrList,
+    raw: *mut FcStrList,
     _marker: PhantomData<&'a StrSet>,
+}
+
+impl StrList<'_> {
+    pub fn raw(&self) -> *mut FcStrList {
+        self.raw
+    }
 }
 
 impl<'a> StrList<'a> {

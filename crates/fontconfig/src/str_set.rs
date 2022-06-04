@@ -10,7 +10,13 @@ use fontconfig_sys::{
 use crate::StrList;
 
 pub struct StrSet {
-    pub(crate) raw: *mut FcStrSet,
+    raw: *mut FcStrSet,
+}
+
+impl StrSet {
+    pub fn raw(&self) -> *mut FcStrSet {
+        self.raw
+    }
 }
 
 impl Default for StrSet {

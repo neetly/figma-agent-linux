@@ -7,7 +7,13 @@ use fontconfig_sys::{FcConfig, FcConfigCreate, FcConfigDestroy, FcConfigGetFontD
 use crate::{FontSet, ObjectSet, Pattern, StrList};
 
 pub struct Config {
-    pub(crate) raw: *mut FcConfig,
+    raw: *mut FcConfig,
+}
+
+impl Config {
+    pub fn raw(&self) -> *mut FcConfig {
+        self.raw
+    }
 }
 
 impl Default for Config {
@@ -37,9 +43,9 @@ impl Config {
         let raw_font_set = unsafe {
             FcFontList(
                 self.raw,
-                pattern.raw,
+                pattern.raw(),
                 object_set
-                    .map(|object_set| object_set.raw)
+                    .map(|object_set| object_set.raw())
                     .unwrap_or(ptr::null_mut()),
             )
         };

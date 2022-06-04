@@ -15,7 +15,13 @@ use fontconfig_sys::{
 use libc::{c_double, c_int};
 
 pub struct Pattern {
-    pub(crate) raw: *mut FcPattern,
+    raw: *mut FcPattern,
+}
+
+impl Pattern {
+    pub fn raw(&self) -> *mut FcPattern {
+        self.raw
+    }
 }
 
 impl Default for Pattern {

@@ -3,7 +3,13 @@
 use freetype_sys::{FT_Done_Face, FT_Err_Ok, FT_Face};
 
 pub struct Face {
-    pub(crate) raw: FT_Face,
+    raw: FT_Face,
+}
+
+impl Face {
+    pub fn raw(&self) -> FT_Face {
+        self.raw
+    }
 }
 
 impl Face {

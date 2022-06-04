@@ -14,7 +14,7 @@ pub use crate::memory::*;
 
 pub fn init() -> Option<Library> {
     let library = Library::new();
-    unsafe { FT_Add_Default_Modules(library.raw) };
+    unsafe { FT_Add_Default_Modules(library.raw()) };
     Some(library)
 }
 

@@ -7,7 +7,13 @@ use fontconfig_sys::{FcFontSet, FcFontSetCreate, FcFontSetDestroy, FcPatternRefe
 use crate::Pattern;
 
 pub struct FontSet {
-    pub(crate) raw: *mut FcFontSet,
+    raw: *mut FcFontSet,
+}
+
+impl FontSet {
+    pub fn raw(&self) -> *mut FcFontSet {
+        self.raw
+    }
 }
 
 impl Default for FontSet {
