@@ -37,7 +37,7 @@ impl Library {
         Library { raw }
     }
 
-    pub fn face_from_file<P>(&self, path: P, face_index: i32) -> Option<Face>
+    pub fn face_from_file<P>(&self, path: P, face_index: isize) -> Option<Face>
     where
         P: AsRef<str>,
     {

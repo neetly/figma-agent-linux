@@ -20,7 +20,7 @@ impl Face<'_> {
 }
 
 impl Face<'_> {
-    pub fn from_file<P>(library: &Library, path: P, face_index: i32) -> Option<Face>
+    pub fn from_file<P>(library: &Library, path: P, face_index: isize) -> Option<Face>
     where
         P: AsRef<str>,
     {

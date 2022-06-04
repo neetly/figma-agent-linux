@@ -33,6 +33,10 @@ impl SfntName {
     pub fn language_id(&self) -> u16 {
         self.raw.language_id
     }
+
+    pub fn name_id(&self) -> u16 {
+        self.raw.name_id
+    }
 }
 
 impl AsRef<FT_SfntName> for SfntName {
