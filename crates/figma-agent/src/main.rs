@@ -5,11 +5,7 @@ use itertools::Itertools;
 use tiny_http::{Header, Response, Server};
 use uriparse::URIReference;
 
-mod opentype;
-mod payload;
-
-use crate::opentype::*;
-use crate::payload::*;
+use figma_agent::{FontFile, FontFilesPayload, OpenTypeHelpers};
 
 macro_rules! header {
     ($name:literal: $value:literal) => {
