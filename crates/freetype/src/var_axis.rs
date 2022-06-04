@@ -5,7 +5,7 @@ pub struct VarAxis<'a> {
 }
 
 impl VarAxis<'_> {
-    pub fn from_raw(raw: &FT_Var_Axis) -> VarAxis {
+    pub fn new(raw: &FT_Var_Axis) -> VarAxis {
         VarAxis { raw }
     }
 

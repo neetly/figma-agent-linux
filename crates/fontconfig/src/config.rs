@@ -36,7 +36,7 @@ impl Config {
         Config { raw }
     }
 
-    pub fn font_dirs(&self) -> impl Iterator<Item = Option<&str>> {
+    pub fn font_dirs(&self) -> StrList {
         let raw_str_list = unsafe { FcConfigGetFontDirs(self.raw) };
         assert!(!raw_str_list.is_null());
         unsafe { StrList::from_raw(raw_str_list) }

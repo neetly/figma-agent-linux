@@ -34,14 +34,16 @@ impl<'a> MMVar<'a> {
 
     pub fn axes(&self) -> impl Iterator<Item = VarAxis> {
         let slice = unsafe { slice::from_raw_parts((*self.raw).axis, (*self.raw).num_axis as _) };
-        slice.iter().map(VarAxis::from_raw)
+        slice.iter().map(VarAxis::new)
     }
 
     pub fn named_styles(&self) -> impl Iterator<Item = VarNamedStyle> {
         let slice = unsafe {
             slice::from_raw_parts((*self.raw).namedstyle, (*self.raw).num_namedstyles as _)
         };
-        slice.iter().map(VarNamedStyle::from_raw)
+        slice
+            .iter()
+            .map(|item| VarNamedStyle::new(item, unsafe { (*self.raw).num_axis as _ }))
     }
 }
 
