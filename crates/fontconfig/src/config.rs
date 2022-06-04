@@ -53,3 +53,6 @@ impl Drop for Config {
         unsafe { FcConfigDestroy(self.raw) };
     }
 }
+
+unsafe impl Send for Config {}
+unsafe impl Sync for Config {}
