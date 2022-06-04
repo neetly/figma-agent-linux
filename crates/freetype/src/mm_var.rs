@@ -32,18 +32,27 @@ impl<'a> MMVar<'a> {
         MMVar { raw, library }
     }
 
+    pub fn axis_count(&self) -> usize {
+        unsafe { (*self.raw).num_axis as _ }
+    }
+
+    pub fn named_style_count(&self) -> usize {
+        unsafe { (*self.raw).num_namedstyles as _ }
+    }
+
     pub fn axes(&self) -> impl Iterator<Item = VarAxis> {
         let slice = unsafe { slice::from_raw_parts((*self.raw).axis, (*self.raw).num_axis as _) };
-        slice.iter().map(VarAxis::new)
+        slice
+            .iter()
+            .enumerate()
+            .map(|(index, item)| VarAxis::new(item, self, index))
     }
 
     pub fn named_styles(&self) -> impl Iterator<Item = VarNamedStyle> {
         let slice = unsafe {
             slice::from_raw_parts((*self.raw).namedstyle, (*self.raw).num_namedstyles as _)
         };
-        slice
-            .iter()
-            .map(|item| VarNamedStyle::new(item, unsafe { (*self.raw).num_axis as _ }))
+        slice.iter().map(|item| VarNamedStyle::new(item, self))
     }
 }
 

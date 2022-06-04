@@ -8,7 +8,6 @@ use fontconfig_sys::{
     FC_FT_FACE, FC_FULLNAME, FC_INDEX, FC_POSTSCRIPT_NAME, FC_SLANT, FC_STYLE, FC_VARIABLE,
     FC_WEIGHT, FC_WIDTH,
 };
-use libc::{c_double, c_int};
 
 pub struct Pattern {
     raw: *mut FcPattern,
@@ -50,7 +49,7 @@ impl Pattern {
     }
 
     pub fn get_bool_at(&self, object: &[u8], index: usize) -> Option<bool> {
-        let mut value: c_int = Default::default();
+        let mut value = Default::default();
         let result =
             unsafe { FcPatternGetBool(self.raw, object.as_ptr() as _, index as _, &mut value) };
         if result == FcResultMatch {
@@ -65,7 +64,7 @@ impl Pattern {
     }
 
     pub fn get_i32_at(&self, object: &[u8], index: usize) -> Option<i32> {
-        let mut value: c_int = Default::default();
+        let mut value = Default::default();
         let result =
             unsafe { FcPatternGetInteger(self.raw, object.as_ptr() as _, index as _, &mut value) };
         if result == FcResultMatch {
@@ -80,7 +79,7 @@ impl Pattern {
     }
 
     pub fn get_f64_at(&self, object: &[u8], index: usize) -> Option<f64> {
-        let mut value: c_double = Default::default();
+        let mut value = Default::default();
         let result =
             unsafe { FcPatternGetDouble(self.raw, object.as_ptr() as _, index as _, &mut value) };
         if result == FcResultMatch {

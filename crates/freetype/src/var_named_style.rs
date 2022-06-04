@@ -2,14 +2,16 @@ use std::slice;
 
 use freetype_sys::FT_Var_Named_Style;
 
+use crate::MMVar;
+
 pub struct VarNamedStyle<'a> {
     raw: &'a FT_Var_Named_Style,
-    axis_count: usize,
+    mm_var: &'a MMVar<'a>,
 }
 
-impl VarNamedStyle<'_> {
-    pub fn new(raw: &FT_Var_Named_Style, axis_count: usize) -> VarNamedStyle {
-        VarNamedStyle { raw, axis_count }
+impl<'a> VarNamedStyle<'a> {
+    pub fn new(raw: &'a FT_Var_Named_Style, mm_var: &'a MMVar) -> VarNamedStyle<'a> {
+        VarNamedStyle { raw, mm_var }
     }
 
     pub fn name_id(&self) -> u16 {
@@ -25,7 +27,7 @@ impl VarNamedStyle<'_> {
     }
 
     pub fn coordinates(&self) -> impl Iterator<Item = i32> {
-        let slice = unsafe { slice::from_raw_parts(self.raw.coords, self.axis_count) };
+        let slice = unsafe { slice::from_raw_parts(self.raw.coords, self.mm_var.axis_count()) };
         slice.iter().map(|&item| item as _)
     }
 }
