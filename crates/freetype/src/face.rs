@@ -17,9 +17,9 @@ impl Face {
 }
 
 impl Face {
-    pub fn from_file<T>(library: &Library, path: T, face_index: i32) -> Option<Face>
+    pub fn from_file<P>(library: &Library, path: P, face_index: i32) -> Option<Face>
     where
-        T: AsRef<str>,
+        P: AsRef<str>,
     {
         let mut raw = ptr::null_mut();
         let path = CString::new(path.as_ref()).ok()?;
