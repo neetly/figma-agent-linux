@@ -1,5 +1,3 @@
-use std::ptr;
-
 pub use fontconfig_sys::*;
 
 pub use config::*;
@@ -17,9 +15,9 @@ pub mod str_list;
 pub mod str_set;
 
 pub fn init() -> Option<Config> {
-    let result = unsafe { FcInit() };
-    if result != FcFalse {
-        Some(unsafe { Config::from_raw(ptr::null_mut()) })
+    let raw = unsafe { FcInitLoadConfigAndFonts() };
+    if !raw.is_null() {
+        Some(unsafe { Config::from_raw(raw) })
     } else {
         None
     }
