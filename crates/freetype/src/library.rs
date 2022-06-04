@@ -27,7 +27,7 @@ impl Default for Library {
 
 impl Library {
     pub fn new() -> Library {
-        let mut raw: FT_Library = ptr::null_mut();
+        let mut raw = ptr::null_mut();
         let result = unsafe { FT_New_Library(&mut MEMORY, &mut raw) };
         assert!(result == FT_Err_Ok);
         Library { raw }

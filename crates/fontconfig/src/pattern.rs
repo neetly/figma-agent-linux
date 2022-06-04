@@ -123,7 +123,7 @@ impl Pattern {
     }
 
     pub fn get_str_at(&self, object: &[u8], index: usize) -> Option<&str> {
-        let mut value: *mut FcChar8 = ptr::null_mut();
+        let mut value = ptr::null_mut();
         let result =
             unsafe { FcPatternGetString(self.raw, object.as_ptr() as _, index as _, &mut value) };
         if result == FcResultMatch {
@@ -138,7 +138,7 @@ impl Pattern {
     }
 
     pub fn get_freetype_face_at(&self, object: &[u8], index: usize) -> Option<freetype::Face> {
-        let mut value: freetype::FT_Face = ptr::null_mut();
+        let mut value = ptr::null_mut();
         let result =
             unsafe { FcPatternGetFTFace(self.raw, object.as_ptr() as _, index as _, &mut value) };
         if result == FcResultMatch {
