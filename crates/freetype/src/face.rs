@@ -2,9 +2,11 @@
 
 use std::{ffi::CString, ptr};
 
-use freetype_sys::{FT_Done_Face, FT_Err_Ok, FT_Face, FT_New_Face};
+use freetype_sys::{
+    FT_Done_Face, FT_Err_Ok, FT_Face, FT_Get_Sfnt_Name, FT_Get_Sfnt_Name_Count, FT_New_Face,
+};
 
-use crate::Library;
+use crate::{Library, SfntName};
 
 pub struct Face {
     raw: FT_Face,
@@ -34,6 +36,22 @@ impl Face {
 
     pub unsafe fn from_raw(raw: FT_Face) -> Face {
         Face { raw }
+    }
+
+    pub fn sfnt_name<P>(&self, mut predicate: P) -> Option<SfntName>
+    where
+        P: FnMut(&SfntName) -> bool,
+    {
+        let mut sfnt_name: SfntName = Default::default();
+        let count = unsafe { FT_Get_Sfnt_Name_Count(self.raw) };
+        for index in 0..count {
+            let result = unsafe { FT_Get_Sfnt_Name(self.raw, index, sfnt_name.as_mut()) };
+            assert!(result == FT_Err_Ok);
+            if predicate(&sfnt_name) {
+                return Some(sfnt_name);
+            }
+        }
+        None
     }
 }
 

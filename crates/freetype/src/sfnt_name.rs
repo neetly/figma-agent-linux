@@ -8,6 +8,12 @@ pub struct SfntName {
     value: FT_SfntName,
 }
 
+impl Default for SfntName {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl SfntName {
     pub fn new() -> SfntName {
         SfntName {
