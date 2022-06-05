@@ -42,6 +42,7 @@ fn get_font_file(pattern: &Pattern, font_cache: &mut FontCache) -> Option<FontFi
             .unwrap_or(false),
         width: pattern.os_width_class().unwrap_or(5),
 
+        is_variable: pattern.is_variable().unwrap_or(false),
         variation_axes: get_variation_axes(path, index as _, font_cache),
     })
 }

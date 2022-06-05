@@ -24,6 +24,8 @@ pub struct FontFile {
     pub italic: bool,
     pub width: i32,
 
+    #[serde(skip_serializing)]
+    pub is_variable: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub variation_axes: Option<Vec<VariationAxis>>,
 }
