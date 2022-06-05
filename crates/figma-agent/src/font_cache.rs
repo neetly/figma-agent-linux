@@ -13,6 +13,7 @@ const VERSION: i32 = 1;
 
 pub struct FontCache {
     path: PathBuf,
+    data: FontCacheData,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -54,17 +55,17 @@ impl FontCache {
     {
         FontCache {
             path: path.as_ref().into(),
+            data: Default::default(),
         }
     }
 
-    pub fn get<P>(&self, path: P, index: isize) -> Option<Font>
+    pub fn get<P>(&mut self, path: P, index: isize) -> Option<Font>
     where
         P: AsRef<str>,
     {
-        let mut data = self.read();
         let key = format!("{}:{}", path.as_ref(), index);
 
-        if let Some(font_data) = data.fonts.get(&key) {
+        if let Some(font_data) = self.data.fonts.get(&key) {
             let modified_time =
                 fs::metadata(path.as_ref()).and_then(|metadata| metadata.modified());
             if let Ok(modified_time) = modified_time {
@@ -76,13 +77,16 @@ impl FontCache {
 
         let font = Font::new(path, index)?;
         let font_data = FontCacheFontData::new(font.clone());
-        data.fonts.insert(key, font_data);
-        self.write(&data);
+        self.data.fonts.insert(key, font_data);
         Some(font)
     }
 
-    fn read(&self) -> FontCacheData {
-        self.try_read().unwrap_or_default()
+    pub fn read(&mut self) {
+        self.data = self.try_read().unwrap_or_default();
+    }
+
+    pub fn write(&self) {
+        let _ = self.try_write(&self.data);
     }
 
     fn try_read(&self) -> Option<FontCacheData> {
@@ -93,10 +97,6 @@ impl FontCache {
         } else {
             None
         }
-    }
-
-    fn write(&self, data: &FontCacheData) {
-        let _ = self.try_write(data);
     }
 
     fn try_write(&self, data: &FontCacheData) -> Option<()> {
