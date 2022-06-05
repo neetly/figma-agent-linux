@@ -75,7 +75,7 @@ fn get_variable_font_file(mut font_file: FontFile) -> Option<FontFile> {
     let font = font_cache
         .borrow_mut()
         .get(&font_file.path, font_file.index as _)?;
-    let instance = font.instances.get(font_file.index as usize >> 16 - 1)?;
+    let instance = font.instances.get((font_file.index as usize >> 16) - 1)?;
 
     font_file.postscript = instance.postscript_name.to_owned();
 
