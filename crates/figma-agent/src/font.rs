@@ -1,3 +1,4 @@
+use freetype::{TT_MS_ID_SYMBOL_CS, TT_MS_ID_UNICODE_CS, TT_PLATFORM_MICROSOFT};
 use serde::{Deserialize, Serialize};
 
 use crate::FT;
@@ -37,7 +38,12 @@ impl Font {
         let mm_var = face.mm_var()?;
 
         let get_name = |name_id| {
-            let sfnt_name = face.find_sfnt_name(|item| item.name_id() == name_id)?;
+            let sfnt_name = face.find_sfnt_name(|item| {
+                item.name_id() == name_id
+                    && item.platform_id() == TT_PLATFORM_MICROSOFT as u16
+                    && (item.encoding_id() == TT_MS_ID_SYMBOL_CS as u16
+                        || item.encoding_id() == TT_MS_ID_UNICODE_CS as u16)
+            })?;
             sfnt_name.name()
         };
 
