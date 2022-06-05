@@ -4,6 +4,7 @@ use actix_cors::Cors;
 use actix_web::{guard, middleware::Logger, web, App, HttpServer};
 use env_logger::Env;
 
+mod payload;
 mod routes;
 
 static ADDR: &str = "localhost:18412";

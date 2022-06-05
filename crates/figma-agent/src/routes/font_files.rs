@@ -1,9 +1,11 @@
 use std::collections::HashMap;
 
 use actix_web::{get, web, Responder};
-use figma_agent::{FontFile, FontFilesPayload, PatternHelpers, VariationAxis, FC, FONT_CACHE};
+use figma_agent::{PatternHelpers, FC, FONT_CACHE};
 use fontconfig::{Pattern, FC_SLANT_ROMAN};
 use itertools::Itertools;
+
+use crate::payload;
 
 #[get("/font-files")]
 pub async fn font_files() -> impl Responder {
@@ -36,17 +38,17 @@ pub async fn font_files() -> impl Responder {
 
     font_cache.borrow_mut().write();
 
-    web::Json(FontFilesPayload {
+    web::Json(payload::FontFilesResult {
         version: 20,
         font_files,
     })
 }
 
-fn get_font_file(pattern: Pattern) -> Option<FontFile> {
+fn get_font_file(pattern: Pattern) -> Option<payload::FontFile> {
     let path = pattern.file()?;
     let index = pattern.index()?;
 
-    Some(FontFile {
+    Some(payload::FontFile {
         path: path.to_owned(),
         index,
 
@@ -65,7 +67,7 @@ fn get_font_file(pattern: Pattern) -> Option<FontFile> {
     })
 }
 
-fn get_variable_font_file(mut font_file: FontFile) -> Option<FontFile> {
+fn get_variable_font_file(mut font_file: payload::FontFile) -> Option<payload::FontFile> {
     let font_cache = FONT_CACHE.lock();
 
     if font_file.index >> 16 == 0 {
@@ -86,7 +88,7 @@ fn get_variable_font_file(mut font_file: FontFile) -> Option<FontFile> {
         font.variation_axes
             .iter()
             .enumerate()
-            .map(|(index, axis)| VariationAxis {
+            .map(|(index, axis)| payload::VariationAxis {
                 name: axis.name.to_owned(),
                 tag: axis.tag.to_owned(),
                 value: to_f64(instance.coordinates[index]),

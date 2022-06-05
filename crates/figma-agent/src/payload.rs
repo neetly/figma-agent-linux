@@ -4,7 +4,7 @@ use serde::Serialize;
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct FontFilesPayload {
+pub struct FontFilesResult {
     pub version: i32,
     pub font_files: HashMap<String, Vec<FontFile>>,
 }
