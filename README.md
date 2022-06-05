@@ -1,6 +1,8 @@
-# Figma Agent for Linux <small>(a.k.a. Font Helper)</small>
+# Figma Agent for Linux
 
 ![CI](https://github.com/neetly/figma-agent-linux/workflows/CI/badge.svg)
+
+(a.k.a. Font Helper)
 
 ## Features
 
