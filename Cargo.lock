@@ -549,6 +549,7 @@ dependencies = [
  "freetype",
  "itertools",
  "lazy_static",
+ "parking_lot",
  "serde",
  "serde_json",
  "xdg",

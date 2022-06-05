@@ -1,22 +1,20 @@
 use actix_web::{get, web, Responder};
-use figma_agent::{
-    FontCache, FontFile, FontFilesPayload, PatternHelpers, VariationAxis, FC, FONT_CACHE,
-};
+use figma_agent::{FontFile, FontFilesPayload, PatternHelpers, VariationAxis, FC, FONT_CACHE};
 use fontconfig::{Pattern, FC_SLANT_ROMAN};
 use itertools::Itertools;
 
 #[get("/font-files")]
 pub async fn font_files() -> impl Responder {
-    let mut font_cache = FONT_CACHE.lock().unwrap();
-    font_cache.read();
+    let font_cache = FONT_CACHE.lock();
+    font_cache.borrow_mut().read();
 
     let font_files = FC
         .list_fonts(&Pattern::new(), None)
         .iter()
-        .flat_map(|pattern| get_font_file(&pattern, &mut font_cache))
+        .flat_map(get_font_file)
         .into_group_map_by(|item| item.path.to_owned());
 
-    font_cache.write();
+    font_cache.borrow_mut().write();
 
     web::Json(FontFilesPayload {
         version: 20,
@@ -24,7 +22,7 @@ pub async fn font_files() -> impl Responder {
     })
 }
 
-fn get_font_file(pattern: &Pattern, font_cache: &mut FontCache) -> Option<FontFile> {
+fn get_font_file(pattern: Pattern) -> Option<FontFile> {
     let path = pattern.file()?;
     let index = pattern.index()?;
 
@@ -43,21 +41,18 @@ fn get_font_file(pattern: &Pattern, font_cache: &mut FontCache) -> Option<FontFi
         width: pattern.os_width_class().unwrap_or(5),
 
         is_variable: pattern.is_variable().unwrap_or(false),
-        variation_axes: get_variation_axes(path, index as _, font_cache),
+        variation_axes: get_variation_axes(path, index as _),
     })
 }
 
-fn get_variation_axes(
-    path: &str,
-    index: isize,
-    font_cache: &mut FontCache,
-) -> Option<Vec<VariationAxis>> {
+fn get_variation_axes(path: &str, index: isize) -> Option<Vec<VariationAxis>> {
     let instance_index = index >> 16;
     if instance_index <= 0 {
         return None;
     }
 
-    let font = font_cache.get(path, index)?;
+    let font_cache = FONT_CACHE.lock();
+    let font = font_cache.borrow_mut().get(path, index)?;
     let instance = font.instances.get(instance_index as usize - 1)?;
 
     let to_f64 = |fixed| fixed as f64 / 65536.0;
