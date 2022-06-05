@@ -70,13 +70,13 @@ impl FontCache {
                 fs::metadata(path.as_ref()).and_then(|metadata| metadata.modified());
             if let Ok(modified_time) = modified_time {
                 if modified_time <= font_data.time {
-                    return Some(font_data.font.clone());
+                    return Some(font_data.font.to_owned());
                 }
             }
         }
 
         let font = Font::new(path, index)?;
-        let font_data = FontCacheFontData::new(font.clone());
+        let font_data = FontCacheFontData::new(font.to_owned());
         self.data.fonts.insert(key, font_data);
         Some(font)
     }

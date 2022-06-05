@@ -5,8 +5,8 @@ use crate::FT;
 #[derive(Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Font {
-    variation_axes: Vec<FontVariationAxis>,
-    instances: Vec<FontInstance>,
+    pub variation_axes: Vec<FontVariationAxis>,
+    pub instances: Vec<FontInstance>,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
