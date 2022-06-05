@@ -13,7 +13,7 @@ pub struct FontFilesPayload {
 #[serde(rename_all = "camelCase")]
 pub struct FontFile {
     #[serde(skip_serializing)]
-    pub file: String,
+    pub path: String,
     #[serde(skip_serializing)]
     pub index: i32,
 

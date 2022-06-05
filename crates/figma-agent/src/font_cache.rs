@@ -54,7 +54,7 @@ impl FontCache {
         P: AsRef<Path>,
     {
         FontCache {
-            path: path.as_ref().into(),
+            path: path.as_ref().to_owned(),
             data: Default::default(),
         }
     }

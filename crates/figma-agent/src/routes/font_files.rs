@@ -14,7 +14,7 @@ pub async fn font_files() -> impl Responder {
         .list_fonts(&Pattern::new(), None)
         .iter()
         .flat_map(|pattern| get_font_file(&pattern, &mut font_cache))
-        .into_group_map_by(|item| item.file.to_owned());
+        .into_group_map_by(|item| item.path.to_owned());
 
     font_cache.write();
 
@@ -29,12 +29,12 @@ fn get_font_file(pattern: &Pattern, font_cache: &mut FontCache) -> Option<FontFi
     let index = pattern.index()?;
 
     Some(FontFile {
-        file: path.into(),
+        path: path.to_owned(),
         index,
 
-        postscript: pattern.postscript_name().unwrap_or("").into(),
-        family: pattern.family().unwrap_or("").into(),
-        style: pattern.style().unwrap_or("").into(),
+        postscript: pattern.postscript_name().unwrap_or("").to_owned(),
+        family: pattern.family().unwrap_or("").to_owned(),
+        style: pattern.style().unwrap_or("").to_owned(),
         weight: pattern.os_weight_class().unwrap_or(400),
         italic: pattern
             .slant()
