@@ -45,8 +45,8 @@ impl Font {
             variation_axes: mm_var
                 .axes()
                 .map(|axis| FontVariationAxis {
-                    name: get_name(axis.name_id()).unwrap_or("".into()),
-                    tag: axis.tag_string().unwrap_or("".into()),
+                    name: get_name(axis.name_id()).unwrap_or_else(|| "".into()),
+                    tag: axis.tag_string().unwrap_or_else(|| "".into()),
                     min: axis.min(),
                     max: axis.max(),
                     default: axis.default(),
@@ -57,11 +57,11 @@ impl Font {
             instances: mm_var
                 .named_styles()
                 .map(|named_style| FontInstance {
-                    name: get_name(named_style.name_id()).unwrap_or("".into()),
+                    name: get_name(named_style.name_id()).unwrap_or_else(|| "".into()),
                     postscript_name: named_style
                         .postscript_name_id()
                         .and_then(get_name)
-                        .unwrap_or("".into()),
+                        .unwrap_or_else(|| "".into()),
                     coordinates: named_style.coordinates().collect(),
                 })
                 .collect(),

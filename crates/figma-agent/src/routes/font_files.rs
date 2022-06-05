@@ -22,7 +22,7 @@ pub async fn font_files() -> impl Responder {
     })
 }
 
-fn get_font_file(pattern: &Pattern, font_cache: &mut FontCache) -> Option<FontFile> {
+fn get_font_file(pattern: &Pattern, _: &mut FontCache) -> Option<FontFile> {
     let path = pattern.file()?;
     let index = pattern.index()?;
 
