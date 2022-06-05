@@ -28,6 +28,6 @@ impl<'a> VarNamedStyle<'a> {
 
     pub fn coordinates(&self) -> impl Iterator<Item = i32> {
         let slice = unsafe { slice::from_raw_parts(self.raw.coords, self.mm_var.axis_count()) };
-        slice.iter().map(|&item| item as _)
+        slice.iter().map(|&coordinate| coordinate as _)
     }
 }

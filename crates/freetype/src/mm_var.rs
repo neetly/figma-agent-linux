@@ -45,14 +45,16 @@ impl<'a> MMVar<'a> {
         slice
             .iter()
             .enumerate()
-            .map(|(index, item)| VarAxis::new(item, self, index))
+            .map(|(index, raw_axis)| VarAxis::new(raw_axis, self, index))
     }
 
     pub fn named_styles(&self) -> impl Iterator<Item = VarNamedStyle> {
         let slice = unsafe {
             slice::from_raw_parts((*self.raw).namedstyle, (*self.raw).num_namedstyles as _)
         };
-        slice.iter().map(|item| VarNamedStyle::new(item, self))
+        slice
+            .iter()
+            .map(|raw_named_style| VarNamedStyle::new(raw_named_style, self))
     }
 }
 

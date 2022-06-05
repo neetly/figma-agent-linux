@@ -44,25 +44,25 @@ impl Font {
         Some(Font {
             variation_axes: mm_var
                 .axes()
-                .map(|item| FontVariationAxis {
-                    name: get_name(item.name_id()).unwrap_or("".into()),
-                    tag: item.tag_string().unwrap_or("".into()),
-                    min: item.min(),
-                    max: item.max(),
-                    default: item.default(),
-                    is_hidden: item.is_hidden().unwrap_or(false),
+                .map(|axis| FontVariationAxis {
+                    name: get_name(axis.name_id()).unwrap_or("".into()),
+                    tag: axis.tag_string().unwrap_or("".into()),
+                    min: axis.min(),
+                    max: axis.max(),
+                    default: axis.default(),
+                    is_hidden: axis.is_hidden().unwrap_or(false),
                 })
                 .collect(),
 
             instances: mm_var
                 .named_styles()
-                .map(|item| FontInstance {
-                    name: get_name(item.name_id()).unwrap_or("".into()),
-                    postscript_name: item
+                .map(|named_style| FontInstance {
+                    name: get_name(named_style.name_id()).unwrap_or("".into()),
+                    postscript_name: named_style
                         .postscript_name_id()
                         .and_then(get_name)
                         .unwrap_or("".into()),
-                    coordinates: item.coordinates().collect(),
+                    coordinates: named_style.coordinates().collect(),
                 })
                 .collect(),
         })
