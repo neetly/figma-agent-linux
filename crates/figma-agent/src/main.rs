@@ -20,8 +20,8 @@ async fn main() -> io::Result<()> {
             .service(
                 web::scope("/figma")
                     .guard(guard::Header("Origin", ORIGIN))
-                    .route("/font-files", web::get().to(routes::font_files))
-                    .route("/font-file", web::get().to(routes::font_file)),
+                    .service(routes::font_files)
+                    .service(routes::font_file),
             )
     })
     .bind(ADDR)?
