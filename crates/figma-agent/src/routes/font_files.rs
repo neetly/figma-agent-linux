@@ -68,16 +68,17 @@ fn get_font_file(pattern: Pattern) -> Option<FontFile> {
 fn get_variable_font_file(mut font_file: FontFile) -> Option<FontFile> {
     let font_cache = FONT_CACHE.lock();
 
-    if font_file.index == 0 {
-        font_file.index = 0x10000;
+    if font_file.index >> 16 == 0 {
+        font_file.index |= 0x10000;
     }
 
     let font = font_cache
         .borrow_mut()
-        .get(&font_file.path, font_file.index as _)?;
+        .get(&font_file.path, font_file.index as isize & 0xFFFF)?;
     let instance = font.instances.get((font_file.index as usize >> 16) - 1)?;
 
     font_file.postscript = instance.postscript_name.to_owned();
+    font_file.style = instance.name.to_owned();
 
     let to_f64 = |fixed| fixed as f64 / 65536.0;
 
