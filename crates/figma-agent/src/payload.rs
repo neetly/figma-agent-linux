@@ -17,8 +17,8 @@ pub struct FontFile {
     #[serde(skip_serializing)]
     pub index: i32,
 
-    pub family: String,
     pub postscript: String,
+    pub family: String,
     pub style: String,
     pub weight: i32,
     pub italic: bool,
