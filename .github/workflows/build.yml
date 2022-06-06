@@ -19,5 +19,5 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: build / ${{ matrix.target }}
+          name: build - ${{ matrix.target }}
           path: ./target/${{ matrix.target }}/release/figma-agent
