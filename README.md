@@ -9,6 +9,12 @@
 - Variable fonts support.
 - Performant thanks to [Fontconfig][].
 
+## Installation
+
+```sh
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/neetly/figma-agent-linux/main/scripts/install.sh)"
+```
+
 ## Comparison
 
 |                                    | Figma Agent for Linux | [Figma Linux Font Helper][] |
