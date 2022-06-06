@@ -1,0 +1,41 @@
+name: Build
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        target: [x86_64-unknown-linux-gnu]
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - run: cargo build --release --target ${{ matrix.target }}
+      - run: |
+          mkdir ./release
+          cp ./target/${{ matrix.target }}/release/figma-agent \
+            ./release/figma-agent-${{ matrix.target }}
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: release
+          path: ./release/figma-agent-${{ matrix.target }}
+
+  release:
+    needs: build
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: release
+          path: release
+
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: ./release/figma-agent-*
