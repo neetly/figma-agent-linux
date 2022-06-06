@@ -34,8 +34,9 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: release
-          path: release
+          path: ./release
 
       - uses: softprops/action-gh-release@v1
         with:
+          name: Figma Agent for Linux ${{ github.ref_name }}
           files: ./release/figma-agent-*
