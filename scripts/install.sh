@@ -7,7 +7,7 @@ XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 echo ":: Figma Agent for Linux"
 echo ":: ====================="
 
-if systemctl --user is-active figma-agent.service > /dev/null 2>&1; then
+if systemctl --user is-active figma-agent.service > /dev/null; then
   echo ":: Stopping figma-agent.service"
   systemctl --user stop figma-agent.service
 fi
