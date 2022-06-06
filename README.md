@@ -1,6 +1,7 @@
 # Figma Agent for Linux
 
-![CI](https://github.com/neetly/figma-agent-linux/workflows/CI/badge.svg)
+[![CI](https://github.com/neetly/figma-agent-linux/actions/workflows/ci.yml/badge.svg)](https://github.com/neetly/figma-agent-linux/actions/workflows/ci.yml)
+[![Build](https://github.com/neetly/figma-agent-linux/actions/workflows/build.yml/badge.svg)](https://github.com/neetly/figma-agent-linux/actions/workflows/build.yml)
 
 (a.k.a. Font Helper)
 
