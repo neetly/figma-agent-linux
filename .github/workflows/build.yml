@@ -1,0 +1,23 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        target: [x86_64-unknown-linux-gnu]
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - run: cargo build --release --target "${{ matrix.target }}"
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: build / ${{ matrix.target }}
+          path: ./target/${{ matrix.target }}/release/figma-agent
