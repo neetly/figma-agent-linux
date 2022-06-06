@@ -291,28 +291,6 @@ checksum = "904dfeac50f3cdaba28fc6f57fdcddb75f49ed61346676a78c4ffe55877802fd"
 
 [[package]]
 name = "bindgen"
-version = "0.59.2"
-source = "git+https://github.com/rust-lang/rust-bindgen.git?rev=5a01c551993e56d20240ef64d0ec78cd4195855d#5a01c551993e56d20240ef64d0ec78cd4195855d"
-dependencies = [
- "bitflags",
- "cexpr",
- "clang-sys",
- "clap",
- "env_logger",
- "lazy_static",
- "lazycell",
- "log",
- "peeking_take_while",
- "proc-macro2",
- "quote",
- "regex",
- "rustc-hash",
- "shlex",
- "which",
-]
-
-[[package]]
-name = "bindgen"
 version = "0.60.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "062dddbc1ba4aca46de6338e2bf87771414c335f7b2f2036e8f3e9befebf88e6"
@@ -568,14 +546,50 @@ dependencies = [
  "actix-files",
  "actix-web",
  "env_logger",
- "fontconfig",
- "freetype",
+ "figma-agent-fontconfig",
+ "figma-agent-freetype",
  "itertools",
  "lazy_static",
  "parking_lot",
  "serde",
  "serde_json",
  "xdg",
+]
+
+[[package]]
+name = "figma-agent-fontconfig"
+version = "0.0.0"
+dependencies = [
+ "figma-agent-fontconfig-sys",
+ "figma-agent-freetype",
+ "libc",
+]
+
+[[package]]
+name = "figma-agent-fontconfig-sys"
+version = "0.0.0"
+dependencies = [
+ "bindgen",
+ "figma-agent-freetype-sys",
+ "libc",
+ "pkg-config",
+]
+
+[[package]]
+name = "figma-agent-freetype"
+version = "0.0.0"
+dependencies = [
+ "figma-agent-freetype-sys",
+ "libc",
+]
+
+[[package]]
+name = "figma-agent-freetype-sys"
+version = "0.0.0"
+dependencies = [
+ "bindgen",
+ "libc",
+ "pkg-config",
 ]
 
 [[package]]
@@ -601,25 +615,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3f9eec918d3f24069decb9af1554cad7c880e2da24a9afd88aca000531ab82c1"
 
 [[package]]
-name = "fontconfig"
-version = "0.0.0"
-dependencies = [
- "fontconfig-sys",
- "freetype",
- "libc",
-]
-
-[[package]]
-name = "fontconfig-sys"
-version = "0.0.0"
-dependencies = [
- "bindgen 0.60.1",
- "freetype-sys",
- "libc",
- "pkg-config",
-]
-
-[[package]]
 name = "form_urlencoded"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -627,23 +622,6 @@ checksum = "5fc25a87fa4fd2094bffb06925852034d90a17f0d1e05197d4956d3555752191"
 dependencies = [
  "matches",
  "percent-encoding",
-]
-
-[[package]]
-name = "freetype"
-version = "0.0.0"
-dependencies = [
- "freetype-sys",
- "libc",
-]
-
-[[package]]
-name = "freetype-sys"
-version = "0.0.0"
-dependencies = [
- "bindgen 0.59.2",
- "libc",
- "pkg-config",
 ]
 
 [[package]]

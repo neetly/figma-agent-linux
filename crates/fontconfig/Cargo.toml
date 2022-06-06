@@ -1,9 +1,12 @@
 [package]
-name = "fontconfig"
+name = "figma-agent-fontconfig"
 version = "0.0.0"
 edition = "2021"
 
+[lib]
+name = "fontconfig"
+
 [dependencies]
-fontconfig-sys = { path = "../fontconfig-sys" }
-freetype = { path = "../freetype" }
+figma-agent-fontconfig-sys = { path = "../fontconfig-sys" }
+figma-agent-freetype = { path = "../freetype" }
 libc = "0.2.126"

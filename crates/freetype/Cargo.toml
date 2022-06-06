@@ -1,8 +1,11 @@
 [package]
-name = "freetype"
+name = "figma-agent-freetype"
 version = "0.0.0"
 edition = "2021"
 
+[lib]
+name = "freetype"
+
 [dependencies]
-freetype-sys = { path = "../freetype-sys" }
+figma-agent-freetype-sys = { path = "../freetype-sys" }
 libc = "0.2.126"
