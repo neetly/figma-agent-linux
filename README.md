@@ -17,12 +17,12 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/neetly/figma-agent-linux
 
 ## Comparison
 
-|                                    | Figma Agent for Linux | [Figma Linux Font Helper][] |
-| ---------------------------------- | --------------------- | --------------------------- |
-| [Variable fonts][] support         | ✔️                    | ❌                          |
-| [XDG Base Directory][] integration | ✔️                    | ❌ ([#14][])                |
-| [Fontconfig][] integration         | ✔️                    | ❌                          |
-| Run as a non-root user             | ✔️                    | ❌ ([#14][])                |
+|                            | Figma Agent for Linux | [Figma Linux Font Helper][] |
+| -------------------------- | --------------------- | --------------------------- |
+| [Variable fonts][]         | ✔️                    | ❌                          |
+| [XDG Base Directory][]     | ✔️                    | ❌ ([#14][])                |
+| [Fontconfig][] integration | ✔️                    | ❌                          |
+| Run as a non-root user     | ✔️                    | ❌ ([#14][])                |
 
 [figma linux font helper]: https://github.com/Figma-Linux/figma-linux-font-helper
 [variable fonts]: https://www.figma.com/typography/variable-fonts/
