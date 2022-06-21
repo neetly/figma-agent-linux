@@ -2,7 +2,6 @@
 set -eo pipefail
 
 XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 
 echo ":: Figma Agent for Linux"
 echo ":: ====================="
@@ -19,8 +18,8 @@ curl --location https://github.com/neetly/figma-agent-linux/releases/latest/down
 chmod +x "$XDG_DATA_HOME/figma-agent/figma-agent"
 
 echo ":: Writing to figma-agent.service"
-mkdir -p "$XDG_CONFIG_HOME/systemd/user"
-cat > "$XDG_CONFIG_HOME/systemd/user/figma-agent.service" << EOF
+mkdir -p "$XDG_DATA_HOME/systemd/user"
+cat > "$XDG_DATA_HOME/systemd/user/figma-agent.service" << EOF
 [Unit]
 Wants=network-online.target
 After=network-online.target
