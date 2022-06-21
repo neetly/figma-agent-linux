@@ -21,6 +21,7 @@ echo ":: Writing to figma-agent.service"
 mkdir -p "$XDG_DATA_HOME/systemd/user"
 cat > "$XDG_DATA_HOME/systemd/user/figma-agent.service" << EOF
 [Unit]
+Description=Figma Agent for Linux
 Wants=network-online.target
 After=network-online.target
 
