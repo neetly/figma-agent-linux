@@ -10,6 +10,13 @@
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/neetly/figma-agent-linux/main/scripts/install.sh)"
 ```
 
+### Arch Linux
+
+```sh
+paru -S figma-agent-linux
+systemctl --user enable --now figma-agent-linux.service
+```
+
 ## Features
 
 - Variable fonts support.
