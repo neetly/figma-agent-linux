@@ -14,7 +14,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/neetly/figma-agent-linux
 
 ```sh
 paru -S figma-agent-linux
-systemctl --user enable --now figma-agent-linux.service
+systemctl --user enable --now figma-agent.service
 ```
 
 ## Features
