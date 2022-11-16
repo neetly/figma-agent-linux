@@ -1,9 +1,13 @@
 #![allow(clippy::missing_safety_doc)]
 
-use std::{ffi::CString, ptr};
+use std::{
+    ffi::{CStr, CString},
+    ptr,
+};
 
 use freetype_sys::{
-    FT_Done_Face, FT_Err_Ok, FT_Face, FT_Get_Sfnt_Name, FT_Get_Sfnt_Name_Count, FT_New_Face,
+    FT_Done_Face, FT_Err_Ok, FT_Face, FT_Get_Postscript_Name, FT_Get_Sfnt_Name,
+    FT_Get_Sfnt_Name_Count, FT_New_Face,
 };
 
 use crate::{Library, MMVar, SfntName};
@@ -38,6 +42,42 @@ impl Face<'_> {
     pub unsafe fn from_raw(raw: FT_Face, library: &Library) -> Face {
         Face { raw, library }
     }
+}
+
+impl Drop for Face<'_> {
+    fn drop(&mut self) {
+        let result = unsafe { FT_Done_Face(self.raw) };
+        assert!(result == FT_Err_Ok);
+    }
+}
+
+impl Face<'_> {
+    pub fn postscript_name(&self) -> Option<&str> {
+        let raw_postscript_name = unsafe { FT_Get_Postscript_Name(self.raw) };
+        if !raw_postscript_name.is_null() {
+            unsafe { CStr::from_ptr(raw_postscript_name) }.to_str().ok()
+        } else {
+            None
+        }
+    }
+
+    pub fn family_name(&self) -> Option<&str> {
+        let raw_family_name = unsafe { (*self.raw).family_name };
+        if !raw_family_name.is_null() {
+            unsafe { CStr::from_ptr(raw_family_name) }.to_str().ok()
+        } else {
+            None
+        }
+    }
+
+    pub fn style_name(&self) -> Option<&str> {
+        let raw_style_name = unsafe { (*self.raw).style_name };
+        if !raw_style_name.is_null() {
+            unsafe { CStr::from_ptr(raw_style_name) }.to_str().ok()
+        } else {
+            None
+        }
+    }
 
     pub fn find_sfnt_name<P>(&self, mut predicate: P) -> Option<SfntName>
     where
@@ -56,12 +96,5 @@ impl Face<'_> {
 
     pub fn mm_var(&self) -> Option<MMVar> {
         MMVar::from_face(self, self.library)
-    }
-}
-
-impl Drop for Face<'_> {
-    fn drop(&mut self) {
-        let result = unsafe { FT_Done_Face(self.raw) };
-        assert!(result == FT_Err_Ok);
     }
 }
