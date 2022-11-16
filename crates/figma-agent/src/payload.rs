@@ -2,14 +2,14 @@ use std::collections::HashMap;
 
 use serde::Serialize;
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct FontFilesResult {
     pub version: i32,
     pub font_files: HashMap<String, Vec<FontFile>>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct FontFile {
     #[serde(skip_serializing)]
@@ -30,7 +30,7 @@ pub struct FontFile {
     pub variation_axes: Option<Vec<VariationAxis>>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct VariationAxis {
     pub name: String,

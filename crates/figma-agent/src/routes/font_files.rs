@@ -12,8 +12,9 @@ pub async fn font_files() -> impl Responder {
     let font_cache = FONT_CACHE.lock();
     font_cache.borrow_mut().read();
 
-    let font_files = FC
-        .list_fonts(&Pattern::new(), None)
+    let patterns: Vec<_> = FC.list_fonts(&Pattern::new(), None).iter().collect();
+
+    let font_files = patterns
         .iter()
         .flat_map(get_font_file)
         .into_group_map_by(|item| item.path.to_owned());
@@ -27,7 +28,7 @@ pub async fn font_files() -> impl Responder {
                     items
                         .into_iter()
                         .filter(|item| !item.is_variable)
-                        .flat_map(get_variable_font_file)
+                        .map(|item| get_variable_font_file(&item).unwrap_or(item))
                         .collect(),
                 )
             } else {
@@ -44,7 +45,7 @@ pub async fn font_files() -> impl Responder {
     })
 }
 
-fn get_font_file(pattern: Pattern) -> Option<payload::FontFile> {
+fn get_font_file(pattern: &Pattern) -> Option<payload::FontFile> {
     let path = pattern.file()?;
     let index = pattern.index()?;
 
@@ -67,35 +68,49 @@ fn get_font_file(pattern: Pattern) -> Option<payload::FontFile> {
     })
 }
 
-fn get_variable_font_file(mut font_file: payload::FontFile) -> Option<payload::FontFile> {
+fn get_variable_font_file(font_file: &payload::FontFile) -> Option<payload::FontFile> {
     let font_cache = FONT_CACHE.lock();
 
-    if font_file.index >> 16 == 0 {
-        font_file.index |= 0x10000;
+    let font_index = font_file.index as isize & 0xFFFF;
+    let font = font_cache.borrow_mut().get(&font_file.path, font_index)?;
+
+    let instance_index = (font_file.index as isize >> 16) - 1;
+    let instance = if instance_index != -1 {
+        font.instances.get(instance_index as usize)
+    } else {
+        None
+    };
+
+    let mut font_file = font_file.to_owned();
+
+    if let Some(instance) = instance {
+        font_file.postscript = instance.postscript_name.to_owned();
+        font_file.family = font.family_name.to_owned();
+        font_file.style = instance.name.to_owned();
+    } else {
+        font_file.postscript = font.postscript_name.to_owned();
+        font_file.family = font.family_name.to_owned();
+        font_file.style = font.style_name.to_owned();
     }
 
-    let font = font_cache
-        .borrow_mut()
-        .get(&font_file.path, font_file.index as isize & 0xFFFF)?;
-    let instance = font.instances.get((font_file.index as usize >> 16) - 1)?;
-
-    font_file.postscript = instance.postscript_name.to_owned();
-    font_file.style = instance.name.to_owned();
-
-    let to_f64 = |fixed| fixed as f64 / 65536.0;
+    let from_fixed = |fixed| fixed as f64 / 65536.0;
 
     font_file.variation_axes = Some(
         font.variation_axes
             .iter()
             .enumerate()
-            .map(|(index, axis)| payload::VariationAxis {
-                name: axis.name.to_owned(),
-                tag: axis.tag.to_owned(),
-                value: to_f64(instance.coordinates[index]),
-                min: to_f64(axis.min),
-                max: to_f64(axis.max),
-                default: to_f64(axis.default),
-                hidden: axis.is_hidden,
+            .map(|(index, variation_axis)| payload::VariationAxis {
+                name: variation_axis.name.to_owned(),
+                tag: variation_axis.tag.to_owned(),
+                value: from_fixed(
+                    instance
+                        .map(|instance| instance.coordinates[index])
+                        .unwrap_or(variation_axis.default),
+                ),
+                min: from_fixed(variation_axis.min),
+                max: from_fixed(variation_axis.max),
+                default: from_fixed(variation_axis.default),
+                hidden: variation_axis.is_hidden,
             })
             .collect(),
     );
