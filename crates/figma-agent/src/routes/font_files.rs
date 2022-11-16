@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use actix_web::{get, web, Responder};
-use figma_agent::{PatternHelpers, FC, FONT_CACHE};
+use figma_agent::{PatternHelpers, CONFIG, FC, FONT_CACHE};
 use fontconfig::{Pattern, FC_SLANT_ROMAN};
 use itertools::Itertools;
 
@@ -69,6 +69,10 @@ fn get_font_file(pattern: &Pattern) -> Option<payload::FontFile> {
 }
 
 fn get_variable_font_file(font_file: &payload::FontFile) -> Option<payload::FontFile> {
+    if !CONFIG.enable_variable_font {
+        return None;
+    }
+
     let font_cache = FONT_CACHE.lock();
 
     let font_index = font_file.index as isize & 0xFFFF;
