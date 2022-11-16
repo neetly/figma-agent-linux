@@ -6,6 +6,9 @@ use crate::FT;
 #[derive(Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Font {
+    pub postscript_name: String,
+    pub family_name: String,
+    pub style_name: String,
     pub variation_axes: Vec<FontVariationAxis>,
     pub instances: Vec<FontInstance>,
 }
@@ -48,6 +51,10 @@ impl Font {
         };
 
         Some(Font {
+            postscript_name: face.postscript_name().unwrap_or("").to_owned(),
+            family_name: face.family_name().unwrap_or("").to_owned(),
+            style_name: face.style_name().unwrap_or("").to_owned(),
+
             variation_axes: mm_var
                 .axes()
                 .map(|axis| FontVariationAxis {

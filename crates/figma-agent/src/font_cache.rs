@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::Font;
 
-const VERSION: i32 = 1;
+const VERSION: i32 = 2;
 
 pub struct FontCache {
     path: PathBuf,
