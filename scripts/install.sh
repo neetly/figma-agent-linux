@@ -13,7 +13,7 @@ fi
 
 echo ":: Downloading figma-agent"
 mkdir -p "$XDG_DATA_HOME/figma-agent"
-curl --location https://github.com/neetly/figma-agent-linux/releases/latest/download/figma-agent-x86_64-unknown-linux-gnu \
+curl --location "https://github.com/neetly/figma-agent-linux/releases/latest/download/figma-agent-$(uname -m)-unknown-linux-gnu" \
   --output "$XDG_DATA_HOME/figma-agent/figma-agent" --fail
 chmod +x "$XDG_DATA_HOME/figma-agent/figma-agent"
 
