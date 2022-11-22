@@ -10,5 +10,5 @@ name = "freetype_sys"
 libc = "0.2.137"
 
 [build-dependencies]
-bindgen = "0.62.0"
+bindgen = "0.63.0"
 pkg-config = "0.3.26"
