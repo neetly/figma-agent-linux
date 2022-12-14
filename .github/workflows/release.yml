@@ -11,7 +11,7 @@ jobs:
       matrix:
         target: [x86_64-unknown-linux-gnu, aarch64-unknown-linux-gnu]
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
 
@@ -34,12 +34,13 @@ jobs:
             libfreetype6-dev:arm64 \
             libfontconfig1-dev:arm64
 
-          echo "PKG_CONFIG=aarch64-linux-gnu-pkg-config" >> "$GITHUB_ENV"
+          cat << EOF >> "$GITHUB_ENV"
+          CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc
+          PKG_CONFIG=aarch64-linux-gnu-pkg-config
+          EOF
 
       - run: cargo fetch --locked --target ${{ matrix.target }}
       - run: cargo build --release --target ${{ matrix.target }}
-        env:
-          CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: aarch64-linux-gnu-gcc
 
       - run: |
           mkdir ./release
