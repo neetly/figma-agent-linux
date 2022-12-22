@@ -7,7 +7,7 @@ edition = "2021"
 name = "freetype_sys"
 
 [dependencies]
-libc = "0.2.138"
+libc = "0.2.139"
 
 [build-dependencies]
 bindgen = "0.63.0"
