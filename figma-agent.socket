@@ -1,0 +1,8 @@
+[Unit]
+Description=Figma Agent for Linux
+
+[Socket]
+ListenStream=18412
+
+[Install]
+WantedBy=sockets.target
