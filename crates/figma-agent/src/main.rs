@@ -35,5 +35,5 @@ async fn main() -> io::Result<()> {
         server.bind(ADDR)?
     };
 
-    server.run().await
+    server.workers(1).run().await
 }
