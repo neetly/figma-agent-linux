@@ -3,6 +3,7 @@ use std::io;
 use actix_cors::Cors;
 use actix_web::{guard, middleware::Logger, web, App, HttpServer};
 use env_logger::Env;
+use listenfd::ListenFd;
 
 mod payload;
 mod routes;
@@ -14,7 +15,9 @@ static ORIGIN: &str = "https://www.figma.com";
 async fn main() -> io::Result<()> {
     env_logger::init_from_env(Env::default().default_filter_or("info"));
 
-    HttpServer::new(|| {
+    let mut listen_fd = ListenFd::from_env();
+
+    let server = HttpServer::new(|| {
         App::new()
             .wrap(Logger::default())
             .wrap(Cors::default().allowed_origin(ORIGIN))
@@ -24,8 +27,13 @@ async fn main() -> io::Result<()> {
                     .service(routes::font_files)
                     .service(routes::font_file),
             )
-    })
-    .bind(ADDR)?
-    .run()
-    .await
+    });
+
+    let server = if let Some(listener) = listen_fd.take_tcp_listener(0)? {
+        server.listen(listener)?
+    } else {
+        server.bind(ADDR)?
+    };
+
+    server.run().await
 }
