@@ -15,5 +15,5 @@ lazy_static = "1.4.0"
 listenfd = "1.0.0"
 parking_lot = "0.12.1"
 serde = { version = "1.0.152", features = ["derive"] }
-serde_json = "1.0.93"
+serde_json = "1.0.94"
 xdg = "2.4.1"
