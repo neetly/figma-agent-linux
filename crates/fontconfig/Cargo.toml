@@ -9,4 +9,4 @@ name = "fontconfig"
 [dependencies]
 figma-agent-fontconfig-sys = { path = "../fontconfig-sys" }
 figma-agent-freetype = { path = "../freetype" }
-libc = "0.2.140"
+libc = "0.2.141"
