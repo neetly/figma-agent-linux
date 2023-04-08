@@ -20,7 +20,11 @@ async fn main() -> io::Result<()> {
     let server = HttpServer::new(|| {
         App::new()
             .wrap(Logger::default())
-            .wrap(Cors::default().allowed_origin(ORIGIN))
+            .wrap(
+                Cors::default()
+                    .allowed_origin(ORIGIN)
+                    .allow_private_network_access(),
+            )
             .service(
                 web::scope("/figma")
                     .guard(guard::Header("Origin", ORIGIN))
