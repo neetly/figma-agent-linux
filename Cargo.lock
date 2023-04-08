@@ -527,7 +527,7 @@ dependencies = [
 
 [[package]]
 name = "figma-agent"
-version = "0.2.6"
+version = "0.2.7"
 dependencies = [
  "actix-cors",
  "actix-files",
@@ -546,7 +546,7 @@ dependencies = [
 
 [[package]]
 name = "figma-agent-fontconfig"
-version = "0.2.6"
+version = "0.2.7"
 dependencies = [
  "figma-agent-fontconfig-sys",
  "figma-agent-freetype",
@@ -555,7 +555,7 @@ dependencies = [
 
 [[package]]
 name = "figma-agent-fontconfig-sys"
-version = "0.2.6"
+version = "0.2.7"
 dependencies = [
  "bindgen",
  "figma-agent-freetype-sys",
@@ -565,7 +565,7 @@ dependencies = [
 
 [[package]]
 name = "figma-agent-freetype"
-version = "0.2.6"
+version = "0.2.7"
 dependencies = [
  "figma-agent-freetype-sys",
  "libc",
@@ -573,7 +573,7 @@ dependencies = [
 
 [[package]]
 name = "figma-agent-freetype-sys"
-version = "0.2.6"
+version = "0.2.7"
 dependencies = [
  "bindgen",
  "libc",
