@@ -27,9 +27,9 @@ systemctl --user enable --now figma-agent.service
 |                            | Figma Agent for Linux | [Figma Linux Font Helper][] |
 | -------------------------- | --------------------- | --------------------------- |
 | [Variable Fonts][]         | ✔️                    | ❌                          |
-| [XDG Base Directory][]     | ✔️                    | ❌ ([#14][])                |
+| [XDG Base Directory][]     | ✔️                    | ✔️                          |
 | [Fontconfig][] Integration | ✔️                    | ❌                          |
-| Run as a non-root user     | ✔️                    | ❌ ([#14][])                |
+| Run as a non-root user     | ✔️                    | ✔️                          |
 
 ## Credit
 
