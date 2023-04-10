@@ -39,4 +39,3 @@ This project was inspired by [Figma Linux Font Helper][].
 [fontconfig]: https://www.freedesktop.org/wiki/Software/fontconfig/
 [xdg base directory]: https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
 [figma linux font helper]: https://github.com/Figma-Linux/figma-linux-font-helper
-[#14]: https://github.com/Figma-Linux/figma-linux-font-helper/issues/14
