@@ -8,4 +8,4 @@ name = "freetype"
 
 [dependencies]
 figma-agent-freetype-sys = { path = "../freetype-sys" }
-libc = "0.2.142"
+libc = "0.2.143"
