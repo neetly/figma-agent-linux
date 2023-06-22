@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, fs, time::UNIX_EPOCH};
 
 use actix_web::{get, web, Responder};
 use figma_agent::{PatternHelpers, CONFIG, FC, FONT_CACHE};
@@ -40,7 +40,8 @@ pub async fn font_files() -> impl Responder {
     font_cache.borrow_mut().write();
 
     web::Json(payload::FontFilesResult {
-        version: 20,
+        version: 22,
+        package: "116.10.8".to_owned(), // latest version as of 2023-06-22
         font_files,
     })
 }
@@ -53,6 +54,14 @@ fn get_font_file(pattern: &Pattern) -> Option<payload::FontFile> {
         path: path.to_owned(),
         index,
 
+        user_installed: true,
+        modified_at: fs::metadata(path)
+            .and_then(|metadata| metadata.modified())
+            .ok()
+            .and_then(|modified_time| modified_time.duration_since(UNIX_EPOCH).ok())
+            .map(|duration| duration.as_secs())
+            .unwrap_or(0),
+
         postscript: pattern.postscript_name().unwrap_or("").to_owned(),
         family: pattern.family().unwrap_or("").to_owned(),
         style: pattern.style().unwrap_or("").to_owned(),
@@ -61,7 +70,7 @@ fn get_font_file(pattern: &Pattern) -> Option<payload::FontFile> {
             .slant()
             .map(|slant| slant != FC_SLANT_ROMAN)
             .unwrap_or(false),
-        width: pattern.os_width_class().unwrap_or(5),
+        stretch: pattern.os_width_class().unwrap_or(5),
 
         is_variable: pattern.is_variable().unwrap_or(false),
         variation_axes: None,
