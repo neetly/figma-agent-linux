@@ -35,7 +35,7 @@ rm -rf ~/.local/share/systemd/user/figma-agent.{service,socket}
 - Support [Variable Fonts][]
 - High Performance (Thanks to [Fontconfig][])
 
-## Comparison
+## Comparisons
 
 |                            | Figma Agent for Linux | [Figma Linux Font Helper][] |
 | -------------------------- | --------------------- | --------------------------- |
@@ -44,11 +44,16 @@ rm -rf ~/.local/share/systemd/user/figma-agent.{service,socket}
 | [Fontconfig][] Integration | ✔️                    | ❌                          |
 | Run as a non-root user     | ✔️                    | ✔️                          |
 
+## Alternatives
+
+Another option is to use [Wine][] to run the official `figma_agent.exe` binary. To be honest, I use this approach during development for the reverse engineering proposal.
+
 ## Credit
 
 This project was inspired by [Figma Linux Font Helper][].
 
-[variable fonts]: https://www.figma.com/typography/variable-fonts/
-[fontconfig]: https://www.freedesktop.org/wiki/Software/fontconfig/
-[xdg base directory]: https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
-[figma linux font helper]: https://github.com/Figma-Linux/figma-linux-font-helper
+[Variable Fonts]: https://www.figma.com/typography/variable-fonts/
+[Fontconfig]: https://www.freedesktop.org/wiki/Software/fontconfig/
+[XDG Base Directory]: https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
+[Figma Linux Font Helper]: https://github.com/Figma-Linux/figma-linux-font-helper
+[Wine]: https://www.winehq.org/
