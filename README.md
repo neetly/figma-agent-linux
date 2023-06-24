@@ -15,9 +15,20 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/neetly/figma-agent-linux
 ### Arch Linux
 
 ```sh
-paru -S figma-agent-linux
-systemctl --user enable --now figma-agent.service
+paru -S --needed figma-agent-linux
+systemctl --user enable --now figma-agent.socket
 ```
+
+<details>
+<summary><h3>Uninstallation</h3></summary>
+
+```sh
+systemctl --user disable --now figma-agent.{service,socket}
+rm -rf ~/.local/share/figma-agent
+rm -rf ~/.local/share/systemd/user/figma-agent.{service,socket}
+```
+
+</details>
 
 ## Features
 
