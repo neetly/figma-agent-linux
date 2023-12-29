@@ -4,7 +4,7 @@ version = "0.2.8"
 edition = "2021"
 
 [dependencies]
-actix-cors = { version = "0.6.4", features = ["draft-private-network-access"] }
+actix-cors = { version = "0.6.5", features = ["draft-private-network-access"] }
 actix-files = "0.6.2"
 actix-web = "4.4.1"
 env_logger = "0.10.1"
