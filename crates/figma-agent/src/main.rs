@@ -23,6 +23,7 @@ async fn main() -> io::Result<()> {
             .wrap(
                 Cors::default()
                     .allowed_origin(ORIGIN)
+                    .allowed_methods(vec!["GET"])
                     .allow_private_network_access(),
             )
             .service(
