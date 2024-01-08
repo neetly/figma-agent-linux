@@ -8,8 +8,8 @@ name = "fontconfig_sys"
 
 [dependencies]
 figma-agent-freetype-sys = { path = "../freetype-sys" }
-libc = "0.2.152"
+libc = "=0.2.152"
 
 [build-dependencies]
-bindgen = "0.68.1"
-pkg-config = "0.3.28"
+bindgen = "=0.68.1"
+pkg-config = "=0.3.28"
