@@ -15,7 +15,7 @@ fn main() {
 
     let bindings = builder()
         .header("./include/freetype.h")
-        .parse_callbacks(Box::new(CargoCallbacks))
+        .parse_callbacks(Box::new(CargoCallbacks::new()))
         .clang_args(clang_args)
         .ctypes_prefix("::libc")
         .allowlist_file(r".+[/\\]freetype[/\\].+")
