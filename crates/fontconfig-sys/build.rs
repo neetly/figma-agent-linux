@@ -1,11 +1,11 @@
 use std::{env, path::PathBuf};
 
+// https://github.com/rust-lang/rust-bindgen/issues/2712
+#[allow(deprecated)]
 use bindgen::{builder, CargoCallbacks, EnumVariation, MacroTypeVariation};
 use pkg_config::probe_library;
 
 fn main() {
-    println!("cargo:rerun-if-changed=./include/fontconfig.h");
-
     let library = probe_library("fontconfig").unwrap();
     let clang_args: Vec<_> = library
         .include_paths
@@ -15,7 +15,7 @@ fn main() {
 
     let bindings = builder()
         .header("./include/fontconfig.h")
-        .parse_callbacks(Box::new(CargoCallbacks))
+        .parse_callbacks(Box::new(CargoCallbacks::new()))
         .clang_args(clang_args)
         .ctypes_prefix("::libc")
         .allowlist_file(r".+[/\\]fontconfig[/\\].+")

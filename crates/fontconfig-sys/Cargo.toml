@@ -11,5 +11,5 @@ figma-agent-freetype-sys = { path = "../freetype-sys" }
 libc = "=0.2.152"
 
 [build-dependencies]
-bindgen = "=0.68.1"
+bindgen = "=0.69.1"
 pkg-config = "=0.3.28"
