@@ -11,4 +11,4 @@ libc = "=0.2.152"
 
 [build-dependencies]
 bindgen = "=0.69.2"
-pkg-config = "=0.3.28"
+pkg-config = "=0.3.29"
