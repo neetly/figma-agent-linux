@@ -8,7 +8,7 @@ use listenfd::ListenFd;
 mod payload;
 mod routes;
 
-static ADDR: &str = "localhost:18412";
+static ADDR: &str = "localhost:44950";
 static ORIGIN: &str = "https://www.figma.com";
 
 #[actix_web::main]

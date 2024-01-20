@@ -39,7 +39,7 @@ cat > "$XDG_DATA_HOME/systemd/user/figma-agent.socket" << EOF
 Description=Figma Agent for Linux
 
 [Socket]
-ListenStream=18412
+ListenStream=44950
 
 [Install]
 WantedBy=sockets.target
