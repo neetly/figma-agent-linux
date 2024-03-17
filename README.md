@@ -21,7 +21,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/neetly/figma-agent-linux
 ### Arch Linux
 
 ```sh
-paru -S --needed figma-agent-linux-bin
+paru -S --needed figma-agent-linux-bin # or figma-agent-linux, if you prefer to compile it youself
 systemctl --user enable --now figma-agent.socket
 ```
 
