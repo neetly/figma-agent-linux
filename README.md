@@ -25,8 +25,9 @@ paru -S --needed figma-agent-linux-bin # or figma-agent-linux, if you prefer to 
 systemctl --user enable --now figma-agent.socket
 ```
 
+### Uninstallation
+
 <details>
-<summary><h3>Uninstallation</h3></summary>
 
 ```sh
 systemctl --user disable --now figma-agent.{service,socket}
