@@ -6,6 +6,14 @@
 
 ## Installation
 
+> [!IMPORTANT]  
+> Due to changes to the Figma website, we must override the browser's user agent
+> in order for this service to function. You might use a browser extension to do
+> this. Choosing a Windows/macOS user agent is sufficient.
+>
+> Please vote up this thread on Figma's official forum.  
+> https://forum.figma.com/t/requests-to-font-helper-on-linux-stopped-working/61389
+
 ```sh
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/neetly/figma-agent-linux/main/scripts/install.sh)"
 ```
