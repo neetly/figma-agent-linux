@@ -47,6 +47,7 @@ rm -rf ~/.local/share/systemd/user/figma-agent.{service,socket}
 |                            | Figma Agent for Linux | [Figma Linux Font Helper][] |
 | -------------------------- | --------------------- | --------------------------- |
 | [Variable Fonts][]         | ✔️                    | ❌                          |
+| Font Preview               | ❌                    | ❌                          |
 | [XDG Base Directory][]     | ✔️                    | ✔️                          |
 | [Fontconfig][] Integration | ✔️                    | ❌                          |
 | Run as a non-root user     | ✔️                    | ✔️                          |
