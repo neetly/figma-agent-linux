@@ -34,7 +34,7 @@ jobs:
             libfreetype6-dev:arm64 \
             libfontconfig1-dev:arm64
 
-          cat << EOF >> "$GITHUB_ENV"
+          cat >> "$GITHUB_ENV" << EOF
           CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc
           PKG_CONFIG=aarch64-linux-gnu-pkg-config
           EOF
