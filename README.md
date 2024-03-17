@@ -55,7 +55,7 @@ rm -rf ~/.local/share/systemd/user/figma-agent.{service,socket}
 ## Alternatives
 
 Another option is to use [Wine][] to run the official `figma_agent.exe` binary.
-This method is used for reverse engineering during development.
+We use this method for reverse engineering throughout development.
 
 ## Troubleshooting
 
