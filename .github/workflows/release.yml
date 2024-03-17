@@ -28,8 +28,8 @@ jobs:
           deb [arch=arm64] http://ports.ubuntu.com/ $RELEASE-security main restricted universe multiverse
           EOF
 
-          sudo apt update
-          sudo apt install \
+          sudo apt-get update
+          sudo apt-get install \
             gcc-aarch64-linux-gnu \
             libfreetype6-dev:arm64 \
             libfontconfig1-dev:arm64
