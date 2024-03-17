@@ -60,7 +60,12 @@ proposal.
 
 ## Troubleshooting
 
-### Brave browser
+### Ad Blocker
+
+Please check to see if any rules block figma.com from accessing localhost, such
+as [Block Outsider Intrusion into LAN].
+
+### Brave Browser
 
 Please grant figma.com permission to access localhost.  
 https://brave.com/privacy-updates/27-localhost-permission/
@@ -76,3 +81,5 @@ This project was inspired by [Figma Linux Font Helper][].
 [Figma Linux Font Helper]:
   https://github.com/Figma-Linux/figma-linux-font-helper
 [Wine]: https://www.winehq.org/
+[Block Outsider Intrusion into LAN]:
+  https://github.com/uBlockOrigin/uAssets/blob/master/filters/lan-block.txt
