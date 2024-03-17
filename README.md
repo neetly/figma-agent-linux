@@ -58,6 +58,13 @@ Another option is to use [Wine][] to run the official `figma_agent.exe` binary.
 I use this approach during development for the reverse engineering
 proposal.
 
+## Troubleshooting
+
+### Brave browser
+
+Please grant figma.com permission to access localhost.  
+https://brave.com/privacy-updates/27-localhost-permission/
+
 ## Credit
 
 This project was inspired by [Figma Linux Font Helper][].
