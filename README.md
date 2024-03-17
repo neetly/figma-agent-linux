@@ -50,7 +50,6 @@ rm -rf ~/.local/share/systemd/user/figma-agent.{service,socket}
 | Font Preview               | ❌                    | ❌                          |
 | [XDG Base Directory][]     | ✔️                    | ✔️                          |
 | [Fontconfig][] Integration | ✔️                    | ❌                          |
-| Run as a non-root user     | ✔️                    | ✔️                          |
 
 ## Alternatives
 
