@@ -31,8 +31,7 @@ systemctl --user enable --now figma-agent.socket
 
 ```sh
 systemctl --user disable --now figma-agent.{service,socket}
-rm -rf ~/.local/share/figma-agent
-rm -rf ~/.local/share/systemd/user/figma-agent.{service,socket}
+rm -rf ~/.local/share/figma-agent ~/.local/share/systemd/user/figma-agent.{service,socket} ~/.cache/figma-agent
 ```
 
 </details>
