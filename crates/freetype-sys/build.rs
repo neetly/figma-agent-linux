@@ -18,7 +18,8 @@ fn main() {
         .parse_callbacks(Box::new(CargoCallbacks::new()))
         .clang_args(clang_args)
         .ctypes_prefix("::libc")
-        .allowlist_file(r".+[/\\]freetype[/\\].+")
+        .allowlist_file(r".+[/\\]freetype[/\\].+|.+[/\\]freetype\.h")
+        .prepend_enum_name(false)
         .generate()
         .unwrap();
 
