@@ -10,7 +10,7 @@ actix-web = "=4.5.1"
 env_logger = "=0.11.3"
 figma-agent-fontconfig = { path = "../fontconfig" }
 figma-agent-freetype = { path = "../freetype" }
-itertools = "=0.12.1"
+itertools = "=0.14.0"
 lazy_static = "=1.4.0"
 listenfd = "=1.0.1"
 parking_lot = "=0.12.1"
