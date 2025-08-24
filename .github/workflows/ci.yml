@@ -15,5 +15,5 @@ jobs:
             libfontconfig1-dev
 
       - run: cargo fetch --locked
-      - run: cargo clippy -- --deny warnings
+      - run: cargo clippy -- --deny warnings --allow mismatched_lifetime_syntaxes
       - run: cargo fmt --check
