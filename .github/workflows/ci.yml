@@ -8,6 +8,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - run: |
+          sudo apt-get update
+          sudo apt-get install \
+            libfreetype6-dev \
+            libfontconfig1-dev
+
       - run: cargo fetch --locked
       - run: cargo clippy -- --deny warnings
       - run: cargo fmt --check
