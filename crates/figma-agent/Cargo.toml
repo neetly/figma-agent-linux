@@ -6,7 +6,7 @@ edition = "2021"
 [dependencies]
 actix-cors = { version = "=0.7.0", features = ["draft-private-network-access"] }
 actix-files = "=0.6.5"
-actix-web = "=4.5.1"
+actix-web = "=4.11.0"
 env_logger = "=0.11.3"
 figma-agent-fontconfig = { path = "../fontconfig" }
 figma-agent-freetype = { path = "../freetype" }
