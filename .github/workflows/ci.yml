@@ -1,0 +1,19 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: moonrepo/setup-rust@v1
+        with:
+          inherit-toolchain: true
+      - run: rustup component add rustfmt --toolchain nightly
+
+      - run: cargo fetch --locked
+      - run: cargo +nightly fmt --check
+      - run: cargo clippy -- --deny warnings
+      - run: cargo test

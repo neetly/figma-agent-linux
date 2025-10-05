@@ -1,0 +1,46 @@
+name: Release
+
+on:
+  push:
+    tags: ["**"]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            runner: ubuntu-22.04
+          - target: aarch64-unknown-linux-gnu
+            runner: ubuntu-22.04-arm
+
+    runs-on: ${{ matrix.runner }}
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - run: cargo fetch --locked --target "${{ matrix.target }}"
+      - run: cargo build --release --target "${{ matrix.target }}"
+
+      - run: |
+          mkdir ./release
+          cp "./target/${{ matrix.target }}/release/figma-agent" \
+            "./release/figma-agent-${{ matrix.target }}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.target }}
+          path: ./release/figma-agent-${{ matrix.target }}
+
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/download-artifact@v5
+        with:
+          path: ./release
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: Figma Agent for Linux ${{ github.ref_name }}
+          files: ./release/figma-agent-*

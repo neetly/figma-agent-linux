@@ -1,0 +1,3 @@
+{
+  "extends": ["github>neetly/renovate-config"]
+}
