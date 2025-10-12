@@ -1,9 +1,0 @@
-{
-  "recommendations": [
-    "EditorConfig.EditorConfig",
-    "esbenp.prettier-vscode",
-    "xaver.clang-format",
-    "rust-lang.rust-analyzer",
-    "tamasfe.even-better-toml"
-  ]
-}
