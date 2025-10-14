@@ -1,4 +1,4 @@
-use std::{error::Error, sync::LazyLock};
+use std::sync::LazyLock;
 
 use axum::{Router, http::HeaderValue, routing::get};
 use figma_agent::{CONFIG, FONT_FILES, routes};
@@ -8,7 +8,7 @@ use tower::ServiceBuilder;
 use tower_http::{cors::CorsLayer, trace::TraceLayer};
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn Error>> {
+async fn main() -> Result<(), anyhow::Error> {
     tracing_subscriber::fmt::init();
 
     LazyLock::force(&CONFIG);
