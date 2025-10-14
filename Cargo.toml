@@ -4,7 +4,7 @@ version = "0.4.0"
 edition = "2024"
 
 [dependencies]
-anyhow = "1.0.100"
+anyhow = "=1.0.100"
 arc-swap = "=1.7.1"
 axum = "=0.8.6"
 fontconfig-parser = "=0.5.8"
