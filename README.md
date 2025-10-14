@@ -20,7 +20,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/neetly/figma-agent-linux
 | Arch Linux      | [figma-agent-linux](https://aur.archlinux.org/packages/figma-agent-linux) / [figma-agent-linux-bin](https://aur.archlinux.org/packages/figma-agent-linux-bin) |
 | Nix             | [figma-agent](https://search.nixos.org/packages?show=figma-agent)                                                                                             |
 
-## Uninstallation
+### Uninstallation
 
 <details>
 
