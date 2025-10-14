@@ -18,6 +18,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+      - uses: moonrepo/setup-rust@v1
+        with:
+          inherit-toolchain: true
 
       - run: cargo fetch --locked --target "${{ matrix.target }}"
       - run: cargo build --release --target "${{ matrix.target }}"
@@ -33,6 +36,8 @@ jobs:
           path: ./release/figma-agent-${{ matrix.target }}
 
   release:
+    needs: build
+
     runs-on: ubuntu-latest
 
     steps:
@@ -43,4 +48,5 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           name: Figma Agent for Linux ${{ github.ref_name }}
+          prerelease: ${{ contains(github.ref_name, '-') }}
           files: ./release/figma-agent-*
