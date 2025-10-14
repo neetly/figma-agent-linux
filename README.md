@@ -45,16 +45,16 @@ rm -rf ~/.local/share/figma-agent ~/.local/share/systemd/user/figma-agent.{servi
 }
 ```
 
-# Caveats
+## Caveats
 
-## Ad Blockers
+### Ad Blockers
 
 Ad blockers may prevent websites from connecting to localhost for privacy concerns. Please disable the relevant rules or create an exception rule for [figma.com](https://www.figma.com/).
 
-## Brave Browser
+### Brave Browser
 
 In Brave browser, websites require special permissions to access localhost. Please follow the instructions in [the documentation](https://brave.com/privacy-updates/27-localhost-permission/) to grant this permission to [figma.com](https://www.figma.com/).
 
-# Credits
+## Credits
 
 This project is inspired by [Figma Linux Font Helper](https://github.com/Figma-Linux/figma-linux-font-helper).
