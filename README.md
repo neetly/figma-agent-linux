@@ -53,7 +53,7 @@ Ad blockers may prevent websites from connecting to localhost for privacy concer
 
 ### Brave Browser
 
-In Brave browser, websites require special permissions to access localhost. Please follow the instructions in [the documentation](https://brave.com/privacy-updates/27-localhost-permission/) to grant this permission to [figma.com](https://www.figma.com/).
+In Brave browser, websites require special permissions to access localhost. Please follow the instructions in [the documentation](https://brave.com/privacy-updates/27-localhost-permission/) to grant the permission to [figma.com](https://www.figma.com/).
 
 ## Credits
 
