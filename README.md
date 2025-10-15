@@ -36,8 +36,8 @@ rm -rf ~/.local/share/figma-agent ~/.local/share/systemd/user/figma-agent.{servi
 ```jsonc
 // ~/.config/figma-agent/config.json
 {
-  // Default: "localhost:44950"
-  "bind": "localhost:44950",
+  // Default: "127.0.0.1:44950"
+  "bind": "127.0.0.1:44950",
   // Default: true
   "use_system_fonts": true,
   // Default: []
