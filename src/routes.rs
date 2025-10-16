@@ -10,7 +10,7 @@ use tower::ServiceExt;
 use tower_http::services::ServeFile;
 
 use crate::{
-    FONT_FILES,
+    CONFIG, FONT_FILES,
     font::{Font, FontFile, FontQuery, FontQueryResult, to_us_weight_class, to_us_width_class},
     load_font_files,
     payload::{FontFilesEndpointPayload, FontPayload, VariationAxisPayload},
@@ -149,6 +149,10 @@ pub struct FontPreviewQuery {
 pub async fn font_preview(
     Query(query): Query<FontPreviewQuery>,
 ) -> Result<impl IntoResponse, StatusCode> {
+    if !CONFIG.load().enable_font_preview {
+        return Err(StatusCode::NOT_FOUND);
+    }
+
     let font_files = FONT_FILES.load();
 
     let font_file = font_files.get(&query.file).ok_or_else(|| {

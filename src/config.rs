@@ -28,6 +28,8 @@ pub struct Config {
     pub use_system_fonts: bool,
     #[serde(default)]
     pub font_directories: Vec<PathBuf>,
+    #[serde(default = "default_bool::<true>")]
+    pub enable_font_preview: bool,
 }
 
 fn default_bind() -> String {
@@ -69,6 +71,7 @@ fn test_default() {
             bind: "127.0.0.1:44950".into(),
             use_system_fonts: true,
             font_directories: vec![],
+            enable_font_preview: true,
         },
     );
 }
@@ -79,13 +82,14 @@ fn test_parse() {
     assert_eq!(Config::parse("{} // comment").unwrap(), Config::default());
     assert_eq!(
         Config::parse(
-            r#"{ "bind": "0.0.0.0:44950", "use_system_fonts": false, "font_directories": ["/usr/share/fonts"] }"#,
+            r#"{ "bind": "0.0.0.0:44950", "use_system_fonts": false, "font_directories": ["/usr/share/fonts"], "enable_font_preview": false }"#,
         )
         .unwrap(),
         Config {
             bind: "0.0.0.0:44950".into(),
             use_system_fonts: false,
             font_directories: vec![PathBuf::from("/usr/share/fonts")],
+            enable_font_preview: false,
         },
     );
 }
