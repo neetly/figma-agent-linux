@@ -17,6 +17,7 @@ pub mod config;
 pub mod font;
 pub mod path;
 pub mod payload;
+pub mod renderer;
 pub mod routes;
 pub mod scanner;
 
