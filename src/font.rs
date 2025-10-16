@@ -32,13 +32,12 @@ impl FontFile {
         let fonts = skrifa::FontRef::fonts(&data)
             .enumerate()
             .filter_map(|(index, font)| match font {
-                Ok(font) => Some(font),
+                Ok(font) => Some(Font::from(&font, index)),
                 Err(error) => {
                     errors.push((index, error));
                     None
                 }
             })
-            .map(|font| Font::from(&font))
             .collect();
 
         let font_file = FontFile {
@@ -56,7 +55,70 @@ impl FontFile {
 }
 
 #[derive(Debug, Clone)]
+pub struct FontQuery<'a> {
+    pub family_name: Option<&'a str>,
+    pub subfamily_name: Option<&'a str>,
+    pub postscript_name: Option<&'a str>,
+}
+
+#[derive(Debug, Clone)]
+pub struct FontQueryResult<'a> {
+    pub font: &'a Font,
+    pub named_instance: Option<&'a NamedInstance>,
+}
+
+impl<'a> FontFile {
+    pub fn query(&'a self, query: FontQuery<'_>) -> Option<FontQueryResult<'a>> {
+        fn matches(value: &Option<impl AsRef<str>>, query: &Option<impl AsRef<str>>) -> bool {
+            match (value, query) {
+                (Some(value), Some(query)) => value.as_ref() == query.as_ref(),
+                (None, Some(_)) => false,
+                (_, None) => true,
+            }
+        }
+
+        self.fonts
+            .iter()
+            .filter_map(|font| {
+                if matches(&font.family_name, &query.family_name) {
+                    if matches(&font.subfamily_name, &query.subfamily_name)
+                        && matches(&font.postscript_name, &query.postscript_name)
+                    {
+                        Some(FontQueryResult {
+                            font,
+                            named_instance: None,
+                        })
+                    } else {
+                        font.named_instances
+                            .iter()
+                            .filter_map(|named_instance| {
+                                if matches(&named_instance.subfamily_name, &query.subfamily_name)
+                                    && matches(
+                                        &named_instance.postscript_name,
+                                        &query.postscript_name,
+                                    )
+                                {
+                                    Some(FontQueryResult {
+                                        font,
+                                        named_instance: Some(named_instance),
+                                    })
+                                } else {
+                                    None
+                                }
+                            })
+                            .next()
+                    }
+                } else {
+                    None
+                }
+            })
+            .next()
+    }
+}
+
+#[derive(Debug, Clone)]
 pub struct Font {
+    pub index: usize,
     pub family_name: Option<String>,
     pub subfamily_name: Option<String>,
     pub postscript_name: Option<String>,
@@ -69,10 +131,11 @@ pub struct Font {
 }
 
 impl Font {
-    pub fn from(font: &skrifa::FontRef) -> Self {
+    pub fn from(font: &skrifa::FontRef, index: usize) -> Self {
         let attributes = font.attributes();
 
         Font {
+            index,
             family_name: font
                 .string(StringId::TYPOGRAPHIC_FAMILY_NAME)
                 .or_else(|| font.string(StringId::FAMILY_NAME)),
@@ -87,12 +150,14 @@ impl Font {
             axes: font
                 .axes()
                 .iter()
-                .map(|axis| Axis::from(font, &axis))
+                .enumerate()
+                .map(|(index, axis)| Axis::from(font, &axis, index))
                 .collect(),
             named_instances: font
                 .named_instances()
                 .iter()
-                .map(|named_instance| NamedInstance::from(font, &named_instance))
+                .enumerate()
+                .map(|(index, named_instance)| NamedInstance::from(font, &named_instance, index))
                 .collect(),
         }
     }
@@ -100,6 +165,7 @@ impl Font {
 
 #[derive(Debug, Clone)]
 pub struct Axis {
+    pub index: usize,
     pub tag: String,
     pub name: Option<String>,
     pub min_value: f32,
@@ -109,8 +175,9 @@ pub struct Axis {
 }
 
 impl Axis {
-    pub fn from(font: &skrifa::FontRef, axis: &skrifa::Axis) -> Self {
+    pub fn from(font: &skrifa::FontRef, axis: &skrifa::Axis, index: usize) -> Self {
         Axis {
+            index,
             tag: axis.tag().to_string(),
             name: font.string(axis.name_id()),
             min_value: axis.min_value(),
@@ -123,14 +190,20 @@ impl Axis {
 
 #[derive(Debug, Clone)]
 pub struct NamedInstance {
+    pub index: usize,
     pub subfamily_name: Option<String>,
     pub postscript_name: Option<String>,
     pub coordinates: Vec<f32>,
 }
 
 impl NamedInstance {
-    pub fn from(font: &skrifa::FontRef, named_instance: &skrifa::NamedInstance) -> Self {
+    pub fn from(
+        font: &skrifa::FontRef,
+        named_instance: &skrifa::NamedInstance,
+        index: usize,
+    ) -> Self {
         NamedInstance {
+            index,
             subfamily_name: font.string(named_instance.subfamily_name_id()),
             postscript_name: named_instance
                 .postscript_name_id()
@@ -180,7 +253,7 @@ impl SkrifaFontRefExt for skrifa::FontRef<'_> {
 ///
 /// https://learn.microsoft.com/en-us/typography/opentype/spec/os2#usweightclass
 pub fn to_us_weight_class(weight: f32) -> u16 {
-    weight as u16
+    weight.round() as u16
 }
 
 /// Convert width axis (wdth) to OS/2 usWidthClass.
@@ -195,7 +268,8 @@ pub fn to_us_width_class(width: f32) -> u16 {
         &US_WIDTH_CLASS_VALUES,
         width,
         &InterpMode::FirstLast,
-    ) as u16
+    )
+    .round() as u16
 }
 
 #[test]

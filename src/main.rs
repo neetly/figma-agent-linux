@@ -17,6 +17,7 @@ async fn main() -> Result<(), anyhow::Error> {
     let app = Router::new()
         .route("/figma/font-files", get(routes::font_files))
         .route("/figma/font-file", get(routes::font_file))
+        .route("/figma/font-preview", get(routes::font_preview))
         .layer(
             ServiceBuilder::new()
                 .layer(TraceLayer::new_for_http())
