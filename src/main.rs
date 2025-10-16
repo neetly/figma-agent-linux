@@ -33,7 +33,7 @@ async fn main() -> Result<(), anyhow::Error> {
             listener.set_nonblocking(true)?;
             TcpListener::from_std(listener)?
         }
-        None => TcpListener::bind(&CONFIG.load().bind).await?,
+        None => TcpListener::bind(&CONFIG.bind).await?,
     };
     tracing::info!("Listening on {}", listener.local_addr()?);
 

@@ -149,7 +149,7 @@ pub struct FontPreviewQuery {
 pub async fn font_preview(
     Query(query): Query<FontPreviewQuery>,
 ) -> Result<impl IntoResponse, StatusCode> {
-    if !CONFIG.load().enable_font_preview {
+    if !CONFIG.enable_font_preview {
         return Err(StatusCode::NOT_FOUND);
     }
 

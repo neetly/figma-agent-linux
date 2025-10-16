@@ -34,8 +34,7 @@ pub static FONTCONFIG: LazyLock<FontConfig> = LazyLock::new(|| {
     font_config
 });
 
-pub static CONFIG: LazyLock<ArcSwap<Config>> =
-    LazyLock::new(|| ArcSwap::new(Arc::new(load_config())));
+pub static CONFIG: LazyLock<Config> = LazyLock::new(load_config);
 
 pub static FONT_FILES: LazyLock<ArcSwap<HashMap<PathBuf, FontFile>>> =
     LazyLock::new(|| ArcSwap::new(Arc::new(load_font_files())));
@@ -68,7 +67,6 @@ pub fn load_config() -> Config {
 pub fn load_font_files() -> HashMap<PathBuf, FontFile> {
     tracing::debug!("Scanning font files...");
     let directories = CONFIG
-        .load()
         .effective_font_directories(&FONTCONFIG)
         .collect::<Vec<_>>();
     tracing::debug!("Use font directories: {directories:?}");
