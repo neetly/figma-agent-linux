@@ -4,6 +4,11 @@
 
 (a.k.a. Font Helper)
 
+## Features
+
+- Variable fonts support
+- Preview fonts in the picker
+
 ## Installation
 
 > [!IMPORTANT]
