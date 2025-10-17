@@ -1,4 +1,4 @@
-use std::{path::PathBuf, sync::Arc, time::SystemTime};
+use std::{path::PathBuf, time::SystemTime};
 
 use axum::{
     Json,
@@ -12,15 +12,18 @@ use tower_http::services::ServeFile;
 use crate::{
     CONFIG, FONT_FILES,
     font::{Font, FontFile, FontQuery, FontQueryResult, to_us_weight_class, to_us_width_class},
-    load_font_files,
     payload::{FontFilesEndpointPayload, FontPayload, VariationAxisPayload},
     renderer::{RenderOptions, render_text},
+    scan_font_files,
 };
 
 #[tracing::instrument]
 pub async fn font_files() -> impl IntoResponse {
-    let font_files = Arc::new(load_font_files());
-    FONT_FILES.store(font_files.clone());
+    if CONFIG.enable_font_rescan {
+        scan_font_files().await;
+    }
+
+    let font_files = FONT_FILES.read().await;
 
     fn map_font(font: &Font, font_file: &FontFile) -> Vec<FontPayload> {
         let font_payload = FontPayload {
@@ -126,7 +129,7 @@ pub async fn font_file(
     Query(query): Query<FontFileQuery>,
     request: Request,
 ) -> Result<impl IntoResponse, StatusCode> {
-    let font_files = FONT_FILES.load();
+    let font_files = FONT_FILES.read().await;
 
     let font_file = font_files.get(&query.file).ok_or_else(|| {
         tracing::error!("Font file not found: {path:?}", path = query.file);
@@ -153,7 +156,7 @@ pub async fn font_preview(
         return Err(StatusCode::NOT_FOUND);
     }
 
-    let font_files = FONT_FILES.load();
+    let font_files = FONT_FILES.read().await;
 
     let font_file = font_files.get(&query.file).ok_or_else(|| {
         tracing::error!("Font file not found: {path:?}", path = query.file);

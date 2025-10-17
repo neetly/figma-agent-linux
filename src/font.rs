@@ -25,6 +25,7 @@ pub struct FontFile {
 impl FontFile {
     pub fn from_path(path: impl AsRef<Path>) -> Result<Self, FontError> {
         let path = path.as_ref();
+
         let data = fs::read(path)?;
         let metadata = fs::metadata(path)?;
 

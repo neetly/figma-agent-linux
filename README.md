@@ -43,6 +43,8 @@ rm -rf ~/.local/share/figma-agent ~/.local/share/systemd/user/figma-agent.{servi
   // Default: []
   "font_directories": ["~/Fonts"],
   // Default: true
+  "enable_font_rescan": true,
+  // Default: true
   "enable_font_preview": true,
 }
 ```

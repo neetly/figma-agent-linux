@@ -1,7 +1,7 @@
 use std::sync::LazyLock;
 
 use axum::{Router, http::HeaderValue, routing::get};
-use figma_agent::{CONFIG, FONT_FILES, routes};
+use figma_agent::{CONFIG, EFFECTIVE_FONT_DIRECTORIES, routes, scan_font_files};
 use listenfd::ListenFd;
 use tokio::net::TcpListener;
 use tower::ServiceBuilder;
@@ -12,7 +12,9 @@ async fn main() -> Result<(), anyhow::Error> {
     tracing_subscriber::fmt::init();
 
     LazyLock::force(&CONFIG);
-    LazyLock::force(&FONT_FILES);
+    LazyLock::force(&EFFECTIVE_FONT_DIRECTORIES);
+
+    scan_font_files().await;
 
     let app = Router::new()
         .route("/figma/font-files", get(routes::font_files))

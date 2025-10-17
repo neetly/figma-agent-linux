@@ -1,4 +1,4 @@
-use std::{fs, iter, path::PathBuf};
+use std::{fs, iter, path::Path};
 
 use harfrust::{ShaperData, ShaperInstance, UnicodeBuffer};
 use skrifa::{
@@ -9,8 +9,8 @@ use skrifa::{
 use svg::{
     Document,
     node::element::{
-        Path,
-        path::{self, Command, Position},
+        self,
+        path::{Command, Position},
     },
 };
 
@@ -26,7 +26,7 @@ pub enum RenderError {
 
 #[derive(Debug, Clone)]
 pub struct RenderOptions<'a> {
-    pub font: (&'a PathBuf, usize),
+    pub font: (&'a Path, usize),
     pub size: f32,
     pub named_instance_index: Option<usize>,
 }
@@ -100,7 +100,7 @@ pub fn render_text(
         .set("width", width)
         .set("height", height)
         .set("viewBox", (0.0, 0.0, width, height))
-        .add(Path::new().set("d", text_path.data));
+        .add(element::Path::new().set("d", text_path.data));
 
     Ok(Some(document.to_string()))
 }
@@ -109,7 +109,7 @@ pub fn render_text(
 pub struct TextPath {
     origin_x: f32,
     origin_y: f32,
-    data: path::Data,
+    data: element::path::Data,
 }
 
 impl TextPath {

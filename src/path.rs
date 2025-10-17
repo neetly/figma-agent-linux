@@ -11,6 +11,7 @@ pub enum PathError {
 
 pub fn expand_home(path: impl AsRef<Path>) -> Result<PathBuf, PathError> {
     let path = path.as_ref();
+
     if let Ok(path_relative_to_home) = path.strip_prefix("~") {
         env::home_dir()
             .map(|home_directory| home_directory.join(path_relative_to_home))
