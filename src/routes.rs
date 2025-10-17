@@ -145,7 +145,7 @@ pub struct FontPreviewQuery {
     pub family: String,
     pub style: String,
     pub postscript: String,
-    pub font_size: f32,
+    pub font_size: f32, // Point (pt)
 }
 
 #[tracing::instrument]
@@ -186,7 +186,7 @@ pub async fn font_preview(
         &query.family,
         RenderOptions {
             font: (&font_file.path, font.index),
-            size: query.font_size,
+            size: query.font_size / 72.0 * 96.0,
             named_instance_index: named_instance.map(|named_instance| named_instance.index),
         },
     )
