@@ -74,7 +74,7 @@ pub fn render_text(
     let glyph_buffer = shaper.shape(buffer, &[]);
 
     let (mut cursor_x, mut cursor_y) = (0.0, metrics.ascent);
-    let mut text_path = TextPath::new(cursor_x, cursor_y);
+    let mut text_path = TextPath::new();
 
     let scale = size.linear_scale(metrics.units_per_em);
     let scale_unit = |unit: i32| unit as f32 * scale;
@@ -105,7 +105,7 @@ pub fn render_text(
     Ok(Some(document.to_string()))
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct TextPath {
     origin_x: f32,
     origin_y: f32,
@@ -113,12 +113,8 @@ pub struct TextPath {
 }
 
 impl TextPath {
-    pub fn new(origin_x: f32, origin_y: f32) -> Self {
-        TextPath {
-            origin_x,
-            origin_y,
-            data: path::Data::new(),
-        }
+    pub fn new() -> Self {
+        TextPath::default()
     }
 }
 
