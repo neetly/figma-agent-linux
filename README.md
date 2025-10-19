@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/neetly/figma-agent-linux/actions/workflows/ci.yml/badge.svg)](https://github.com/neetly/figma-agent-linux/actions/workflows/ci.yml)
 
-(a.k.a. Font Helper)
+(a.k.a. Font Helper) This service allows you to use your locally installed fonts on [figma.com](https://www.figma.com/).
 
 ## Features
 
