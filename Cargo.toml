@@ -10,7 +10,7 @@ fontconfig-parser = "=0.5.8"
 harfrust = "=0.3.2"
 interp = "=2.1.1"
 itertools = "=0.14.0"
-jsonc-parser = { version = "=0.26.3", features = ["serde"] }
+jsonc-parser = { version = "=0.27.0", features = ["serde"] }
 listenfd = "=1.0.2"
 read-fonts = "=0.35.0"
 serde = { version = "=1.0.228", features = ["derive"] }
