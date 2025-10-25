@@ -7,7 +7,7 @@ This service allows you to use your locally installed fonts on [figma.com](https
 ## Features
 
 - Variable fonts support
-- Preview fonts in the picker
+- Preview fonts in the font picker
 
 ## Installation
 
@@ -33,7 +33,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/neetly/figma-agent-linux
 <details>
 
 ```sh
-systemctl --user disable --now figma-agent.service figma-agent.socket
+systemctl --user disable --now figma-agent.{service,socket}
 rm -rf ~/.local/share/figma-agent ~/.local/share/systemd/user/figma-agent.{service,socket}
 ```
 
