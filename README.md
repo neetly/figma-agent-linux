@@ -18,7 +18,7 @@ This service allows you to use your locally installed fonts on [figma.com](https
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/neetly/figma-agent-linux/main/files/install.sh)"
 ```
 
-> [!NOTE]
+> [!TIP]
 > You can run this script again to update this service to the latest version.
 
 ### Package Managers
