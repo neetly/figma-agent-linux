@@ -57,6 +57,13 @@ rm -rf ~/.local/share/figma-agent ~/.local/share/systemd/user/figma-agent.{servi
 }
 ```
 
+> [!NOTE]
+> You need to restart this service for the configuration changes to take effect.
+>
+> ```sh
+> systemctl --user restart figma-agent.service
+> ```
+
 ## Caveats
 
 ### Ad Blockers
