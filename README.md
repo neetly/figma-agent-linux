@@ -19,7 +19,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/neetly/figma-agent-linux
 ```
 
 > [!TIP]
-> You can run this script again to update this service to the latest version.
+> You can run the command again to update this service to the latest version.
 
 ### Package Managers
 
@@ -58,7 +58,7 @@ rm -rf ~/.local/share/figma-agent ~/.local/share/systemd/user/figma-agent.{servi
 ```
 
 > [!NOTE]
-> You need to restart this service for the configuration changes to take effect.
+> You need to restart this service to apply the configuration changes.
 >
 > ```sh
 > systemctl --user restart figma-agent.service
