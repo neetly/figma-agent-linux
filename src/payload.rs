@@ -1,6 +1,12 @@
 use std::{collections::HashMap, path::PathBuf};
 
 #[derive(Debug, Clone, serde::Serialize)]
+pub struct VersionEndpointPayload {
+    pub package: String,
+    pub version: u32,
+}
+
+#[derive(Debug, Clone, serde::Serialize)]
 pub struct FontFilesEndpointPayload {
     #[serde(rename = "fontFiles")]
     pub font_files: HashMap<PathBuf, Vec<FontPayload>>,

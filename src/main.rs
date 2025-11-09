@@ -17,6 +17,7 @@ async fn main() -> Result<(), anyhow::Error> {
     scan_font_files().await;
 
     let app = Router::new()
+        .route("/figma/version", get(routes::version))
         .route("/figma/font-files", get(routes::font_files))
         .route("/figma/font-file", get(routes::font_file))
         .route("/figma/font-preview", get(routes::font_preview))

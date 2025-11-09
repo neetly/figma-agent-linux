@@ -12,10 +12,23 @@ use tower_http::services::ServeFile;
 use crate::{
     CONFIG, FONT_FILES,
     font::{Font, FontFile, FontQuery, FontQueryResult, to_us_weight_class, to_us_width_class},
-    payload::{FontFilesEndpointPayload, FontPayload, VariationAxisPayload},
+    payload::{
+        FontFilesEndpointPayload, FontPayload, VariationAxisPayload, VersionEndpointPayload,
+    },
     renderer::{RenderOptions, render_text},
     scan_font_files,
 };
+
+const PACKAGE: &str = "125.9.10";
+const VERSION: u32 = 23;
+
+#[tracing::instrument]
+pub async fn version() -> impl IntoResponse {
+    Json(VersionEndpointPayload {
+        package: PACKAGE.into(),
+        version: VERSION,
+    })
+}
 
 #[tracing::instrument]
 pub async fn font_files() -> impl IntoResponse {
@@ -114,8 +127,8 @@ pub async fn font_files() -> impl IntoResponse {
             .collect(),
         modified_at: None,
         modified_fonts: None,
-        package: "125.8.8".into(),
-        version: 23,
+        package: PACKAGE.into(),
+        version: VERSION,
     })
 }
 
