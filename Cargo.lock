@@ -257,7 +257,7 @@ dependencies = [
  "itertools",
  "jsonc-parser",
  "listenfd",
- "read-fonts",
+ "read-fonts 0.35.1",
  "serde",
  "serde_json",
  "skrifa",
@@ -375,14 +375,14 @@ dependencies = [
 
 [[package]]
 name = "harfrust"
-version = "0.3.2"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "92c020db12c71d8a12a3fe7607873cade3a01a6287e29d540c8723276221b9d8"
+checksum = "bce3daf33117ca61b39b3452659f6206c76583cbc8b45f52a340469da58345b0"
 dependencies = [
  "bitflags",
  "bytemuck",
  "core_maths",
- "read-fonts",
+ "read-fonts 0.36.0",
  "smallvec",
 ]
 
@@ -760,6 +760,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0ad4bbcc6571cb756b6c2572f0e7b387d579a60c3bb30212b91d79141a11ede8"
 dependencies = [
  "bytemuck",
+ "font-types",
+]
+
+[[package]]
+name = "read-fonts"
+version = "0.36.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5eaa2941a4c05443ee3a7b26ab076a553c343ad5995230cc2b1d3e993bdc6345"
+dependencies = [
+ "bytemuck",
  "core_maths",
  "font-types",
 ]
@@ -909,7 +919,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4e076bd3661b44adcd0b7a9323efb22a4685854abaaa93247e3b5697672d566d"
 dependencies = [
  "bytemuck",
- "read-fonts",
+ "read-fonts 0.35.1",
 ]
 
 [[package]]
