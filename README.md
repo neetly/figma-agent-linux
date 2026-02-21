@@ -54,13 +54,13 @@ systemctl --user daemon-reload
 
 The configuration file is located at `~/.config/figma-agent/config.json`. All fields are optional — the service works out of the box without any configuration.
 
-| Key                  | Default             | Description                                                             |
-| -------------------- | ------------------- | ----------------------------------------------------------------------- |
-| `bind`               | `"127.0.0.1:44950"` | Address and port to listen on.                                         |
-| `use_system_fonts`   | `true`              | Include system fonts.                                                   |
-| `font_directories`   | `[]`                | Additional directories to scan for fonts. Supports `~` for home.        |
-| `enable_font_rescan` | `true`              | Automatically pick up newly installed or updated fonts.                  |
-| `enable_font_preview`| `true`              | Enable font previews in the Figma font picker.                          |
+| Key                   | Default             | Description                                                      |
+| --------------------- | ------------------- | ---------------------------------------------------------------- |
+| `bind`                | `"127.0.0.1:44950"` | Address and port to listen on.                                   |
+| `use_system_fonts`    | `true`              | Include system fonts.                                            |
+| `font_directories`    | `[]`                | Additional directories to scan for fonts. Supports `~` for home. |
+| `enable_font_rescan`  | `true`              | Automatically pick up newly installed or updated fonts.          |
+| `enable_font_preview` | `true`              | Enable font previews in the Figma font picker.                   |
 
 Example:
 
@@ -98,13 +98,38 @@ View logs:
 journalctl --user --unit figma-agent.service --follow
 ```
 
+### Chromium-Based Browsers (Chrome, Brave, Edge, etc.)
+
+Chromium-based browsers are rolling out [Local Network Access](https://developer.chrome.com/blog/local-network-access) restrictions that require websites to request permission before connecting to local network devices or apps on your device (localhost). Since Figma Agent listens on localhost, you need to grant [figma.com](https://www.figma.com/) the **Apps on device** permission when prompted.
+
+If you previously dismissed the prompt, you can manage the permission via **Site Settings** for [figma.com](https://www.figma.com/).
+
+> [!NOTE]
+> Brave has shipped its own localhost permission independently and may label it differently. See [the Brave documentation](https://brave.com/privacy-updates/27-localhost-permission/) for details.
+
+### Firefox
+
+Firefox is progressively rolling out [local network access permissions](https://support.mozilla.org/en-US/kb/control-personal-device-local-network-permissions-firefox) that require websites to request permission before connecting to apps on your device (localhost) or local network devices. When [figma.com](https://www.figma.com/) tries to connect to Figma Agent, Firefox will prompt you for the **Device apps and services** permission. You need to allow it for font loading to work.
+
+If you dismissed the prompt, you can change the permission in **Settings → Privacy & Security → Permissions → Device apps and services**.
+
+> [!NOTE]
+> This feature is currently being rolled out progressively. In standard Firefox releases, only users with Enhanced Tracking Protection set to **Strict** are included. It is available by default in Beta and Nightly builds.
+
 ### Ad Blockers
 
-Some ad blockers prevent websites from connecting to localhost. If Figma cannot detect your local fonts, try disabling the relevant blocking rules or adding an exception for [figma.com](https://www.figma.com/).
+Some ad blockers and privacy extensions block websites from connecting to localhost, which prevents Figma from communicating with the local font service. If your fonts are not showing up despite the service running, your ad blocker is a likely cause.
 
-### Brave Browser
+- **uBlock Origin** — By default, the filter list [uBlock filters – Privacy](https://github.com/uBlockOrigin/uAssets/blob/master/filters/privacy.txt) blocks requests to `localhost` and `127.0.0.1`. To fix this, add the following to **My filters**:
 
-Brave blocks localhost connections by default. You need to explicitly grant [figma.com](https://www.figma.com/) permission to access localhost. Follow the instructions in [the Brave documentation](https://brave.com/privacy-updates/27-localhost-permission/).
+  ```
+  @@||127.0.0.1^$domain=figma.com
+  @@||localhost^$domain=figma.com
+  ```
+
+- **AdGuard** — AdGuard may similarly block localhost requests. Add [figma.com](https://www.figma.com/) to your allowlist, or add equivalent exception rules in your user rules.
+
+If you use a different ad blocker or privacy extension, check whether it has rules that block connections to `localhost` or `127.0.0.1` and add an exception for [figma.com](https://www.figma.com/).
 
 ## Credits
 
