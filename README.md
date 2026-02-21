@@ -71,18 +71,18 @@ The configuration file is located at `~/.config/figma-agent/config.json`. All fi
 }
 ```
 
-> [!TIP]
-> If you have a large number of fonts installed and notice slowness when switching fonts in Figma, try setting `enable_font_rescan` to `false`. The service will then only scan fonts once at startup; restart it manually after installing new fonts.
-
-> [!WARNING]
-> Font preview is currently experimental and may cause unexpected issues. If you experience problems, set `enable_font_preview` to `false`.
-
 > [!NOTE]
 > You must restart the service for configuration changes to take effect:
 >
 > ```sh
 > systemctl --user restart figma-agent.service
 > ```
+
+> [!TIP]
+> If you have a large number of fonts installed and notice slowness when switching fonts in Figma, try setting `enable_font_rescan` to `false`. The service will then only scan fonts once at startup; restart it manually after installing new fonts.
+
+> [!WARNING]
+> Font preview is currently experimental and may cause unexpected issues. If you experience problems, set `enable_font_preview` to `false`.
 
 ## Troubleshooting
 
