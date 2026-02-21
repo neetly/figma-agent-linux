@@ -118,16 +118,16 @@ If you previously dismissed or disallowed the prompt, you can change the permiss
 
 ### Ad Blockers
 
-Some ad blockers and privacy extensions block websites from connecting to localhost, which prevents Figma from communicating with the local font service. If your fonts are not showing up despite the service running, your ad blocker is a likely cause.
+Some ad blockers and privacy extensions block websites from connecting to localhost, which prevents Figma from communicating with Figma Agent. If your fonts are not showing up despite the service running, your ad blocker is a likely cause.
 
-- **uBlock Origin** — By default, the filter list [uBlock filters – Privacy](https://github.com/uBlockOrigin/uAssets/blob/master/filters/privacy.txt) blocks requests to `localhost` and `127.0.0.1`. To fix this, add the following to **My filters**:
+- **uBlock Origin** — By default, the filter list [uBlock filters – Privacy](https://github.com/uBlockOrigin/uAssets/blob/master/filters/privacy.txt) blocks requests to `localhost` and `127.0.0.1`. To address this, add the following to **My filters**:
 
   ```
-  @@||127.0.0.1^$domain=figma.com
   @@||localhost^$domain=figma.com
+  @@||127.0.0.1^$domain=figma.com
   ```
-
-- **AdGuard** — AdGuard may similarly block localhost requests. Add [figma.com](https://www.figma.com/) to your allowlist, or add equivalent exception rules in your user rules.
+  
+- **AdGuard** — AdGuard may block localhost requests. Add [figma.com](https://www.figma.com/) to your allowlist, or add equivalent exception rules in your user rules.
 
 If you use a different ad blocker or privacy extension, check whether it has rules that block connections to `localhost` or `127.0.0.1` and add an exception for [figma.com](https://www.figma.com/).
 
