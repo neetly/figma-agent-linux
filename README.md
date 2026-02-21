@@ -89,8 +89,7 @@ Example:
 Check whether the service is running:
 
 ```sh
-systemctl --user status figma-agent.socket
-systemctl --user status figma-agent.service
+systemctl --user status figma-agent.{service,socket}
 ```
 
 View logs:
