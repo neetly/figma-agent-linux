@@ -104,7 +104,7 @@ View logs:
 journalctl --user --unit figma-agent.service --follow
 ```
 
-### Chromium-Based Browsers (Chrome, Brave, Edge, etc.)
+### Chromium-Based Browsers
 
 Chromium-based browsers enforce [Local Network Access](https://developer.chrome.com/blog/local-network-access) restrictions that require websites to request permission before connecting to local network devices or apps on your device (localhost). Since Figma Agent listens on localhost, you need to grant [figma.com](https://www.figma.com/) the **Apps on device** permission when prompted.
 
