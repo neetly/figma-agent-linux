@@ -54,13 +54,13 @@ systemctl --user daemon-reload
 
 The configuration file is located at `~/.config/figma-agent/config.json`. All fields are optional — the service works out of the box without any configuration.
 
-| Key                   | Default             | Description                                                      |
-| --------------------- | ------------------- | ---------------------------------------------------------------- |
-| `bind`                | `"127.0.0.1:44950"` | Address and port to listen on.                                   |
-| `use_system_fonts`    | `true`              | Include system fonts.                                            |
-| `font_directories`    | `[]`                | Additional directories to scan for fonts. Supports `~` for home. |
-| `enable_font_rescan`  | `true`              | Automatically pick up newly installed or updated fonts.          |
-| `enable_font_preview` | `true`              | Enable font previews in the Figma font picker.                   |
+| Key                   | Default             | Description                                                                |
+| --------------------- | ------------------- | -------------------------------------------------------------------------- |
+| `bind`                | `"127.0.0.1:44950"` | Address and port to listen on. Has no effect when using socket activation. |
+| `use_system_fonts`    | `true`              | Include fonts discovered via Fontconfig.                                   |
+| `font_directories`    | `[]`                | Additional directories to scan for fonts. Supports `~` for home.           |
+| `enable_font_rescan`  | `true`              | Automatically pick up newly installed or updated fonts.                    |
+| `enable_font_preview` | `true`              | Enable font previews in the Figma font picker.                             |
 
 Example:
 
@@ -126,7 +126,7 @@ Some ad blockers and privacy extensions block websites from connecting to localh
   @@||localhost^$domain=figma.com
   @@||127.0.0.1^$domain=figma.com
   ```
-  
+
 - **AdGuard** — AdGuard may block localhost requests. Add [figma.com](https://www.figma.com/) to your allowlist, or add equivalent exception rules in your user rules.
 
 If you use a different ad blocker or privacy extension, check whether it has rules that block connections to `localhost` or `127.0.0.1` and add an exception for [figma.com](https://www.figma.com/).
