@@ -92,6 +92,12 @@ Check whether the service is running:
 systemctl --user status figma-agent.{service,socket}
 ```
 
+Restart the service:
+
+```sh
+systemctl --user restart figma-agent.service
+```
+
 View logs:
 
 ```sh
