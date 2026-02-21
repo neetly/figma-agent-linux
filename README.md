@@ -100,9 +100,9 @@ journalctl --user --unit figma-agent.service --follow
 
 ### Chromium-Based Browsers (Chrome, Brave, Edge, etc.)
 
-Chromium-based browsers are rolling out [Local Network Access](https://developer.chrome.com/blog/local-network-access) restrictions that require websites to request permission before connecting to local network devices or apps on your device (localhost). Since Figma Agent listens on localhost, you need to grant [figma.com](https://www.figma.com/) the **Apps on device** permission when prompted.
+Chromium-based browsers enforce [Local Network Access](https://developer.chrome.com/blog/local-network-access) restrictions that require websites to request permission before connecting to local network devices or apps on your device (localhost). Since Figma Agent listens on localhost, you need to grant [figma.com](https://www.figma.com/) the **Apps on device** permission when prompted.
 
-If you previously dismissed the prompt, you can manage the permission via **Site Settings** for [figma.com](https://www.figma.com/).
+If you previously dismissed or disallowed the prompt, you can manage the permission via **Site settings** for [figma.com](https://www.figma.com/).
 
 > [!NOTE]
 > Brave has shipped its own localhost permission independently and may label it differently. See [the Brave documentation](https://brave.com/privacy-updates/27-localhost-permission/) for details.
@@ -111,10 +111,10 @@ If you previously dismissed the prompt, you can manage the permission via **Site
 
 Firefox is progressively rolling out [local network access permissions](https://support.mozilla.org/en-US/kb/control-personal-device-local-network-permissions-firefox) that require websites to request permission before connecting to apps on your device (localhost) or local network devices. When [figma.com](https://www.figma.com/) tries to connect to Figma Agent, Firefox will prompt you for the **Device apps and services** permission. You need to allow it for font loading to work.
 
-If you dismissed the prompt, you can change the permission in **Settings → Privacy & Security → Permissions → Device apps and services**.
+If you previously dismissed or disallowed the prompt, you can change the permission in **Settings → Privacy & Security → Permissions → Device apps and services**.
 
 > [!NOTE]
-> This feature is currently being rolled out progressively. In standard Firefox releases, only users with Enhanced Tracking Protection set to **Strict** are included. It is available by default in Beta and Nightly builds.
+> This feature is currently being rolled out progressively. In stable Firefox releases, only users with **Enhanced Tracking Protection** set to **Strict** are included. It is available by default in beta and nightly builds.
 
 ### Ad Blockers
 
