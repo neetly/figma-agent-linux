@@ -70,6 +70,9 @@ pub async fn font_files() -> impl IntoResponse {
                 .and_then(|modified_at| modified_at.duration_since(SystemTime::UNIX_EPOCH).ok())
                 .map(|duration| duration.as_secs())
                 .unwrap_or_default(),
+            // Not sure what this value exactly means; the official Windows and macOS
+            // clients have different implementations. Assuming this won't cause any
+            // issues for now.
             user_installed: true,
         };
 

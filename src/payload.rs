@@ -23,7 +23,7 @@ pub struct FontPayload {
     pub postscript: String, // PostScript name
     pub weight: u16,        // Weight (OS/2 usWeightClass)
     pub stretch: u16,       // Width (OS/2 usWidthClass)
-    pub italic: bool,
+    pub italic: bool,       // Italic or oblique
     #[serde(rename = "variationAxes", skip_serializing_if = "Option::is_none")]
     pub variation_axes: Option<Vec<VariationAxisPayload>>,
     pub modified_at: u64,
