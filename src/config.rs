@@ -65,39 +65,6 @@ impl Config {
     }
 }
 
-#[test]
-fn test_default() {
-    assert_eq!(
-        Config::default(),
-        Config {
-            bind: "127.0.0.1:44950".into(),
-            use_system_fonts: true,
-            font_directories: vec![],
-            enable_font_rescan: true,
-            enable_font_preview: true,
-        },
-    );
-}
-
-#[test]
-fn test_parse() {
-    assert_eq!(Config::parse("{}").unwrap(), Config::default());
-    assert_eq!(Config::parse("{} // comment").unwrap(), Config::default());
-    assert_eq!(
-        Config::parse(
-            r#"{ "bind": "0.0.0.0:44950", "use_system_fonts": false, "font_directories": ["/usr/share/fonts"], "enable_font_rescan": false, "enable_font_preview": false }"#,
-        )
-        .unwrap(),
-        Config {
-            bind: "0.0.0.0:44950".into(),
-            use_system_fonts: false,
-            font_directories: vec![PathBuf::from("/usr/share/fonts")],
-            enable_font_rescan: false,
-            enable_font_preview: false,
-        },
-    );
-}
-
 impl Config {
     pub fn effective_font_directories(
         &self,
@@ -125,5 +92,45 @@ impl Config {
                 }
             })
             .unique()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::path::PathBuf;
+
+    use super::*;
+
+    #[test]
+    fn test_default() {
+        assert_eq!(
+            Config::default(),
+            Config {
+                bind: "127.0.0.1:44950".into(),
+                use_system_fonts: true,
+                font_directories: vec![],
+                enable_font_rescan: true,
+                enable_font_preview: true,
+            },
+        );
+    }
+
+    #[test]
+    fn test_parse() {
+        assert_eq!(Config::parse("{}").unwrap(), Config::default());
+        assert_eq!(Config::parse("{} // comment").unwrap(), Config::default());
+        assert_eq!(
+        Config::parse(
+            r#"{ "bind": "0.0.0.0:44950", "use_system_fonts": false, "font_directories": ["/usr/share/fonts"], "enable_font_rescan": false, "enable_font_preview": false }"#,
+        )
+        .unwrap(),
+        Config {
+            bind: "0.0.0.0:44950".into(),
+            use_system_fonts: false,
+            font_directories: vec![PathBuf::from("/usr/share/fonts")],
+            enable_font_rescan: false,
+            enable_font_preview: false,
+        },
+    );
     }
 }

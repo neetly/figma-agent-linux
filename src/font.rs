@@ -33,7 +33,7 @@ impl FontFile {
         let fonts = skrifa::FontRef::fonts(&data)
             .enumerate()
             .filter_map(|(index, font)| match font {
-                Ok(font) => Some(Font::from(&font, index)),
+                Ok(font) => Some(Font::from_skrifa(&font, index)),
                 Err(error) => {
                     errors.push((index, error));
                     None
@@ -78,42 +78,33 @@ impl<'a> FontFile {
             }
         }
 
-        self.fonts
-            .iter()
-            .filter_map(|font| {
-                if matches(&font.family_name, &query.family_name) {
-                    if matches(&font.subfamily_name, &query.subfamily_name)
-                        && matches(&font.postscript_name, &query.postscript_name)
-                    {
-                        Some(FontQueryResult {
-                            font,
-                            named_instance: None,
-                        })
-                    } else {
-                        font.named_instances
-                            .iter()
-                            .filter_map(|named_instance| {
-                                if matches(&named_instance.subfamily_name, &query.subfamily_name)
-                                    && matches(
-                                        &named_instance.postscript_name,
-                                        &query.postscript_name,
-                                    )
-                                {
-                                    Some(FontQueryResult {
-                                        font,
-                                        named_instance: Some(named_instance),
-                                    })
-                                } else {
-                                    None
-                                }
-                            })
-                            .next()
-                    }
+        self.fonts.iter().find_map(|font| {
+            if matches(&font.family_name, &query.family_name) {
+                if matches(&font.subfamily_name, &query.subfamily_name)
+                    && matches(&font.postscript_name, &query.postscript_name)
+                {
+                    Some(FontQueryResult {
+                        font,
+                        named_instance: None,
+                    })
                 } else {
-                    None
+                    font.named_instances.iter().find_map(|named_instance| {
+                        if matches(&named_instance.subfamily_name, &query.subfamily_name)
+                            && matches(&named_instance.postscript_name, &query.postscript_name)
+                        {
+                            Some(FontQueryResult {
+                                font,
+                                named_instance: Some(named_instance),
+                            })
+                        } else {
+                            None
+                        }
+                    })
                 }
-            })
-            .next()
+            } else {
+                None
+            }
+        })
     }
 }
 
@@ -132,7 +123,7 @@ pub struct Font {
 }
 
 impl Font {
-    pub fn from(font: &skrifa::FontRef, index: usize) -> Self {
+    pub fn from_skrifa(font: &skrifa::FontRef, index: usize) -> Self {
         let attributes = font.attributes();
 
         Font {
@@ -152,13 +143,15 @@ impl Font {
                 .axes()
                 .iter()
                 .enumerate()
-                .map(|(index, axis)| Axis::from(font, &axis, index))
+                .map(|(index, axis)| Axis::from_skrifa(font, &axis, index))
                 .collect(),
             named_instances: font
                 .named_instances()
                 .iter()
                 .enumerate()
-                .map(|(index, named_instance)| NamedInstance::from(font, &named_instance, index))
+                .map(|(index, named_instance)| {
+                    NamedInstance::from_skrifa(font, &named_instance, index)
+                })
                 .collect(),
         }
     }
@@ -176,7 +169,7 @@ pub struct Axis {
 }
 
 impl Axis {
-    pub fn from(font: &skrifa::FontRef, axis: &skrifa::Axis, index: usize) -> Self {
+    pub fn from_skrifa(font: &skrifa::FontRef, axis: &skrifa::Axis, index: usize) -> Self {
         Axis {
             index,
             tag: axis.tag().to_string(),
@@ -198,7 +191,7 @@ pub struct NamedInstance {
 }
 
 impl NamedInstance {
-    pub fn from(
+    pub fn from_skrifa(
         font: &skrifa::FontRef,
         named_instance: &skrifa::NamedInstance,
         index: usize,
@@ -273,15 +266,20 @@ pub fn to_us_width_class(width: f32) -> u16 {
     .round() as u16
 }
 
-#[test]
-fn test_to_us_width_class() {
-    assert_eq!(to_us_width_class(50.0), 1);
-    assert_eq!(to_us_width_class(62.5), 2);
-    assert_eq!(to_us_width_class(75.0), 3);
-    assert_eq!(to_us_width_class(87.5), 4);
-    assert_eq!(to_us_width_class(100.0), 5);
-    assert_eq!(to_us_width_class(112.5), 6);
-    assert_eq!(to_us_width_class(125.0), 7);
-    assert_eq!(to_us_width_class(150.0), 8);
-    assert_eq!(to_us_width_class(200.0), 9);
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_to_us_width_class() {
+        assert_eq!(to_us_width_class(50.0), 1);
+        assert_eq!(to_us_width_class(62.5), 2);
+        assert_eq!(to_us_width_class(75.0), 3);
+        assert_eq!(to_us_width_class(87.5), 4);
+        assert_eq!(to_us_width_class(100.0), 5);
+        assert_eq!(to_us_width_class(112.5), 6);
+        assert_eq!(to_us_width_class(125.0), 7);
+        assert_eq!(to_us_width_class(150.0), 8);
+        assert_eq!(to_us_width_class(200.0), 9);
+    }
 }

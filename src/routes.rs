@@ -19,6 +19,7 @@ use crate::{
     scan_font_files,
 };
 
+// These values are taken from the official Windows client as of 2025-11-09.
 const PACKAGE: &str = "125.9.10";
 const VERSION: u32 = 23;
 
@@ -125,8 +126,12 @@ pub async fn font_files() -> impl IntoResponse {
                 )
             })
             .collect(),
+
+        // These two fields are not implemented, and it seems they don't affect usage.
+        // The official Windows client doesn't appear to implement them either.
         modified_at: None,
         modified_fonts: None,
+
         package: PACKAGE.into(),
         version: VERSION,
     })
@@ -142,14 +147,18 @@ pub async fn font_file(
     Query(query): Query<FontFileQuery>,
     request: Request,
 ) -> Result<impl IntoResponse, StatusCode> {
-    let font_files = FONT_FILES.read().await;
+    let font_path = {
+        let font_files = FONT_FILES.read().await;
 
-    let font_file = font_files.get(&query.file).ok_or_else(|| {
-        tracing::error!("Font file not found: {path:?}", path = query.file);
-        StatusCode::NOT_FOUND
-    })?;
+        let font_file = font_files.get(&query.file).ok_or_else(|| {
+            tracing::error!("Font file not found: {path:?}", path = query.file);
+            StatusCode::NOT_FOUND
+        })?;
 
-    Ok(ServeFile::new(&font_file.path).oneshot(request).await)
+        font_file.path.clone()
+    };
+
+    Ok(ServeFile::new(font_path).oneshot(request).await)
 }
 
 #[derive(Debug, Clone, serde::Deserialize)]
@@ -158,7 +167,7 @@ pub struct FontPreviewQuery {
     pub family: String,
     pub style: String,
     pub postscript: String,
-    pub font_size: f32, // Point (pt)
+    pub font_size: f32,
 }
 
 #[tracing::instrument]
@@ -199,6 +208,9 @@ pub async fn font_preview(
         &query.family,
         RenderOptions {
             font: (&font_file.path, font.index),
+            // The font_size from the query appears to be in pt rather than px,
+            // based on the official implementation. However, the rendering result
+            // still differs from the official one. Further investigation may be needed.
             size: query.font_size / 72.0 * 96.0,
             named_instance_index: named_instance.map(|named_instance| named_instance.index),
         },

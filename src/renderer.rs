@@ -31,6 +31,10 @@ pub struct RenderOptions<'a> {
     pub named_instance_index: Option<usize>,
 }
 
+// TODO: The official implementation seems to use some other methods to calculate
+// the height of the generated image and the position of the text. Our logic based
+// on baseline and ascent/descent may cause some fonts to not be vertically centered
+// properly in the font picker. Needs further investigation.
 pub fn render_text(
     text: impl AsRef<str>,
     RenderOptions {
@@ -73,11 +77,12 @@ pub fn render_text(
 
     let glyph_buffer = shaper.shape(buffer, &[]);
 
-    let (mut cursor_x, mut cursor_y) = (0.0, metrics.ascent);
     let mut text_path = TextPath::new();
 
     let scale = size.linear_scale(metrics.units_per_em);
     let scale_unit = |unit: i32| unit as f32 * scale;
+
+    let (mut cursor_x, mut cursor_y) = (0.0, metrics.ascent);
 
     for (info, position) in iter::zip(glyph_buffer.glyph_infos(), glyph_buffer.glyph_positions()) {
         let glyph = outlines
@@ -118,6 +123,7 @@ impl TextPath {
     }
 }
 
+// Because the Y-axis in text rendering is opposite to SVG, we need to invert the Y values.
 impl OutlinePen for TextPath {
     fn move_to(&mut self, x: f32, y: f32) {
         self.data.append(Command::Move(

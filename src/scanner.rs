@@ -3,11 +3,11 @@ use std::path::{Path, PathBuf};
 use itertools::Itertools;
 use walkdir::WalkDir;
 
+const FONT_EXTENSIONS: [&str; 4] = ["ttf", "ttc", "otf", "otc"];
+
 pub fn scan_font_paths(
     directories: impl IntoIterator<Item = impl AsRef<Path>>,
 ) -> impl Iterator<Item = PathBuf> {
-    static FONT_EXTENSIONS: [&str; 4] = ["ttf", "ttc", "otf", "otc"];
-
     directories
         .into_iter()
         .flat_map(|directory| WalkDir::new(directory))
