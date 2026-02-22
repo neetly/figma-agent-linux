@@ -238,6 +238,8 @@ pub trait SkrifaFontRefExt {
 impl SkrifaFontRefExt for skrifa::FontRef<'_> {
     fn string(&self, id: StringId) -> Option<String> {
         self.localized_strings(id)
+            // We currently only use English strings. In the future, we could
+            // consider selecting based on system locale.
             .english_or_first()
             .map(|localized_string| localized_string.to_string())
     }

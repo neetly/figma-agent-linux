@@ -31,6 +31,8 @@ pub async fn version() -> impl IntoResponse {
     })
 }
 
+// There are supposed to be some query parameters here, but we don't really
+// care about them, so we'll just ignore them for now.
 #[tracing::instrument]
 pub async fn font_files() -> impl IntoResponse {
     if CONFIG.enable_font_rescan {
