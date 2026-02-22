@@ -124,7 +124,7 @@ If you previously dismissed or disallowed the prompt, you can change the permiss
 
 ### Ad Blockers
 
-Some ad blockers and privacy extensions block websites from connecting to localhost, which prevents Figma from communicating with Figma Agent. If your fonts are not showing up despite the service running, your ad blocker is a likely cause. Check whether it has rules that block connections to `localhost` or `127.0.0.1` and add an exception for [figma.com](https://www.figma.com/).
+Some ad blockers and privacy extensions block websites from connecting to localhost, which prevents [figma.com](https://www.figma.com/) from communicating with Figma Agent. If your fonts are not showing up despite the service running, your ad blocker is a likely cause. Check whether it has rules that block connections to `localhost` or `127.0.0.1` and add an exception for [figma.com](https://www.figma.com/).
 
 ## Credits
 
