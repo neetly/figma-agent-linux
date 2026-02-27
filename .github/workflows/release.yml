@@ -33,7 +33,7 @@ jobs:
           cp "./target/${{ matrix.target }}/release/figma-agent" \
             "./release/figma-agent-${{ matrix.target }}"
 
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.target }}
           path: ./release/figma-agent-${{ matrix.target }}
@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           path: ./release
           merge-multiple: true
