@@ -20,8 +20,8 @@ jobs:
     runs-on: ${{ matrix.runner }}
 
     steps:
-      - uses: actions/checkout@v6
-      - uses: moonrepo/setup-rust@v1
+      - uses: actions/checkout@v6.0.2
+      - uses: moonrepo/setup-rust@v1.3.0
         with:
           inherit-toolchain: true
 
@@ -33,7 +33,7 @@ jobs:
           cp "./target/${{ matrix.target }}/release/figma-agent" \
             "./release/figma-agent-${{ matrix.target }}"
 
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@v7.0.1
         with:
           name: ${{ matrix.target }}
           path: ./release/figma-agent-${{ matrix.target }}
@@ -44,11 +44,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@v8.0.1
         with:
           path: ./release
           merge-multiple: true
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v2.6.2
         with:
           name: Figma Agent for Linux ${{ github.ref_name }}
           prerelease: ${{ contains(github.ref_name, '-') }}
