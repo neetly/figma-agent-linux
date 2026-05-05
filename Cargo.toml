@@ -15,7 +15,7 @@ listenfd = "=1.0.2"
 read-fonts = "=0.37.0"
 serde = { version = "=1.0.228", features = ["derive"] }
 serde_json = "=1.0.149"
-skrifa = "=0.40.0"
+skrifa = "=0.42.1"
 svg = "=0.18.0"
 thiserror = "=2.0.18"
 tokio = { version = "=1.52.1", features = ["full"] }
