@@ -1,4 +1,4 @@
 [toolchain]
-channel = "1.93.1"
+channel = "1.96.0"
 profile = "default"
 targets = ["x86_64-unknown-linux-gnu", "aarch64-unknown-linux-gnu"]
