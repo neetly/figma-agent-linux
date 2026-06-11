@@ -2,11 +2,13 @@
   "extends": ["github>neetly/renovate-config"],
   "packageRules": [
     {
-      "groupName": "Fontations",
+      "groupName": "fontations packages",
+      "groupSlug": "fontations",
       "matchSourceUrls": ["https://github.com/googlefonts/fontations"]
     },
     {
-      "groupName": "Fontations",
+      "groupName": "fontations packages",
+      "groupSlug": "fontations",
       "matchPackageNames": ["harfrust"]
     }
   ]
