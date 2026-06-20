@@ -14,10 +14,6 @@ pub enum ConfigError {
     Read(#[from] io::Error),
     #[error("Failed to parse config file")]
     Parse(#[from] jsonc_parser::errors::ParseError),
-    #[error("Failed to parse config file")]
-    Deserialize(#[from] serde_json::Error),
-    #[error("Failed to parse config file")]
-    Invalid,
 }
 
 #[derive(Debug, Clone, Eq, PartialEq, serde::Deserialize)]
@@ -50,12 +46,10 @@ impl Default for Config {
 
 impl Config {
     pub fn parse(text: impl AsRef<str>) -> Result<Self, ConfigError> {
-        let value = jsonc_parser::parse_to_serde_value(
+        let config = jsonc_parser::parse_to_serde_value(
             text.as_ref(),
             &jsonc_parser::ParseOptions::default(),
         )?;
-        let value = value.ok_or(ConfigError::Invalid)?;
-        let config = serde_json::from_value(value)?;
         Ok(config)
     }
 
