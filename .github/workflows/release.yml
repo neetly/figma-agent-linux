@@ -20,7 +20,7 @@ jobs:
     runs-on: ${{ matrix.runner }}
 
     steps:
-      - uses: actions/checkout@v6.0.3
+      - uses: actions/checkout@v7.0.0
       - uses: moonrepo/setup-rust@v1.3.0
         with:
           inherit-toolchain: true
