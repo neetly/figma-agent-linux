@@ -1,6 +1,6 @@
 use std::{fs, iter, path::Path};
 
-use harfrust::{ShaperData, ShaperInstance, UnicodeBuffer};
+use harfrust::{ShapeOptions, ShaperData, ShaperInstance, UnicodeBuffer};
 use skrifa::{
     FontRef, GlyphId, MetadataProvider,
     instance::Size,
@@ -67,7 +67,6 @@ pub fn render_text(
         .unwrap_or_default();
     let shaper = shaper_data
         .shaper(&font)
-        .point_size(size.ppem())
         .instance(Some(&shaper_instance))
         .build();
 
@@ -75,7 +74,7 @@ pub fn render_text(
     buffer.push_str(text);
     buffer.guess_segment_properties();
 
-    let glyph_buffer = shaper.shape(buffer, &[]);
+    let glyph_buffer = shaper.shape(buffer, ShapeOptions::new().point_size(size.ppem()));
 
     let mut text_path = TextPath::new();
 
