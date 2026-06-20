@@ -4,12 +4,13 @@
     {
       "groupName": "fontations packages",
       "groupSlug": "fontations",
-      "matchSourceUrls": ["https://github.com/googlefonts/fontations"]
-    },
-    {
-      "groupName": "fontations packages",
-      "groupSlug": "fontations",
-      "matchPackageNames": ["harfrust"]
+      "matchPackageNames": [
+        "skrifa",
+        "font-types",
+        "read-fonts",
+        "write-fonts",
+        "harfrust"
+      ]
     }
   ]
 }
