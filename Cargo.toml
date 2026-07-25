@@ -18,7 +18,7 @@ serde_json = "=1.0.151"
 skrifa = "=0.44.0"
 svg = "=0.18.0"
 thiserror = "=2.0.19"
-tokio = { version = "=1.53.0", features = ["full"] }
+tokio = { version = "=1.53.1", features = ["full"] }
 tower = { version = "=0.5.3", features = ["full"] }
 tower-http = { version = "=0.7.0", features = ["full"] }
 tracing = "=0.1.44"
