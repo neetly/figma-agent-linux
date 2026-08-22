@@ -7,15 +7,15 @@ edition = "2024"
 anyhow = "=1.0.104"
 axum = "=0.8.9"
 fontconfig-parser = "=0.5.8"
-harfrust = "=0.12.0"
+harfrust = "=0.13.1"
 interp = "=2.1.2"
 itertools = "=0.15.0"
 jsonc-parser = { version = "=0.33.1", features = ["serde"] }
 listenfd = "=1.0.2"
-read-fonts = "=0.41.0"
+read-fonts = "=0.43.2"
 serde = { version = "=1.0.229", features = ["derive"] }
 serde_json = "=1.0.151"
-skrifa = "=0.44.0"
+skrifa = "=0.46.2"
 svg = "=0.18.0"
 thiserror = "=2.0.20"
 tokio = { version = "=1.53.1", features = ["full"] }
