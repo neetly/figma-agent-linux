@@ -10,7 +10,7 @@ pub fn scan_font_paths(
 ) -> impl Iterator<Item = PathBuf> {
     directories
         .into_iter()
-        .flat_map(|directory| WalkDir::new(directory))
+        .flat_map(|directory| WalkDir::new(directory).follow_links(true))
         .filter_map(|entry| match entry {
             Ok(entry) => Some(entry),
             Err(error) => {
