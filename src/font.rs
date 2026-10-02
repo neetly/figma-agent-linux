@@ -1,5 +1,7 @@
 use std::{
     fs,
+    io::Read,
+    os::unix::fs::MetadataExt,
     path::{Path, PathBuf},
     time::SystemTime,
 };
@@ -12,7 +14,7 @@ pub enum FontError {
     #[error("Failed to read font file")]
     Read(#[from] std::io::Error),
     #[error("Failed to parse font file")]
-    Parse(Vec<(usize, read_fonts::ReadError)>, Option<FontFile>),
+    Parse(Vec<(usize, read_fonts::ReadError)>, Option<Box<FontFile>>),
 }
 
 #[derive(Debug, Clone)]
@@ -20,14 +22,37 @@ pub struct FontFile {
     pub path: PathBuf,
     pub fonts: Vec<Font>,
     pub modified_at: Option<SystemTime>,
+    pub(crate) fingerprint: FileFingerprint,
+}
+
+#[derive(Debug, Clone, Eq, PartialEq)]
+pub(crate) struct FileFingerprint {
+    device: u64,
+    inode: u64,
+    size: u64,
+    // Inode status change time (ctime), not creation time.
+    changed_at: (i64, i64),
+}
+
+impl From<&fs::Metadata> for FileFingerprint {
+    fn from(metadata: &fs::Metadata) -> Self {
+        Self {
+            device: metadata.dev(),
+            inode: metadata.ino(),
+            size: metadata.len(),
+            changed_at: (metadata.ctime(), metadata.ctime_nsec()),
+        }
+    }
 }
 
 impl FontFile {
     pub fn from_path(path: impl AsRef<Path>) -> Result<Self, FontError> {
         let path = path.as_ref();
 
-        let data = fs::read(path)?;
-        let metadata = fs::metadata(path)?;
+        let mut file = fs::File::open(path)?;
+        let metadata = file.metadata()?;
+        let mut data = Vec::new();
+        file.read_to_end(&mut data)?;
 
         let mut errors = Vec::new();
         let fonts = skrifa::FontRef::fonts(&data)
@@ -45,6 +70,7 @@ impl FontFile {
             path: path.into(),
             fonts,
             modified_at: metadata.modified().ok(),
+            fingerprint: FileFingerprint::from(&metadata),
         };
 
         if font_file.fonts.is_empty() {
@@ -52,7 +78,7 @@ impl FontFile {
         } else if errors.is_empty() {
             Ok(font_file)
         } else {
-            Err(FontError::Parse(errors, Some(font_file)))
+            Err(FontError::Parse(errors, Some(Box::new(font_file))))
         }
     }
 }

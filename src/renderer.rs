@@ -89,12 +89,12 @@ pub fn render_text(
             .ok_or_else(|| DrawError::GlyphNotFound(GlyphId::new(info.glyph_id)))?;
 
         text_path.origin_x = cursor_x + scale_unit(position.x_offset);
-        text_path.origin_y = cursor_y + scale_unit(position.y_offset);
+        text_path.origin_y = cursor_y - scale_unit(position.y_offset);
 
         glyph.draw(DrawSettings::unhinted(size, &location), &mut text_path)?;
 
         cursor_x += scale_unit(position.x_advance);
-        cursor_y += scale_unit(position.y_advance);
+        cursor_y -= scale_unit(position.y_advance);
     }
 
     let width = cursor_x;

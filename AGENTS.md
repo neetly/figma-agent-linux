@@ -9,6 +9,8 @@
   in every commit containing AI-assisted work, including amended commits.
 - Keep changes focused on the requested task and follow existing conventions.
   Update documentation when changing user-visible behavior or configuration.
+- Keep README.md focused on user-facing behavior and configuration; do not add
+  implementation details.
 - For Rust changes, use the toolchain in `rust-toolchain.toml` and run the CI
   checks: `cargo +nightly fmt --check`, `cargo clippy -- --deny warnings`, and
   `cargo test`. For documentation-only changes, check the diff and links;

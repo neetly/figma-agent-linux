@@ -78,13 +78,6 @@ impl Config {
             } else {
                 Either::Right(iter::empty())
             })
-            .filter_map(|directory| match directory.canonicalize() {
-                Ok(directory) => Some(directory),
-                Err(error) => {
-                    tracing::debug!("Skipped font directory: {directory:?}, error: {error:?}");
-                    None
-                }
-            })
             .unique()
     }
 }

@@ -10,7 +10,7 @@ use tokio::sync::RwLock;
 
 use crate::{
     config::Config,
-    font::{FontError, FontFile},
+    font::{FileFingerprint, FontError, FontFile},
     scanner::scan_font_paths,
 };
 
@@ -73,8 +73,12 @@ pub async fn scan_font_files() {
 
     let mut font_files = FONT_FILES.write().await;
 
+    rescan_font_files(&mut font_files, &EFFECTIVE_FONT_DIRECTORIES);
+}
+
+fn rescan_font_files(font_files: &mut HashMap<PathBuf, FontFile>, directories: &[PathBuf]) {
     let (mut added_count, mut updated_count, mut removed_count) = (0, 0, 0);
-    let mut font_paths = scan_font_paths(&*EFFECTIVE_FONT_DIRECTORIES).collect::<HashSet<_>>();
+    let mut font_paths = scan_font_paths(directories).collect::<HashSet<_>>();
 
     font_files.retain(|path, _| {
         let contains = font_paths.contains(path);
@@ -86,10 +90,9 @@ pub async fn scan_font_files() {
 
     font_paths.retain(|path| {
         if let Some(font_file) = font_files.get(path) {
-            let modified_at = fs::metadata(path)
-                .and_then(|metadata| metadata.modified())
-                .ok();
-            modified_at > font_file.modified_at
+            fs::metadata(path)
+                .map(|metadata| FileFingerprint::from(&metadata) != font_file.fingerprint)
+                .unwrap_or(true)
         } else {
             true
         }
@@ -126,7 +129,107 @@ pub fn load_font_file(path: impl AsRef<Path>) -> Option<FontFile> {
             for (index, error) in errors {
                 tracing::debug!("Failed to load font file: {path:?} ({index}), error: {error:?}",);
             }
-            font_file
+            font_file.map(|font_file| *font_file)
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::time::{Duration, SystemTime};
+
+    use super::*;
+
+    struct Fixture(PathBuf);
+
+    impl Fixture {
+        fn new() -> Self {
+            let nonce = SystemTime::now()
+                .duration_since(SystemTime::UNIX_EPOCH)
+                .unwrap()
+                .as_nanos();
+            let path = std::env::temp_dir()
+                .join(format!("figma-agent-rescan-{}-{nonce}", std::process::id()));
+            fs::create_dir(&path).unwrap();
+            Self(path)
+        }
+    }
+
+    impl Drop for Fixture {
+        fn drop(&mut self) {
+            fs::remove_dir_all(&self.0).unwrap();
+        }
+    }
+
+    // Minimal SFNT table directory accepted by the parser.
+    const FONT: &[u8] = &[0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+    #[test]
+    fn rescan_removes_replaced_fonts_even_without_a_newer_mtime() {
+        let fixture = Fixture::new();
+        let path = fixture.0.join("font.ttf");
+        let mut files = HashMap::new();
+        for case in [
+            "older",
+            "same-time-larger",
+            "same-time-same-size",
+            "new-inode",
+        ] {
+            fs::write(&path, FONT).unwrap();
+            files.clear();
+            rescan_font_files(&mut files, std::slice::from_ref(&fixture.0));
+            assert_eq!(files.len(), 1);
+            let original = files[&path].modified_at.unwrap();
+            let timestamp = if case == "older" {
+                original - Duration::from_secs(3600)
+            } else {
+                original
+            };
+            let replacement = if case == "new-inode" {
+                fixture.0.join("replacement")
+            } else {
+                path.clone()
+            };
+            // Ensure ctime differs even on filesystems with coarse clock resolution.
+            if case == "same-time-same-size" {
+                std::thread::sleep(Duration::from_millis(1100));
+            }
+            let size = FONT.len() + usize::from(case == "same-time-larger");
+            fs::write(&replacement, vec![0xff; size]).unwrap();
+            fs::File::options()
+                .write(true)
+                .open(&replacement)
+                .unwrap()
+                .set_modified(timestamp)
+                .unwrap();
+            if case == "new-inode" {
+                fs::rename(&replacement, &path).unwrap();
+            }
+            rescan_font_files(&mut files, std::slice::from_ref(&fixture.0));
+            assert!(files.is_empty(), "{case}");
+        }
+    }
+
+    #[test]
+    fn rescan_discovers_directories_created_after_configuration() {
+        let fixture = Fixture::new();
+        let directory = fixture.0.join("Fonts");
+        let config = Config {
+            use_system_fonts: false,
+            font_directories: vec![directory.clone()],
+            ..Config::default()
+        };
+        let directories: Vec<_> = config
+            .effective_font_directories(&FontConfig::default())
+            .collect();
+        assert_eq!(directories, [directory.clone()]);
+        let mut files = HashMap::new();
+        rescan_font_files(&mut files, &directories);
+        assert!(files.is_empty());
+        fs::create_dir(&directory).unwrap();
+        let path = directory.join("font.ttf");
+        fs::write(&path, FONT).unwrap();
+        rescan_font_files(&mut files, &directories);
+        assert!(files.contains_key(&path));
     }
 }
