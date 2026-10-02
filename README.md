@@ -62,6 +62,10 @@ The configuration file is located at `~/.config/figma-agent/config.json`. All fi
 | `enable_font_rescan`  | `true`              | Automatically pick up newly installed or updated fonts.                    |
 | `enable_font_preview` | `true`              | Enable font previews in the Figma font picker.                             |
 
+Font scanning follows file and directory symlinks, including links to fonts outside
+the configured directories. Only files with at least one successfully parsed font
+are made available; collections with some unreadable fonts retain their readable fonts.
+
 **Example:**
 
 ```jsonc

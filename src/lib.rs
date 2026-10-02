@@ -102,6 +102,8 @@ pub async fn scan_font_files() {
             } else {
                 updated_count += 1;
             }
+        } else if font_files.remove(&path).is_some() {
+            removed_count += 1;
         }
     }
 

@@ -47,7 +47,9 @@ impl FontFile {
             modified_at: metadata.modified().ok(),
         };
 
-        if errors.is_empty() {
+        if font_file.fonts.is_empty() {
+            Err(FontError::Parse(errors, None))
+        } else if errors.is_empty() {
             Ok(font_file)
         } else {
             Err(FontError::Parse(errors, Some(font_file)))
