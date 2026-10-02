@@ -21,10 +21,10 @@ Run the same command again to update.
 
 If you prefer a package manager, these packages are available:
 
-| Platform   | Package                                                                                                                                                                                   |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Arch Linux | [figma-agent-linux](https://aur.archlinux.org/packages/figma-agent-linux)<sup>AUR</sup> / [figma-agent-linux-bin](https://aur.archlinux.org/packages/figma-agent-linux-bin)<sup>AUR</sup> |
-| Nix        | [figma-agent](https://search.nixos.org/packages?show=figma-agent) (community-maintained)                                                                                                  |
+| Platform   | Package                                                                                                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Arch Linux | [figma-agent-linux](https://aur.archlinux.org/packages/figma-agent-linux) (AUR) / [figma-agent-linux-bin](https://aur.archlinux.org/packages/figma-agent-linux-bin) (AUR) |
+| Nix        | [figma-agent](https://search.nixos.org/packages?show=figma-agent) (community-maintained)                                                                                  |
 
 Follow your package's instructions to start the service, then connect it to Figma
 using the steps below.
