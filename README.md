@@ -2,141 +2,162 @@
 
 [![CI](https://github.com/neetly/figma-agent-linux/actions/workflows/ci.yml/badge.svg)](https://github.com/neetly/figma-agent-linux/actions/workflows/ci.yml)
 
-A lightweight local service that makes your locally installed fonts available on [figma.com](https://www.figma.com/) in your Linux browser.
+Use the fonts installed on your Linux computer in [Figma](https://www.figma.com/).
+Figma Agent runs in the background and makes them available in your browser's
+Figma font picker. It supports system fonts, custom font folders, and variable
+fonts, including named instances. New and updated fonts are picked up automatically.
 
-Install the service, allow Figma to connect to apps on your device, and use your local fonts in the Figma font picker.
+## Install
 
-## Features
-
-- **System font integration** — Automatically discovers your installed system fonts.
-- **Custom font directories** — Add your own font directories alongside system fonts.
-- **Variable fonts** — Full support for variable fonts, including named instances.
-- **Font preview** — Preview fonts directly in the Figma font picker.
-- **Automatic rescanning** — Detects newly installed or updated fonts without restarting the service.
-
-## Installation
-
-The automatic installer requires `bash`, `curl`, and a running systemd user session. Run the following command as your regular user to download the latest release and enable the service:
+The installer needs `bash`, `curl`, and a running systemd user session. Run it as
+your regular user:
 
 ```sh
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/neetly/figma-agent-linux/main/files/install.sh)"
 ```
 
-> [!TIP]
-> You can run the same command again at any time to update to the latest version.
+This downloads the latest release and sets it up to start when Figma connects.
+Run the same command again to update.
 
-### Package Managers
+If you prefer a package manager, these packages are available:
 
 | Platform   | Package                                                                                                                                                       |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Arch Linux | [figma-agent-linux](https://aur.archlinux.org/packages/figma-agent-linux) / [figma-agent-linux-bin](https://aur.archlinux.org/packages/figma-agent-linux-bin) |
 | Nix        | [figma-agent](https://search.nixos.org/packages?show=figma-agent) (community-maintained)                                                                      |
 
-Follow your package's instructions to enable and start the service, then connect Figma as described below.
+Follow your package's instructions to start the service, then connect it to Figma
+using the steps below.
 
-### Connect Figma to your local fonts
+## Connect Figma to your local fonts
 
-Figma works on Linux without changing your browser's user agent. It needs permission to connect to apps on your device to access Figma Agent. Figma provides its own permission guidance, but it may not prompt you automatically on first use.
-
-After installing the service:
+Once Figma Agent is running, give Figma permission to connect to it. You do not
+need to change your browser's user agent.
 
 1. Open a design file on [figma.com](https://www.figma.com/).
-2. Click the **Figma logo (menu) → Preferences → Permissions and helpers...**.
-3. In the **Permissions and helpers** dialog, find the **Apps on device** section.
-4. If permission has not been granted, you may see **Show me how to connect**. Click it to reveal the **Connect** button and instructions, then click **Connect** and allow access when your browser asks.
-5. Check that the section shows **Connected**. This confirms that permission is granted and Figma is connected to the service.
+2. Click the **Figma logo** in the top-left corner, then choose
+   **Preferences → Permissions and helpers…**.
+3. Under **Apps on device**, click **Show me how to connect** if the status is
+   **Not connected**.
+4. Click **Connect** in the instructions that appear. The message mentions
+   Figma's font installer or desktop app; with Figma Agent running, you can go
+   straight to **Connect**.
+5. If your browser asks to **Access other apps and services on this device**,
+   click **Allow**. The wording may differ between browsers.
+6. Check that **Apps on device** now shows **Connected**, then close the dialog
+   and try your local fonts in the font picker.
 
-Your installed fonts should now be available in the Figma font picker. If you cannot connect or your fonts are missing, see [Troubleshooting](#troubleshooting).
+**Clipboard access** and **Microphone access** are separate permissions. They can
+stay **Blocked** when using local fonts.
 
-### Uninstallation
-
-<details>
-<summary>Click to expand</summary>
-
-```sh
-systemctl --user disable --now figma-agent.{service,socket}
-rm -rf ~/.local/share/figma-agent ~/.local/share/systemd/user/figma-agent.{service,socket}
-systemctl --user daemon-reload
-```
-
-</details>
+If the connection fails or a font is missing, see [Troubleshooting](#troubleshooting).
 
 ## Configuration
 
-The configuration file is located at `~/.config/figma-agent/config.json`. All fields are optional — the service works out of the box without any configuration.
+No configuration is needed to use your system fonts. To change the defaults,
+create `~/.config/figma-agent/config.json` (and its parent directory if needed).
+All settings are optional.
 
-| Key                   | Default             | Description                                                                |
-| --------------------- | ------------------- | -------------------------------------------------------------------------- |
-| `bind`                | `"127.0.0.1:44950"` | Address and port to listen on. Has no effect when using socket activation. |
-| `use_system_fonts`    | `true`              | Include fonts discovered via Fontconfig.                                   |
-| `font_directories`    | `[]`                | Additional directories to scan for fonts. Supports `~` for home.           |
-| `enable_font_rescan`  | `true`              | Automatically pick up newly installed or updated fonts.                    |
-| `enable_font_preview` | `true`              | Enable font previews in the Figma font picker.                             |
+For example, to include fonts from `~/Fonts` alongside your system fonts:
 
-Font scanning supports file and directory symlinks, including links to fonts outside
-the configured directories. Files without readable fonts are ignored; collections
-with some unreadable fonts retain their readable fonts.
-
-To add a custom font directory, create `~/.config/figma-agent/config.json` with the following content, replacing `~/Fonts` with your font directory. Create the parent directory if it does not exist.
-
-```jsonc
-// ~/.config/figma-agent/config.json
+```json
 {
-  "font_directories": ["~/Fonts"],
+  "font_directories": ["~/Fonts"]
 }
 ```
 
-> [!NOTE]
-> You must restart the service for configuration changes to take effect:
->
-> ```sh
-> systemctl --user restart figma-agent.service
-> ```
-
-> [!TIP]
-> If you have a large number of fonts installed and notice slowness when switching fonts in Figma, try setting `enable_font_rescan` to `false`. The service will then only scan fonts once at startup; restart it manually after installing new fonts.
-
-> [!WARNING]
-> Font preview is currently experimental and may cause unexpected issues. If you experience problems, set `enable_font_preview` to `false`.
-
-## Troubleshooting
-
-### Figma does not connect
-
-First, check **Apps on device** in Figma's [Permissions and helpers dialog](#connect-figma-to-your-local-fonts). If access was previously denied, open your browser's site permissions for [figma.com](https://www.figma.com/), allow access to apps on your device, and try connecting again. The browser's permission label may vary.
-
-Check the service and socket status:
-
-```sh
-systemctl --user status figma-agent.{service,socket}
-```
-
-With the automatic installer, the socket starts at login and launches the service when Figma connects. An inactive service before the first connection is normal if the socket is active. If the socket is inactive, start it:
-
-```sh
-systemctl --user start figma-agent.socket
-```
-
-Restart the service:
+Restart the service after changing the configuration:
 
 ```sh
 systemctl --user restart figma-agent.service
 ```
 
-View logs:
+| Setting               | Default             | What it does                                                                                          |
+| --------------------- | ------------------- | ----------------------------------------------------------------------------------------------------- |
+| `font_directories`    | `[]`                | Additional font folders to scan. Use `~` for your home directory.                                     |
+| `use_system_fonts`    | `true`              | Include system fonts found through Fontconfig.                                                        |
+| `enable_font_rescan`  | `true`              | Pick up newly installed or updated fonts automatically.                                               |
+| `enable_font_preview` | `true`              | Show font previews in Figma's font picker. This feature is experimental.                              |
+| `bind`                | `"127.0.0.1:44950"` | Address and port to listen on. Ignored when using socket activation, as the automatic installer does. |
+
+Font folders can contain symlinks to files or other folders, including fonts
+outside the configured folders. Unreadable fonts are skipped; readable fonts in
+the same collection are still available.
+
+## Troubleshooting
+
+### Figma does not connect
+
+Open [Permissions and helpers](#connect-figma-to-your-local-fonts) and check
+**Apps on device**. If you previously blocked access, open your browser's site
+permissions for figma.com, allow access to apps on your device, and try
+**Connect** again. The browser's permission label may vary.
+
+If permission is allowed, check whether Figma Agent is running:
 
 ```sh
+systemctl --user status figma-agent.{service,socket}
+```
+
+With the automatic installer, the socket starts at login and launches the service
+when Figma connects. An inactive service is normal before the first connection,
+as long as the socket is active. If the socket is inactive, start it:
+
+```sh
+systemctl --user start figma-agent.socket
+```
+
+If it still won't connect, check whether an ad blocker or privacy extension is
+blocking connections to `localhost` or `127.0.0.1`. Add an exception for figma.com
+if needed.
+
+You can also restart the service and check its logs for errors:
+
+```sh
+systemctl --user restart figma-agent.service
 journalctl --user --unit figma-agent.service --follow
 ```
 
-Some ad blockers and privacy extensions block connections to `localhost` or `127.0.0.1`. If Figma still cannot connect while the socket is active, check your extension's rules and add an exception for [figma.com](https://www.figma.com/) if needed.
+### A font is missing
 
-### Figma connects, but a font is missing
+Check that the font is installed on your system or is in a folder listed in
+`font_directories`. See [Configuration](#configuration) to add a folder.
 
-Check that the font is installed on your system or stored in a directory listed in `font_directories`. See [Configuration](#configuration) to add a custom directory.
+If you turned off `enable_font_rescan`, restart the service after installing or
+updating fonts. You also need to restart after changing the configuration:
 
-If you disabled `enable_font_rescan`, restart the service after installing or updating fonts. Configuration changes also require a service restart.
+```sh
+systemctl --user restart figma-agent.service
+```
+
+### Switching fonts is slow
+
+If you have a large font collection, try setting `enable_font_rescan` to `false`
+in your configuration and restarting the service. Fonts will then be scanned
+only at startup, so you'll need to restart the service whenever you install or
+update fonts.
+
+### Font previews cause problems
+
+Font previews are experimental. Set `enable_font_preview` to `false` in your
+configuration and restart the service to turn them off.
+
+## Uninstall
+
+If you used the automatic installer, stop Figma Agent and remove its installed
+files:
+
+```sh
+systemctl --user disable --now figma-agent.{service,socket}
+rm -rf "${XDG_DATA_HOME:-$HOME/.local/share}/figma-agent" \
+  "${XDG_DATA_HOME:-$HOME/.local/share}/systemd/user/figma-agent.service" \
+  "${XDG_DATA_HOME:-$HOME/.local/share}/systemd/user/figma-agent.socket"
+systemctl --user daemon-reload
+```
+
+This leaves your configuration file in place. If you installed through a package
+manager, use that package manager to remove it instead.
 
 ## Credits
 
-This project is inspired by [Figma Linux Font Helper](https://github.com/Figma-Linux/figma-linux-font-helper).
+Inspired by [Figma Linux Font Helper](https://github.com/Figma-Linux/figma-linux-font-helper).
