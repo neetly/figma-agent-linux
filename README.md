@@ -66,10 +66,10 @@ For example, to include fonts from `~/Fonts` alongside your system fonts:
 }
 ```
 
-Restart the service after changing the configuration:
+After changing the configuration, run:
 
 ```sh
-systemctl --user restart figma-agent.service
+systemctl --user try-restart figma-agent.service
 ```
 
 | Setting               | Default | What it does                                                             |
@@ -122,11 +122,11 @@ journalctl --user --unit figma-agent.service --follow
 Check that the font is installed on your system or is in a folder listed in
 `font_directories`. See [Configuration](#configuration) to add a folder.
 
-If you turned off `enable_font_rescan`, restart the service after installing or
-updating fonts. You also need to restart after changing the configuration:
+If you turned off `enable_font_rescan`, run this after installing or updating
+fonts. Also run it after changing the configuration:
 
 ```sh
-systemctl --user restart figma-agent.service
+systemctl --user try-restart figma-agent.service
 ```
 
 ### Switching fonts is slow
