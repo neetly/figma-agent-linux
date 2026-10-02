@@ -51,5 +51,7 @@ jobs:
       - uses: softprops/action-gh-release@v3.0.3
         with:
           name: Figma Agent for Linux ${{ github.ref_name }}
+          body: |
+            See the [changelog](https://github.com/${{ github.repository }}/blob/${{ github.ref_name }}/CHANGELOG.md#${{ github.ref_name }}) for changes in this release.
           prerelease: ${{ contains(github.ref_name, '-') }}
           files: ./release/figma-agent-*
