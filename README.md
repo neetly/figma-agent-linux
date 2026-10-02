@@ -72,13 +72,12 @@ Restart the service after changing the configuration:
 systemctl --user restart figma-agent.service
 ```
 
-| Setting               | Default             | What it does                                                                                          |
-| --------------------- | ------------------- | ----------------------------------------------------------------------------------------------------- |
-| `font_directories`    | `[]`                | Additional font folders to scan. Use `~` for your home directory.                                     |
-| `use_system_fonts`    | `true`              | Include system fonts found through Fontconfig.                                                        |
-| `enable_font_rescan`  | `true`              | Pick up newly installed or updated fonts automatically.                                               |
-| `enable_font_preview` | `true`              | Show font previews in Figma's font picker. This feature is experimental.                              |
-| `bind`                | `"127.0.0.1:44950"` | Address and port to listen on. Ignored when using socket activation, as the automatic installer does. |
+| Setting               | Default | What it does                                                             |
+| --------------------- | ------- | ------------------------------------------------------------------------ |
+| `font_directories`    | `[]`    | Additional font folders to scan. Use `~` for your home directory.        |
+| `use_system_fonts`    | `true`  | Include system fonts found through Fontconfig.                           |
+| `enable_font_rescan`  | `true`  | Pick up newly installed or updated fonts automatically.                  |
+| `enable_font_preview` | `true`  | Show font previews in Figma's font picker. This feature is experimental. |
 
 Font folders can contain symlinks to files or other folders, including fonts
 outside the configured folders. Unreadable fonts are skipped; readable fonts in
