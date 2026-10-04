@@ -11,9 +11,9 @@ use skrifa::{MetadataProvider, string::StringId};
 
 #[derive(Debug, thiserror::Error)]
 pub enum FontError {
-    #[error("Failed to read font file")]
+    #[error("Could not read font file: {0}")]
     Read(#[from] std::io::Error),
-    #[error("Failed to parse font file")]
+    #[error("Could not parse font file ({} invalid font faces)", .0.len())]
     Parse(Vec<(usize, read_fonts::ReadError)>, Option<Box<FontFile>>),
 }
 

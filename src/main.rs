@@ -1,5 +1,6 @@
 use std::sync::LazyLock;
 
+use anyhow::Context;
 use axum::{Router, http::HeaderValue, routing::get};
 use figma_agent::{CONFIG, EFFECTIVE_FONT_DIRECTORIES, routes, scan_font_files};
 use listenfd::ListenFd;
@@ -31,16 +32,28 @@ async fn main() -> Result<(), anyhow::Error> {
                 ),
         );
 
-    let listener = match ListenFd::from_env().take_tcp_listener(0)? {
+    let listener = match ListenFd::from_env()
+        .take_tcp_listener(0)
+        .context("Could not receive the listening socket from systemd")?
+    {
         Some(listener) => {
-            listener.set_nonblocking(true)?;
-            TcpListener::from_std(listener)?
+            listener
+                .set_nonblocking(true)
+                .context("Could not configure the listening socket")?;
+            TcpListener::from_std(listener).context("Could not use the listening socket")?
         }
-        None => TcpListener::bind(&CONFIG.bind).await?,
+        None => TcpListener::bind(&CONFIG.bind)
+            .await
+            .with_context(|| format!("Could not listen on {}", CONFIG.bind))?,
     };
-    tracing::info!("Listening on {}", listener.local_addr()?);
+    tracing::debug!(
+        address = %listener.local_addr().context("Could not get the listening address")?,
+        "Listening for Figma connections"
+    );
 
-    axum::serve(listener, app).await?;
+    axum::serve(listener, app)
+        .await
+        .context("Could not serve Figma requests")?;
 
     Ok(())
 }

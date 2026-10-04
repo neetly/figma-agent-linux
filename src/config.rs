@@ -10,9 +10,9 @@ use crate::path::expand_home;
 
 #[derive(Debug, thiserror::Error)]
 pub enum ConfigError {
-    #[error("Failed to read config file")]
+    #[error("Could not read configuration: {0}")]
     Read(#[from] io::Error),
-    #[error("Failed to parse config file")]
+    #[error("Invalid configuration: {0}")]
     Parse(#[from] jsonc_parser::errors::ParseError),
 }
 
@@ -69,7 +69,11 @@ impl Config {
             .filter_map(|directory| match expand_home(directory) {
                 Ok(directory) => Some(directory),
                 Err(error) => {
-                    tracing::debug!("Skipped font directory: {directory:?}, error: {error:?}");
+                    tracing::warn!(
+                        path = %directory.display(),
+                        %error,
+                        "Could not expand font directory; skipping it"
+                    );
                     None
                 }
             })

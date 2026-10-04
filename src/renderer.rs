@@ -16,13 +16,13 @@ use svg::{
 
 #[derive(Debug, thiserror::Error)]
 pub enum RenderError {
-    #[error("Failed to read font file")]
+    #[error("Could not read font file: {0}")]
     Read(#[from] std::io::Error),
-    #[error("Failed to parse font file")]
+    #[error("Could not parse font file: {0}")]
     Parse(#[from] read_fonts::ReadError),
-    #[error("Failed to shape text")]
+    #[error("Could not shape preview text: {0}")]
     Shape(#[from] harfrust::ShapeError),
-    #[error("Failed to draw glyph")]
+    #[error("Could not draw preview glyph: {0}")]
     Draw(#[from] DrawError),
 }
 

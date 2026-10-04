@@ -116,6 +116,10 @@ systemctl --user restart figma-agent.service
 journalctl --user --unit figma-agent.service --follow
 ```
 
+Normal startup and font requests are quiet. Warnings and errors describe problems
+such as invalid configuration or failed font previews. For detailed diagnostics
+when running the agent directly, use `RUST_LOG=debug figma-agent`.
+
 ### A font is missing
 
 Check that the font is installed on your system or is in a folder listed in

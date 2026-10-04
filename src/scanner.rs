@@ -56,8 +56,9 @@ pub fn scan_font_paths(
             Ok(entry) => Some(entry),
             Err(error) => {
                 tracing::debug!(
-                    "Skipped font file/directory: {path:?}, error: {error:?}",
-                    path = error.path().unwrap_or_else(|| Path::new("<unknown>")),
+                    path = %error.path().unwrap_or_else(|| Path::new("<unknown>")).display(),
+                    %error,
+                    "Could not scan font path; skipping it"
                 );
                 None
             }
@@ -75,8 +76,9 @@ pub fn scan_font_paths(
             Ok(path) => Some(path),
             Err(error) => {
                 tracing::debug!(
-                    "Skipped font file: {path:?}, error: {error:?}",
-                    path = entry.path(),
+                    path = %entry.path().display(),
+                    %error,
+                    "Could not resolve font path; skipping it"
                 );
                 None
             }

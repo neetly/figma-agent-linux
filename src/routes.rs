@@ -23,7 +23,7 @@ use crate::{
 const PACKAGE: &str = "125.9.10";
 const VERSION: u32 = 23;
 
-#[tracing::instrument]
+#[tracing::instrument(level = "debug")]
 pub async fn version() -> impl IntoResponse {
     Json(VersionEndpointPayload {
         package: PACKAGE.into(),
@@ -33,7 +33,7 @@ pub async fn version() -> impl IntoResponse {
 
 // There are supposed to be some query parameters here, but we don't really
 // care about them, so we'll just ignore them for now.
-#[tracing::instrument]
+#[tracing::instrument(level = "debug")]
 pub async fn font_files() -> impl IntoResponse {
     if CONFIG.enable_font_rescan {
         scan_font_files().await;
@@ -147,7 +147,7 @@ pub struct FontFileQuery {
     pub file: PathBuf,
 }
 
-#[tracing::instrument]
+#[tracing::instrument(level = "debug", skip_all)]
 pub async fn font_file(
     Query(query): Query<FontFileQuery>,
     request: Request,
@@ -156,7 +156,7 @@ pub async fn font_file(
         let font_files = FONT_FILES.read().await;
 
         let font_file = font_files.get(&query.file).ok_or_else(|| {
-            tracing::error!("Font file not found: {path:?}", path = query.file);
+            tracing::debug!(path = %query.file.display(), "Requested font file is no longer available");
             StatusCode::NOT_FOUND
         })?;
 
@@ -175,7 +175,7 @@ pub struct FontPreviewQuery {
     pub font_size: f32,
 }
 
-#[tracing::instrument]
+#[tracing::instrument(level = "debug", skip_all)]
 pub async fn font_preview(
     Query(query): Query<FontPreviewQuery>,
 ) -> Result<impl IntoResponse, StatusCode> {
@@ -186,7 +186,7 @@ pub async fn font_preview(
     let font_files = FONT_FILES.read().await;
 
     let font_file = font_files.get(&query.file).ok_or_else(|| {
-        tracing::error!("Font file not found: {path:?}", path = query.file);
+        tracing::debug!(path = %query.file.display(), "Requested font file is no longer available");
         StatusCode::NOT_FOUND
     })?;
 
@@ -197,14 +197,16 @@ pub async fn font_preview(
         .query(FontQuery {
             family_name: Some(query.family.as_str()).filter(|family| !family.is_empty()),
             subfamily_name: Some(query.style.as_str()).filter(|style| !style.is_empty()),
-            postscript_name: Some(query.postscript.as_str()).filter(|postscript| !postscript.is_empty()),
+            postscript_name: Some(query.postscript.as_str())
+                .filter(|postscript| !postscript.is_empty()),
         })
         .ok_or_else(|| {
-            tracing::error!(
-                "Font not found: {family_name:?}, subfamily: {subfamily_name:?}, postscript: {postscript_name:?}",
-                family_name = query.family,
-                subfamily_name = query.style,
-                postscript_name = query.postscript,
+            tracing::debug!(
+                path = %query.file.display(),
+                family = %query.family,
+                style = %query.style,
+                postscript = %query.postscript,
+                "No font face matches the preview request"
             );
             StatusCode::NOT_FOUND
         })?;
@@ -221,7 +223,12 @@ pub async fn font_preview(
         },
     )
     .map_err(|error| {
-        tracing::error!("Failed to render font preview, error: {error:?}");
+        tracing::error!(
+            path = %font_file.path.display(),
+            index = font.index,
+            %error,
+            "Could not render font preview"
+        );
         StatusCode::INTERNAL_SERVER_ERROR
     })?;
 

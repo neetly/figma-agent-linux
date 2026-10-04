@@ -5,7 +5,7 @@ use std::{
 
 #[derive(Debug, thiserror::Error)]
 pub enum PathError {
-    #[error("Failed to get home directory")]
+    #[error("Home directory is unavailable; use an absolute path instead of ~")]
     HomeNotDefined,
 }
 

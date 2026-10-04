@@ -29,7 +29,9 @@ pub static FONTCONFIG: LazyLock<FontConfig> = LazyLock::new(|| {
     let mut font_config = FontConfig::default();
     if let Err(error) = font_config.merge_config("/etc/fonts/fonts.conf") {
         tracing::warn!(
-            "Failed to load Fontconfig config file: /etc/fonts/fonts.conf, error: {error:?}"
+            path = "/etc/fonts/fonts.conf",
+            %error,
+            "Could not load Fontconfig configuration; some system fonts may be unavailable"
         );
     }
     font_config
@@ -38,38 +40,39 @@ pub static FONTCONFIG: LazyLock<FontConfig> = LazyLock::new(|| {
 pub static CONFIG: LazyLock<Config> = LazyLock::new(|| {
     XDG_DIRECTORIES
         .find_config_file("config.json")
-        .and_then(|path| {
-            tracing::info!("Use config file: {path:?}");
-            match Config::from_path(&path) {
-                Ok(config) => {
-                    tracing::info!("Use config: {config:?}");
-                    Some(config)
-                }
-                Err(error) => {
-                    tracing::error!("Failed to load config file: {path:?}, error: {error:?}");
-                    None
-                }
+        .and_then(|path| match Config::from_path(&path) {
+            Ok(config) => {
+                tracing::debug!(path = %path.display(), ?config, "Loaded configuration");
+                Some(config)
+            }
+            Err(error) => {
+                tracing::warn!(
+                    path = %path.display(),
+                    %error,
+                    "Could not load configuration; using defaults"
+                );
+                None
             }
         })
         .unwrap_or_else(|| {
             let config = Config::default();
-            tracing::info!("Use default config: {config:?}");
+            tracing::debug!(?config, "Using default configuration");
             config
         })
 });
 
 pub static EFFECTIVE_FONT_DIRECTORIES: LazyLock<Vec<PathBuf>> = LazyLock::new(|| {
     let directories = CONFIG.effective_font_directories(&FONTCONFIG).collect();
-    tracing::info!("Use effective font directories: {directories:?}");
+    tracing::debug!(?directories, "Font directories to scan");
     directories
 });
 
 pub static FONT_FILES: LazyLock<RwLock<HashMap<PathBuf, FontFile>>> =
     LazyLock::new(|| RwLock::new(HashMap::new()));
 
-#[tracing::instrument]
+#[tracing::instrument(level = "debug")]
 pub async fn scan_font_files() {
-    tracing::debug!("Scanning font files...");
+    tracing::debug!("Scanning font files");
 
     let mut font_files = FONT_FILES.write().await;
 
@@ -111,8 +114,11 @@ fn rescan_font_files(font_files: &mut HashMap<PathBuf, FontFile>, directories: &
     }
 
     tracing::debug!(
-        "{count} font files loaded ({added_count} added, {updated_count} updated, {removed_count} removed)",
         count = font_files.len(),
+        added = added_count,
+        updated = updated_count,
+        removed = removed_count,
+        "Font scan complete"
     );
 }
 
@@ -122,12 +128,17 @@ pub fn load_font_file(path: impl AsRef<Path>) -> Option<FontFile> {
     match FontFile::from_path(path) {
         Ok(font_file) => Some(font_file),
         Err(FontError::Read(error)) => {
-            tracing::debug!("Failed to load font file: {path:?}, error: {error:?}");
+            tracing::debug!(path = %path.display(), %error, "Could not read font file; skipping it");
             None
         }
         Err(FontError::Parse(errors, font_file)) => {
             for (index, error) in errors {
-                tracing::debug!("Failed to load font file: {path:?} ({index}), error: {error:?}",);
+                tracing::debug!(
+                    path = %path.display(),
+                    index,
+                    %error,
+                    "Could not parse font face; skipping it"
+                );
             }
             font_file.map(|font_file| *font_file)
         }
