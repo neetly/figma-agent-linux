@@ -1,6 +1,6 @@
 use std::{fs, iter, path::Path};
 
-use harfrust::{ShapeOptions, ShaperData, ShaperInstance, UnicodeBuffer};
+use harfrust::{Buffer, ShapeOptions, ShaperFont, font::Blob};
 use skrifa::{
     FontRef, GlyphId, MetadataProvider,
     instance::Size,
@@ -20,6 +20,8 @@ pub enum RenderError {
     Read(#[from] std::io::Error),
     #[error("Failed to parse font file")]
     Parse(#[from] read_fonts::ReadError),
+    #[error("Failed to shape text")]
+    Shape(#[from] harfrust::ShapeError),
     #[error("Failed to draw glyph")]
     Draw(#[from] DrawError),
 }
@@ -43,7 +45,7 @@ pub fn render_text(
         named_instance_index,
     }: RenderOptions,
 ) -> Result<Option<String>, RenderError> {
-    let data = fs::read(font_path)?;
+    let data = Blob::from(fs::read(font_path)?);
     let font = FontRef::from_index(&data, font_index as u32)?;
 
     let size = Size::new(size);
@@ -61,20 +63,23 @@ pub fn render_text(
         return Ok(None);
     }
 
-    let shaper_data = ShaperData::new(&font);
-    let shaper_instance = named_instance_index
-        .map(|index| ShaperInstance::from_named_instance(&font, index))
-        .unwrap_or_default();
-    let shaper = shaper_data
-        .shaper(&font)
-        .instance(Some(&shaper_instance))
+    // Use the same normalized location for shaping, metrics, and outlines.
+    let shaper_font = harfrust::Font::new(data.clone(), font_index as u32)
+        .ok_or(read_fonts::ReadError::MalformedData("Invalid shaping font"))?
+        .instance_builder()
+        .normalized_coords(location.coords().iter().copied())
         .build();
+    let shaper = ShaperFont::new(&shaper_font);
 
-    let mut buffer = UnicodeBuffer::new();
+    let mut buffer = Buffer::new();
     buffer.push_str(text);
     buffer.guess_segment_properties();
 
-    let glyph_buffer = shaper.shape(buffer, ShapeOptions::new().point_size(size.ppem()));
+    harfrust::shape(
+        &shaper,
+        &mut buffer,
+        ShapeOptions::new().point_size(size.ppem()),
+    )?;
 
     let mut text_path = TextPath::new();
 
@@ -83,7 +88,7 @@ pub fn render_text(
 
     let (mut cursor_x, mut cursor_y) = (0.0, metrics.ascent);
 
-    for (info, position) in iter::zip(glyph_buffer.glyph_infos(), glyph_buffer.glyph_positions()) {
+    for (info, position) in iter::zip(buffer.glyph_infos(), buffer.glyph_positions()) {
         let glyph = outlines
             .get(GlyphId::new(info.glyph_id))
             .ok_or_else(|| DrawError::GlyphNotFound(GlyphId::new(info.glyph_id)))?;
