@@ -1,6 +1,10 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 permissions:
   contents: read
@@ -8,14 +12,12 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: moonrepo/setup-rust@v1.3.0
         with:
           inherit-toolchain: true
       - run: rustup component add rustfmt --toolchain nightly
-
       - run: cargo fetch --locked
       - run: cargo +nightly fmt --check
       - run: cargo clippy -- --deny warnings
