@@ -4,24 +4,24 @@ version = "0.4.4"
 edition = "2024"
 
 [dependencies]
-anyhow = "=1.0.104"
-axum = "=0.8.9"
-fontconfig-parser = "=0.5.8"
-harfrust = "=0.14.0"
-interp = "=2.1.2"
-itertools = "=0.15.0"
-jsonc-parser = { version = "=0.34.0", features = ["serde"] }
-listenfd = "=1.0.2"
-read-fonts = "=0.45.1"
-serde = { version = "=1.0.229", features = ["derive"] }
-serde_json = "=1.0.154"
-skrifa = "=0.48.0"
-svg = "=0.18.0"
-thiserror = "=2.0.21"
-tokio = { version = "=1.54.0", features = ["full"] }
-tower = { version = "=0.5.3", features = ["full"] }
-tower-http = { version = "=0.7.1", features = ["full"] }
-tracing = "=0.1.44"
-tracing-subscriber = "=0.3.23"
-walkdir = "=2.5.0"
-xdg = "=3.0.0"
+anyhow = "1.0.104"
+axum = "0.8.9"
+fontconfig-parser = "0.5.8"
+harfrust = "0.14.0"
+interp = "2.1.2"
+itertools = "0.15.0"
+jsonc-parser = { version = "0.34.0", features = ["serde"] }
+listenfd = "1.0.2"
+read-fonts = "0.45.1"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+skrifa = "0.48.0"
+svg = "0.18.0"
+thiserror = "2.0.21"
+tokio = { version = "1.54.0", features = ["full"] }
+tower = { version = "0.5.3", features = ["full"] }
+tower-http = { version = "0.7.1", features = ["full"] }
+tracing = "0.1.44"
+tracing-subscriber = "0.3.23"
+walkdir = "2.5.0"
+xdg = "3.0.0"

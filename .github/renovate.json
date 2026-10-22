@@ -1,5 +1,6 @@
 {
-  "extends": ["github>neetly/renovate-config"],
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:best-practices"],
   "packageRules": [
     {
       "groupName": "fontations packages",
