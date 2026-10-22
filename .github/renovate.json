@@ -5,12 +5,9 @@
     {
       "groupName": "fontations packages",
       "groupSlug": "fontations",
-      "matchPackageNames": [
-        "skrifa",
-        "font-types",
-        "read-fonts",
-        "write-fonts",
-        "harfrust"
+      "matchSourceUrls": [
+        "https://github.com/googlefonts/fontations",
+        "https://github.com/harfbuzz/harfrust"
       ]
     }
   ]
